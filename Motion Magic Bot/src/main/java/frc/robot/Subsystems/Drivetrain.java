@@ -1,29 +1,46 @@
 package frc.robot.Subsystems;
 
-import frc.robot.Models.*;
 import frc.robot.Commands.Drivetrain.JoystickDrive;
-
+import frc.robot.Models.DriveSignal;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 
 public class Drivetrain extends Subsystem {
 
     public static int DRIVE_PROFILE = 0;
     public static int ROTATION_PROFILE = 1;
 
-    public CustomTalonFX leftLead = new CustomTalonFX(2);
-    public CustomTalonFX rightLead = new CustomTalonFX(3);
-    public CustomTalonFX leftFollower = new CustomTalonFX(4);
-    public CustomTalonFX rightFollower = new CustomTalonFX(5);
+    public TalonFX leftLead = new TalonFX(2);
+    public TalonFX rightLead = new TalonFX(3);
+    public TalonFX leftFollower = new TalonFX(4);
+    public TalonFX rightFollower = new TalonFX(5);
     public TalonSRX spareTalon = new TalonSRX(0);
 
     public PigeonIMU pigeon = new PigeonIMU(spareTalon);
+    
+    // Motion Magic Stuff
+    public TalonFXConfiguration leftConfig = new TalonFXConfiguration();
+    public TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+    TalonFXInvertType rightInvert = TalonFXInvertType.Clockwise;
+    TalonFXInvertType leftInvert = TalonFXInvertType.CounterClockwise;
 
+    public double _leftOffset;
+    public double _rightOffset;
+
+    /** Tracking variables */
+	boolean _firstCall = false;
+	boolean _state = false;
+	double _targetAngle = 0;
+
+	/** How much smoothing [0,8] to use during MotionMagic */
+	int _smoothing;
 
     public void initDefaultCommand() {
         setDefaultCommand(new JoystickDrive());
@@ -34,18 +51,43 @@ public class Drivetrain extends Subsystem {
         leftFollower.follow(leftLead);
         rightFollower.follow(rightLead);
 
-        // Set Motor Direction
-        leftLead.setInverted(true);
-        leftFollower.setInverted(true);
-        rightLead.setInverted(false);
-        rightFollower.setInverted(false);
+        leftLead.setInverted(leftInvert);
+		rightLead.setInverted(rightInvert);
 
         // Set Sensors
         leftLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
         rightLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
-        leftLead.setSensorPhase(true);
-        rightLead.setSensorPhase(true);
 
+        // not needed stuff for motion magic
+        leftConfig.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice();
+        rightConfig.remoteFilter0.remoteSensorDeviceID = leftLead.getDeviceID();
+        rightConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.TalonFX_SelectedSensor;
+        setRobotDistanceConfigs(rightInvert, rightConfig);
+        
+        /** Heading Configs */
+		rightConfig.remoteFilter1.remoteSensorDeviceID = pigeon.getDeviceID();    //Pigeon Device ID
+		rightConfig.remoteFilter1.remoteSensorSource = RemoteSensorSource.Pigeon_Yaw; //This is for a Pigeon over CAN
+		rightConfig.auxiliaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor1.toFeedbackDevice(); //Set as the Aux Sensor
+		rightConfig.auxiliaryPID.selectedFeedbackCoefficient = 3600.0 / 8192; //Convert Yaw to tenths of a degree
+
+        int closedLoopTimeMs = 1;
+		rightConfig.slot0.closedLoopPeriod = closedLoopTimeMs;
+		rightConfig.slot1.closedLoopPeriod = closedLoopTimeMs;
+		rightConfig.slot2.closedLoopPeriod = closedLoopTimeMs;
+        rightConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
+
+        /* APPLY the config settings */
+		leftLead.configAllSettings(leftConfig);
+        rightLead.configAllSettings(rightConfig);
+        
+        /* Set status frame periods to ensure we don't have stale data */
+		/* These aren't configs (they're not persistant) so we can set these after the configs.  */
+		rightLead.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
+		rightLead.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20, 30);
+		rightLead.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
+		rightLead.setStatusFramePeriod(StatusFrame.Status_10_Targets, 10, 30);
+		rightLead.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 30);
+		pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR , 5, 30);
         
         // ESC Settings
         resetPigeon();
@@ -101,8 +143,8 @@ public class Drivetrain extends Subsystem {
     }
 
     public void magicDrive (double distance, double angle) {
-        this.leftLead.set(ControlMode.MotionMagic, distance, DemandType.AuxPID, angle);
-        this.rightLead.follow(leftLead, FollowerType.AuxOutput1);
+        rightLead.set(ControlMode.MotionMagic, distance, DemandType.AuxPID, angle);
+		leftLead.follow(rightLead, FollowerType.AuxOutput1);
     }
 
     public void setNeutralMode(NeutralMode neutralMode) {
