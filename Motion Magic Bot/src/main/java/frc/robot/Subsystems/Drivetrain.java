@@ -14,6 +14,7 @@ import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 
 public class Drivetrain extends Subsystem {
 
+    public boolean isRed;
     public static int DRIVE_PROFILE = 0;
     public static int ROTATION_PROFILE = 1;
 
@@ -21,7 +22,7 @@ public class Drivetrain extends Subsystem {
     public TalonFX rightLead = new TalonFX(3);
     public TalonFX leftFollower = new TalonFX(4);
     public TalonFX rightFollower = new TalonFX(5);
-    public TalonSRX spareTalon = new TalonSRX(0);
+    public TalonSRX spareTalon = new TalonSRX(9);
 
     public PigeonIMU pigeon = new PigeonIMU(spareTalon);
     
@@ -184,6 +185,14 @@ public class Drivetrain extends Subsystem {
 
     public double getRightSpeed() {
         return rightLead.getSelectedSensorVelocity();
+    }
+
+    public boolean getIsRed(){
+        return isRed;
+    }
+
+    public void setIsRed(boolean isRed) {
+        this.isRed = isRed;
     }
 
     public void updateDashboard() {

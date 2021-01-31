@@ -1,4 +1,4 @@
-package frc.robot.Commands.Drivetrain.Auto;
+package frc.robot.Commands.Auto;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -42,7 +42,7 @@ public class MagicAutoDrive extends Command {
 		tkMaxOutput = 1; 
           tkMinOutput = -1;
           
-          maxRPM = 5700;
+          maxRPM = 6380;
 
           // set PID coefficients
 
@@ -63,7 +63,7 @@ public class MagicAutoDrive extends Command {
           Robot.Drivetrain.rightConfig.slot1.closedLoopPeakOutput = tkMaxOutput;
         /* Motion Magic Configs */
           Robot.Drivetrain.rightConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
-          Robot.Drivetrain.rightConfig.motionCruiseVelocity = 2000; //distance units per 100 ms
+          Robot.Drivetrain.rightConfig.motionCruiseVelocity = 2000; //distance units per 100 ms // could be up to 21k
 
 
         /* APPLY the config settings */

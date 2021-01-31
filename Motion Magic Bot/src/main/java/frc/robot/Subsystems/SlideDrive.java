@@ -12,8 +12,8 @@ public class SlideDrive extends Subsystem {
 
     private boolean isSlideActive = false;
 
-    public TalonFX slideESC = new TalonFX(6);
-    public TalonFX slideFollowerESC = new TalonFX(7);
+    public TalonFX slideESC = new TalonFX(0);
+    public TalonFX slideFollowerESC = new TalonFX(1);
 
 
     public void initDefaultCommand() {
