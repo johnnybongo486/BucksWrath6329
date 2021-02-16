@@ -48,7 +48,7 @@ public class JoystickDrive extends Command {
             rotateGain = -rotateValue; 
             targetAngle = targetAngle + rotateGain*4;  // this needs to be changed to improve turn times
 
-            turnThrottle = (targetAngle - currentAngle) * kPgain - (currentAngularRate) * kDgain;  // should this be added?
+            turnThrottle = (targetAngle - currentAngle) * kPgain + (currentAngularRate) * kDgain;  // should this be added?
 			/* the max correction is the forward throttle times a scalar,
 			 * This can be done a number of ways but basically only apply small turning correction when we are moving slow
 			 * and larger correction the faster we move.  Otherwise you may need stiffer pgain at higher velocities. */

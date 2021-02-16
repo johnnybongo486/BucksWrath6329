@@ -2,10 +2,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.Commands.Auto.AutoVisionShooter;
 import frc.robot.Commands.Auto.VisionFollow;
 import frc.robot.Commands.Auto.VisionFollowIntake;
 import frc.robot.Commands.Drivetrain.JoystickAutoAlign;
+import frc.robot.Commands.Drivetrain.JoystickAutoAlignIntake;
+import frc.robot.Commands.Drivetrain.PIDVisionFollow;
+import frc.robot.Commands.Drivetrain.PIDVisionFollowIntake;
 import frc.robot.Commands.Intake.IntakeBallCommandGroup;
 import frc.robot.Commands.Intake.IntakeStop;
 import frc.robot.Commands.Serializer.ShootBallCommandGroup;
@@ -14,7 +16,7 @@ import frc.robot.Commands.Shooter.OPZone1CommandGroup;
 import frc.robot.Commands.Shooter.OPZone2CommandGroup;
 import frc.robot.Commands.Shooter.OPZone3CommandGroup;
 import frc.robot.Commands.Shooter.OPZone4CommandGroup;
-
+import frc.robot.Subsystems.Intake;
 import edu.wpi.first.wpilibj.GenericHID;
 
 public class OI {
@@ -25,6 +27,7 @@ public class OI {
     public JoystickButton VisionIntakeButton;
     public JoystickButton VisionShootButton;
     public JoystickButton ShooterAimButton;
+    public JoystickButton IntakeAimButton;
 
     public JoystickButton IntakeButton;
     public JoystickButton ShootButton;
@@ -51,14 +54,14 @@ public class OI {
         IntakeButton.whileHeld(new IntakeBallCommandGroup());
         IntakeButton.whenReleased( new IntakeStop());
 
-        VisionIntakeButton = new JoystickButton (Driver, 2);
-        VisionIntakeButton.whileHeld(new VisionFollowIntake());
+        IntakeAimButton = new JoystickButton (Driver, 2);
+        IntakeAimButton.whileHeld(new JoystickAutoAlignIntake());
 
         VisionShootButton = new JoystickButton(Driver, 3);
-        VisionShootButton.whileHeld(new VisionFollow());
+        VisionShootButton.whileHeld(new PIDVisionFollow());
 
         VisionIntakeButton = new JoystickButton(Driver, 4);
-        VisionIntakeButton.whileHeld(new VisionFollowIntake());
+        VisionIntakeButton.whileHeld(new PIDVisionFollowIntake());
 
         ShooterAimButton = new JoystickButton(Driver, 1);
         ShooterAimButton.whileHeld(new JoystickAutoAlign());
