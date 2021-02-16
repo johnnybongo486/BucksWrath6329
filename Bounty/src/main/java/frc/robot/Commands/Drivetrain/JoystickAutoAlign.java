@@ -1,5 +1,6 @@
 package frc.robot.Commands.Drivetrain;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
@@ -12,20 +13,18 @@ public class JoystickAutoAlign extends Command {
     private double tx;
     private double[] camtran = new double[6];
     private double angle;
-    private double left_command;
-    private double right_command;
-    private double speed;
     private double slide;
 
-    public double turnThrottle = 0;
-    public double forwardThrottle = 0;
-    public double rotateGain = 0;
-    public double currentAngularRate = 0;
+    private double turnThrottle = 0;
+    private double forwardThrottle = 0;
+    private double currentAngularRate = 0;
 
-    public double kPgain = 0.01; /* percent throttle per degree of error */ //was .04
-	public double kDgain = 0.0001; /* percent throttle per angular velocity dps */
-	public double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */
-    public int _printLoops = 0;
+    private double kPgain = 0.01; /* percent throttle per degree of error */ //was .04
+    private double kIgain = 0.0;
+    private double kDgain = 0.0001; /* percent throttle per angular velocity dps */
+    private double errorSum = 0;
+    private double lastTimeStamp = 0;
+    private double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */
 
     NetworkTableEntry prelimtx;
     NetworkTableEntry prelimCamtran;
@@ -34,11 +33,7 @@ public class JoystickAutoAlign extends Command {
 
     public JoystickAutoAlign() {
         requires(Robot.Drivetrain);
-
         slide = 0;
-        left_command = 0;
-        right_command = 0;
-
     }
 
     protected void initialize() {
@@ -48,16 +43,19 @@ public class JoystickAutoAlign extends Command {
         table = Inst.getTable("limelight-shooter");
         prelimtx = table.getEntry("tx");
         prelimCamtran = table.getEntry("camtran");
+        errorSum = 0;
+        lastTimeStamp = Timer.getFPGATimestamp();
     }
-
     protected void execute() {
         forwardThrottle = -Robot.oi.getDriverLeftStickY();
         slide = Robot.oi.getDriverLeftStickX();
         tx = prelimtx.getDouble(0);
         angle = camtran[1];
         currentAngularRate = Robot.Drivetrain.getRoll();
+        double dt = Timer.getFPGATimestamp() - lastTimeStamp;
+        errorSum += tx * dt;
 
-        turnThrottle = (tx) * kPgain - (currentAngularRate) * kDgain;
+        turnThrottle = (tx) * kPgain + kIgain * errorSum + (currentAngularRate) * kDgain; // should be added
         double maxThrot = MaxCorrection(forwardThrottle, kMaxCorrectionRatio);
         turnThrottle = Cap(turnThrottle, maxThrot);
         double left = forwardThrottle + turnThrottle;
@@ -67,6 +65,8 @@ public class JoystickAutoAlign extends Command {
 
         Robot.Drivetrain.drive(ControlMode.PercentOutput, left, right);
         Robot.SlideDrive.drive(slide);
+
+        lastTimeStamp = Timer.getFPGATimestamp();
     }
 
     protected boolean isFinished() {

@@ -11,16 +11,16 @@ public class JoystickDrive extends Command {
     DriveHelper helper;
 
     private double quickTurnThreshold = 0.2;
-    public double turnThrottle = 0;
-    public double forwardThrottle = 0;
-    public double rotateGain = 0;
-    public double kPgain = 0.03; /* percent throttle per degree of error */ //was .04
-	public double kDgain = 0.00004; /* percent throttle per angular velocity dps */
-	public double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */
-    public int _printLoops = 0;
-    public double targetAngle = 0;
-    public double currentAngle = 0;
-    public double currentAngularRate = 0;
+    private double turnThrottle = 0;
+    private double forwardThrottle = 0;
+    private double rotateGain = 0;
+    private double kPgain = 0.03; /* percent throttle per degree of error */ //was .04
+    private double kDgain = 0.00004; /* percent throttle per angular velocity dps */
+    private double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */
+    private int _printLoops = 0;
+    private double targetAngle = 0;
+    private double currentAngle = 0;
+    private double currentAngularRate = 0;
     
     
     public JoystickDrive() {
@@ -46,9 +46,9 @@ public class JoystickDrive extends Command {
 
             // add these to rotate while strafing
             rotateGain = -rotateValue; 
-            targetAngle = targetAngle + rotateGain*4;
+            targetAngle = targetAngle + rotateGain*4;  // this needs to be changed to improve turn times
 
-            turnThrottle = (targetAngle - currentAngle) * kPgain - (currentAngularRate) * kDgain;
+            turnThrottle = (targetAngle - currentAngle) * kPgain - (currentAngularRate) * kDgain;  // should this be added?
 			/* the max correction is the forward throttle times a scalar,
 			 * This can be done a number of ways but basically only apply small turning correction when we are moving slow
 			 * and larger correction the faster we move.  Otherwise you may need stiffer pgain at higher velocities. */
@@ -64,7 +64,7 @@ public class JoystickDrive extends Command {
         else {
             // New Thing
             targetAngle = Robot.Drivetrain.getAngle();
-            rotateValue = rotateValue / 2;
+            rotateValue = rotateValue / 2;  // needs to be tuned
             boolean quickTurn = (moveValue < quickTurnThreshold && moveValue > -quickTurnThreshold);
             DriveSignal driveSignal = helper.cheesyDrive(-moveValue, rotateValue, quickTurn, false);
             Robot.Drivetrain.drive(ControlMode.PercentOutput, driveSignal);
