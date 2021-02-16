@@ -15,13 +15,11 @@ import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 public class Drivetrain extends Subsystem {
 
     public boolean isRed;
-    public static int DRIVE_PROFILE = 0;
-    public static int ROTATION_PROFILE = 1;
 
-    public TalonFX leftLead = new TalonFX(2);
-    public TalonFX rightLead = new TalonFX(3);
-    public TalonFX leftFollower = new TalonFX(4);
-    public TalonFX rightFollower = new TalonFX(5);
+    public TalonFX leftLead = new TalonFX(0);
+    public TalonFX rightLead = new TalonFX(2);
+    public TalonFX leftFollower = new TalonFX(1);
+    public TalonFX rightFollower = new TalonFX(3);
     public TalonSRX spareTalon = new TalonSRX(9);
 
     public PigeonIMU pigeon = new PigeonIMU(spareTalon);
@@ -29,19 +27,23 @@ public class Drivetrain extends Subsystem {
     // Motion Magic Stuff
     public TalonFXConfiguration leftConfig = new TalonFXConfiguration();
     public TalonFXConfiguration rightConfig = new TalonFXConfiguration();
-    TalonFXInvertType rightInvert = TalonFXInvertType.Clockwise;
-    TalonFXInvertType leftInvert = TalonFXInvertType.CounterClockwise;
+    TalonFXInvertType rightInvert = TalonFXInvertType.CounterClockwise;
+    TalonFXInvertType leftInvert = TalonFXInvertType.Clockwise;
+
+    public double kP, kI, kD, kF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
+    public double tkP, tkI, tkD, tkF, tkMaxOutput, tkMinOutput, tmaxRPM, tmaxVel, tminVel, tmaxAcc, tallowedErr;
+    public int kIz, tkIz;
 
     public double _leftOffset;
     public double _rightOffset;
+
+    public double distanceError = 0;
+    public double targetDistance = 0;
 
     /** Tracking variables */
 	boolean _firstCall = false;
 	boolean _state = false;
 	double _targetAngle = 0;
-
-	/** How much smoothing [0,8] to use during MotionMagic */
-	int _smoothing;
 
     public void initDefaultCommand() {
         setDefaultCommand(new JoystickDrive());
@@ -51,49 +53,108 @@ public class Drivetrain extends Subsystem {
         // Setup Followers
         leftFollower.follow(leftLead);
         rightFollower.follow(rightLead);
-
-        leftLead.setInverted(leftInvert);
-		rightLead.setInverted(rightInvert);
-
-        // Set Sensors
-        leftLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
-        rightLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
-
-        // not needed stuff for motion magic
-        leftConfig.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice();
-        rightConfig.remoteFilter0.remoteSensorDeviceID = leftLead.getDeviceID();
-        rightConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.TalonFX_SelectedSensor;
-        setRobotDistanceConfigs(rightInvert, rightConfig);
         
-        /** Heading Configs */
-		rightConfig.remoteFilter1.remoteSensorDeviceID = pigeon.getDeviceID();    //Pigeon Device ID
-		rightConfig.remoteFilter1.remoteSensorSource = RemoteSensorSource.Pigeon_Yaw; //This is for a Pigeon over CAN
-		rightConfig.auxiliaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor1.toFeedbackDevice(); //Set as the Aux Sensor
-		rightConfig.auxiliaryPID.selectedFeedbackCoefficient = 3600.0 / 8192; //Convert Yaw to tenths of a degree
+        // Set Inverted
+        leftLead.setInverted(leftInvert);
+        leftFollower.setInverted(leftInvert);
+        rightLead.setInverted(rightInvert);
+        rightFollower.setInverted(rightInvert);
 
+        resetPigeon();
+        setNeutralMode(NeutralMode.Brake);
+
+        // Distance Math
+        // leftConfig.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice();
+        // rightConfig.remoteFilter0.remoteSensorDeviceID = leftLead.getDeviceID();
+        // rightConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.TalonFX_SelectedSensor;
+        // setRobotDistanceConfigs(rightInvert, rightConfig);
+
+        // PID coefficients
+        kP = 0.1; 
+        kI = 0;         // .000005
+        kD = 0;         // .05
+        kIz = 12;       // 12
+        kF = 0; 
+        kMaxOutput = 1; 
+        kMinOutput = -1;
+                
+        tkP = 0.175; 
+        tkI = 0;
+        tkD = 0; 
+        tkIz = 12; 
+        tkF = 0; 
+        tkMaxOutput = 1; 
+        tkMinOutput = -1;
+        
+        maxRPM = 6380;
+
+        // FPID for Distance 
+        rightConfig.slot0.kF = kF;
+        rightConfig.slot0.kP = kP;
+        rightConfig.slot0.kI = kI;
+        rightConfig.slot0.kD = kD;
+        rightConfig.slot0.integralZone = kIz;
+        rightConfig.slot0.closedLoopPeakOutput = kMaxOutput;
+        leftConfig.slot0.kF = kF;
+        leftConfig.slot0.kP = kP;
+        leftConfig.slot0.kI = kI;
+        leftConfig.slot0.kD = kD;
+        leftConfig.slot0.integralZone = kIz;
+        leftConfig.slot0.closedLoopPeakOutput = kMaxOutput;
+
+        // Heading Configs
+		// rightConfig.remoteFilter1.remoteSensorDeviceID = pigeon.getDeviceID();                                      //Pigeon Device ID
+		// rightConfig.remoteFilter1.remoteSensorSource = RemoteSensorSource.Pigeon_Yaw;                               //This is for a Pigeon over CAN
+		// rightConfig.auxiliaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.RemoteSensor1.toFeedbackDevice();   //Set as the Aux Sensor
+		// rightConfig.auxiliaryPID.selectedFeedbackCoefficient = 3600.0 / 8192;                                       //Convert Yaw to tenths of a degree
+           
+        //FPID for Heading
+        rightConfig.slot1.kF = tkF;
+        rightConfig.slot1.kP = tkP;
+        rightConfig.slot1.kI = tkI;
+        rightConfig.slot1.kD = tkD;
+        rightConfig.slot1.integralZone = tkIz;
+        rightConfig.slot1.closedLoopPeakOutput = tkMaxOutput;
+        leftConfig.slot1.kF = tkF;
+        leftConfig.slot1.kP = tkP;
+        leftConfig.slot1.kI = tkI;
+        leftConfig.slot1.kD = tkD;
+        leftConfig.slot1.integralZone = tkIz;
+        leftConfig.slot1.closedLoopPeakOutput = tkMaxOutput;
+        
         int closedLoopTimeMs = 1;
 		rightConfig.slot0.closedLoopPeriod = closedLoopTimeMs;
 		rightConfig.slot1.closedLoopPeriod = closedLoopTimeMs;
 		rightConfig.slot2.closedLoopPeriod = closedLoopTimeMs;
         rightConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
+        leftConfig.slot0.closedLoopPeriod = closedLoopTimeMs;
+		leftConfig.slot1.closedLoopPeriod = closedLoopTimeMs;
+		leftConfig.slot2.closedLoopPeriod = closedLoopTimeMs;
+        leftConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
 
-        /* APPLY the config settings */
+        // Motion Magic Configs 
+        rightConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
+        rightConfig.motionCruiseVelocity = 10000; //distance units per 100 ms // could be up to 21k
+
+        leftConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
+        leftConfig.motionCruiseVelocity = 10000; //distance units per 100 ms // could be up to 21k
+        // Set Sensors
+        // leftLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
+        // rightLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
+        
+        // APPLY the config settings
 		leftLead.configAllSettings(leftConfig);
         rightLead.configAllSettings(rightConfig);
         
-        /* Set status frame periods to ensure we don't have stale data */
-		/* These aren't configs (they're not persistant) so we can set these after the configs.  */
+        // Set status frame periods to ensure we don't have stale data
+		// These aren't configs (they're not persistant) so we can set these after the configs.
 		rightLead.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
 		rightLead.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20, 30);
 		rightLead.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
 		rightLead.setStatusFramePeriod(StatusFrame.Status_10_Targets, 10, 30);
-		rightLead.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 30);
+		leftLead.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 30);
 		pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR , 5, 30);
         
-        // ESC Settings
-        resetPigeon();
-        setNeutralMode(NeutralMode.Brake);
-
         /**
          * Configure the current limits that will be used Stator Current is the current
          * that passes through the motor stators. Use stator current limits to limit
@@ -122,6 +183,10 @@ public class Drivetrain extends Subsystem {
         leftLead.configClosedLoopPeakOutput(0, 1.0);
         rightLead.configClosedLoopPeakOutput(0, 1.0);
 
+        rightLead.selectProfileSlot(0, 0);
+        rightLead.selectProfileSlot(1, 1);
+        leftLead.selectProfileSlot(0, 0);
+        leftLead.selectProfileSlot(1, 1);
     }
 
     public void drive(ControlMode controlMode, double left, double right) {
@@ -143,9 +208,14 @@ public class Drivetrain extends Subsystem {
         this.rightLead.set(ControlMode.Position, rightRotations);
     }
 
-    public void magicDrive (double distance, double angle) {
-        rightLead.set(ControlMode.MotionMagic, distance, DemandType.AuxPID, angle);
-		leftLead.follow(rightLead, FollowerType.AuxOutput1);
+    public void magicDrive (double distance) {
+        this.rightLead.set(ControlMode.MotionMagic, distance, DemandType.Neutral, 0.0);
+        this.leftLead.set(ControlMode.MotionMagic, distance, DemandType.Neutral, 0.0);
+    }
+
+    public void magicDriveAngle (double distance, double angle){
+        this.leftLead.follow(rightLead, FollowerType.AuxOutput1);
+        this.rightLead.set(ControlMode.MotionMagic, distance, DemandType.AuxPID, angle);
     }
 
     public void setNeutralMode(NeutralMode neutralMode) {
@@ -175,8 +245,28 @@ public class Drivetrain extends Subsystem {
 
     }
 
-    public double getDistance() {
+    public double getRightDistance() {
         return rightLead.getSelectedSensorPosition();
+    }
+
+    public double getLeftDistance() {
+        return leftLead.getSelectedSensorPosition();
+    }
+
+    public double getTargetDistance() {
+        return targetDistance;
+    }
+
+    public double getDistanceError() {
+        return distanceError;
+    }
+
+    public void setTargetDistance(double targetDistance) {
+        this.targetDistance = targetDistance;
+    }
+
+    public void setDistanceError(double distanceError) {
+        this.distanceError = distanceError;
     }
 
     public double getLeftSpeed() {
@@ -202,6 +292,12 @@ public class Drivetrain extends Subsystem {
         SmartDashboard.putNumber("Drivetrain / Right Speed", getRightSpeed());
         SmartDashboard.putNumber("Drivetrain / Current Angle", getAngle());
         SmartDashboard.putNumber("Drivetrain / Current Angular Rate", getRoll());
+        SmartDashboard.putNumber("Drivetrain / Left Distance", leftLead.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Drivetrain / Right Distance", rightLead.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Drivetrain / Target Distance", targetDistance);
+        SmartDashboard.putNumber("Drivetrain / Distance Error", distanceError);
+
+
     }
 
     void setRobotDistanceConfigs(TalonFXInvertType masterInvertType, TalonFXConfiguration masterConfig){

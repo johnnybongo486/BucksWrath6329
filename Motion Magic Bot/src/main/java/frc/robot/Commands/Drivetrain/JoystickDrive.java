@@ -34,7 +34,7 @@ public class JoystickDrive extends Command {
     protected void execute() {
         // Get Joystick Values
         double moveValue = Robot.oi.getDriverLeftStickY();
-        double rotateValue = -Robot.oi.getDriverRightStickX();
+        double rotateValue = Robot.oi.getDriverRightStickX();
 
         // H Drive
         if (Robot.SlideDrive.isSlideActive() == true) {

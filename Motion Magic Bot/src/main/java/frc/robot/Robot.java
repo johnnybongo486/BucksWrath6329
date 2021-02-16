@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.Auto.BallFinderAuto;
 import frc.robot.Commands.Auto.DriveThreeFeet;
 import frc.robot.Commands.Auto.Turn90Degrees;
+import frc.robot.Commands.Auto.DPDriveThreeFeet;
 import frc.robot.Subsystems.*;
 
 public class Robot extends TimedRobot {
@@ -21,6 +22,7 @@ public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kBallFinderAuto = "Ball Finder Auto";
   private static final String kDriveThreeFeet = "Drive 3 Feet";
+  private static final String kDPDriveThreeFeet = "DP Drive 3 Feet";
   private static final String kTurnNinetyDegrees = "TurnNinetyDegrees";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -29,6 +31,7 @@ public class Robot extends TimedRobot {
   public static Drivetrain Drivetrain;
   public static SlideDrive SlideDrive;
   public static AxisCamera limelight;
+  public static AirCompressor AirCompressor;
 
   public static OI oi;
 
@@ -38,12 +41,14 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("Ball Finder Auto", kBallFinderAuto);
     m_chooser.addOption("Drive 3 feet", kDriveThreeFeet);
+    m_chooser.addOption("DP Drive 3 feet", kDPDriveThreeFeet);
     m_chooser.addOption("Turn 90 Degrees", kTurnNinetyDegrees);
 
     SmartDashboard.putData("Auto choices", m_chooser);
     
     Drivetrain = new Drivetrain();
     SlideDrive = new SlideDrive();
+    AirCompressor = new AirCompressor();
 
     // Turn on Limelight Stream
     limelight = CameraServer.getInstance().addAxisCamera("limelight", "10.63.29.11");
@@ -93,6 +98,10 @@ public class Robot extends TimedRobot {
     switch (m_autoSelected) {
       case kDriveThreeFeet:
         autonomousCommand = new DriveThreeFeet();
+        break;
+
+      case kDPDriveThreeFeet:
+        autonomousCommand = new DPDriveThreeFeet();
         break;
       
       case kTurnNinetyDegrees:

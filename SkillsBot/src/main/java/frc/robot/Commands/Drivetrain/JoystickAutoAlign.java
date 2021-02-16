@@ -41,7 +41,7 @@ public class JoystickAutoAlign extends Command {
 
     }
 
-    protected void initialize() {
+    public void initialize() {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
         Inst = NetworkTableInstance.getDefault();
@@ -50,7 +50,7 @@ public class JoystickAutoAlign extends Command {
         prelimCamtran = table.getEntry("camtran");
     }
 
-    protected void execute() {
+    public void execute() {
         forwardThrottle = -Robot.oi.getDriverLeftStickY();
         forwardThrottle = forwardThrottle / 3;
         slide = Robot.oi.getDriverLeftStickX();
@@ -70,7 +70,7 @@ public class JoystickAutoAlign extends Command {
         Robot.SlideDrive.drive(slide);
     }
 
-    protected boolean isFinished() {
+    public boolean isFinished() {
         return false;
     }
 

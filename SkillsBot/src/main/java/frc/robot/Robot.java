@@ -6,19 +6,13 @@ import edu.wpi.cscore.AxisCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
-/*
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.util.Color;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorMatch;
-*/
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Subsystems.*;
+import frc.robot.Commands.Drivetrain.Auto.*;
 
 public class Robot extends TimedRobot {
   // private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -38,17 +32,10 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   
   public static Robot robot;
-  public static Shooter Shooter;
   public static Drivetrain Drivetrain;
   public static SlideDrive SlideDrive;
   public static AirCompressor AirCompressor;
   public static AxisCamera limelight;
-
-  // private final ColorMatch m_ColorMatcher = new ColorMatch();
-  // private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
-  // private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
-  // private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
-  // private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
   public static OI oi;
 
@@ -67,8 +54,6 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Center Auto", kCenterAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     
-    
-    Shooter = new Shooter();
     Drivetrain = new Drivetrain();
     SlideDrive = new SlideDrive();
     AirCompressor = new AirCompressor();
@@ -80,13 +65,6 @@ public class Robot extends TimedRobot {
     limelight.setFPS(50);
     limelight.setResolution(160,120);
 
-    /*
-    m_ColorMatcher.addColorMatch(kBlueTarget);
-    m_ColorMatcher.addColorMatch(kGreenTarget);
-    m_ColorMatcher.addColorMatch(kRedTarget);
-    m_ColorMatcher.addColorMatch(kYellowTarget);
-    */
-
     // Always Last
     oi = new OI();
   }
@@ -94,34 +72,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     Drivetrain.updateDashboard();
-    Shooter.updateDashboard();
-
-    /*
-    Color detectedColor = m_colorSensor.getColor();
-    String colorString;
-    ColorMatchResult match = m_ColorMatcher.matchClosestColor(detectedColor);
-    if (match.color == kBlueTarget){
-      colorString = "Blue";
-    } else if (match.color == kRedTarget){
-      colorString = "Red";
-    }else if (match.color == kGreenTarget){
-      colorString = "Green";
-    }else if (match.color == kYellowTarget){
-      colorString = "Yellow";
-    }else {
-      colorString = "Unknown";
-    }
-    double IR = m_colorSensor.getIR();
-    SmartDashboard.putNumber("Red", detectedColor.red);
-    SmartDashboard.putNumber("Green", detectedColor.green);
-    SmartDashboard.putNumber("Blue", detectedColor.blue);
-    SmartDashboard.putNumber("IR", IR);
-    SmartDashboard.putNumber("Confidence", match.confidence);
-    SmartDashboard.putString("Detected Color", colorString);
-    int proximity = m_colorSensor.getProximity();
-    SmartDashboard.putNumber("Proximity", proximity);
-    */
-
+    SlideDrive.updateDashboard();
   }
 
   @Override
@@ -147,7 +98,6 @@ public class Robot extends TimedRobot {
     Drivetrain.resetPigeon();
     Drivetrain.setNeutralMode(NeutralMode.Brake);
     Drivetrain.resetDriveEncoders();
-    Shooter.resetShooterEncoder();
 
     m_autoSelected = m_chooser.getSelected();
 
@@ -155,7 +105,7 @@ public class Robot extends TimedRobot {
 
     switch (m_autoSelected) {
       case kDriveThreeFeet:
-        // autonomousCommand = new DriveThreeFeet();
+        autonomousCommand = new DriveThreeFeet();
         break;
       
       case kTurnNinetyDegrees:

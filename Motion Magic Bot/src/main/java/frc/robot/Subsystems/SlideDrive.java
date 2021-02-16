@@ -12,8 +12,8 @@ public class SlideDrive extends Subsystem {
 
     private boolean isSlideActive = false;
 
-    public TalonFX slideESC = new TalonFX(0);
-    public TalonFX slideFollowerESC = new TalonFX(1);
+    public TalonFX slideESC = new TalonFX(4);
+    public TalonFX slideFollowerESC = new TalonFX(5);
 
 
     public void initDefaultCommand() {
@@ -26,7 +26,7 @@ public class SlideDrive extends Subsystem {
 
         // Setup Inverted
         slideESC.setInverted(false);
-        slideFollowerESC.setInverted(false);
+        slideFollowerESC.setInverted(true);
 
         slideESC.configOpenloopRamp(0.25);
         // slideESC.configContinuousCurrentLimit(60);

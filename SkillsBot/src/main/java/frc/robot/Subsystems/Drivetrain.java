@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 public class Drivetrain extends Subsystem {
@@ -16,14 +15,35 @@ public class Drivetrain extends Subsystem {
     public static int DRIVE_PROFILE = 0;
     public static int ROTATION_PROFILE = 1;
 
-    public CustomTalonFX leftLead = new CustomTalonFX(2);
-    public CustomTalonFX rightLead = new CustomTalonFX(3);
-    public CustomTalonFX leftFollower = new CustomTalonFX(4);
-    public CustomTalonFX rightFollower = new CustomTalonFX(5);
-    public TalonSRX spareTalon = new TalonSRX(0);
+    public double kP = 0.175; 
+    public double kI = 0;         // .000005
+    public double kD = 0;         // .05
+    public int kIz = 12;       // 12
+    public double kF = 0; 
+    public double kMaxOutput = 1; 
+    public double kMinOutput = -1;
+            
+    public double tkP = 0.175; 
+    public double tkI = 0;
+    public double tkD = 0; 
+    public int tkIz = 12; 
+    public double tkF = 0; 
+    public double tkMaxOutput = 1; 
+    public double tkMinOutput = -1;
+
+    public CustomTalonFX leftLead = new CustomTalonFX(0);
+    public CustomTalonFX rightLead = new CustomTalonFX(2);
+    public CustomTalonFX leftFollower = new CustomTalonFX(1);
+    public CustomTalonFX rightFollower = new CustomTalonFX(3);
+    public CustomTalonSRX spareTalon = new CustomTalonSRX(9);
 
     public PigeonIMU pigeon = new PigeonIMU(spareTalon);
 
+    public TalonFXConfiguration leftConfig = new TalonFXConfiguration();
+    public TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+
+    TalonFXInvertType rightInvert = TalonFXInvertType.CounterClockwise;
+    TalonFXInvertType leftInvert = TalonFXInvertType.Clockwise;
 
     public void initDefaultCommand() {
         setDefaultCommand(new JoystickDrive());
@@ -43,9 +63,6 @@ public class Drivetrain extends Subsystem {
         // Set Sensors
         leftLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
         rightLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
-        leftLead.setSensorPhase(true);
-        rightLead.setSensorPhase(true);
-
         
         // ESC Settings
         resetPigeon();
@@ -76,9 +93,66 @@ public class Drivetrain extends Subsystem {
         leftLead.configClosedloopRamp(0.25);
         rightLead.configClosedloopRamp(0.25);
 
-        leftLead.configClosedLoopPeakOutput(0, 1.0);
-        rightLead.configClosedLoopPeakOutput(0, 1.0);
+        // leftLead.configClosedLoopPeakOutput(0, 1.0);
+        // rightLead.configClosedLoopPeakOutput(0, 1.0);
 
+        // FPID for Distance 
+        rightConfig.slot0.kF = kF;
+        rightConfig.slot0.kP = kP;
+        rightConfig.slot0.kI = kI;
+        rightConfig.slot0.kD = kD;
+        rightConfig.slot0.integralZone = kIz;
+        rightConfig.slot0.closedLoopPeakOutput = kMaxOutput;
+        leftConfig.slot0.kF = kF;
+        leftConfig.slot0.kP = kP;
+        leftConfig.slot0.kI = kI;
+        leftConfig.slot0.kD = kD;
+        leftConfig.slot0.integralZone = kIz;
+        leftConfig.slot0.closedLoopPeakOutput = kMaxOutput;
+
+        //FPID for Heading
+        rightConfig.slot1.kF = tkF;
+        rightConfig.slot1.kP = tkP;
+        rightConfig.slot1.kI = tkI;
+        rightConfig.slot1.kD = tkD;
+        rightConfig.slot1.integralZone = tkIz;
+        rightConfig.slot1.closedLoopPeakOutput = tkMaxOutput;
+        leftConfig.slot1.kF = tkF;
+        leftConfig.slot1.kP = tkP;
+        leftConfig.slot1.kI = tkI;
+        leftConfig.slot1.kD = tkD;
+        leftConfig.slot1.integralZone = tkIz;
+        leftConfig.slot1.closedLoopPeakOutput = tkMaxOutput;
+
+        int closedLoopTimeMs = 1;
+		rightConfig.slot0.closedLoopPeriod = closedLoopTimeMs;
+		rightConfig.slot1.closedLoopPeriod = closedLoopTimeMs;
+		rightConfig.slot2.closedLoopPeriod = closedLoopTimeMs;
+        rightConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
+        leftConfig.slot0.closedLoopPeriod = closedLoopTimeMs;
+		leftConfig.slot1.closedLoopPeriod = closedLoopTimeMs;
+		leftConfig.slot2.closedLoopPeriod = closedLoopTimeMs;
+        leftConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
+
+        rightConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
+        rightConfig.motionCruiseVelocity = 5000; //distance units per 100 ms // could be up to 21k
+        leftConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
+        leftConfig.motionCruiseVelocity = 5000; //distance units per 100 ms // could be up to 21k
+
+        leftLead.configAllSettings(leftConfig);
+        rightLead.configAllSettings(rightConfig);
+
+        // rightLead.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
+		// rightLead.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20, 30);
+		// rightLead.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
+		// rightLead.setStatusFramePeriod(StatusFrame.Status_10_Targets, 10, 30);
+		// leftLead.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 30);
+        // pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR , 5, 30);
+        
+        rightLead.selectProfileSlot(0, 0);
+        rightLead.selectProfileSlot(1, 1);
+        leftLead.selectProfileSlot(0, 0);
+        leftLead.selectProfileSlot(1, 1);
     }
 
     public void drive(ControlMode controlMode, double left, double right) {
@@ -93,16 +167,6 @@ public class Drivetrain extends Subsystem {
 
     public void drive(ControlMode controlMode, DriveSignal driveSignal) {
         this.drive(controlMode, driveSignal.getLeft(), driveSignal.getRight());
-    }
-
-    public void smartDrive (double leftRotations, double rightRotations) {
-		this.leftLead.set(ControlMode.Position, leftRotations);
-        this.rightLead.set(ControlMode.Position, rightRotations);
-    }
-
-    public void magicDrive (double distance, double angle) {
-        this.leftLead.set(ControlMode.MotionMagic, distance, DemandType.AuxPID, angle);
-        this.rightLead.follow(leftLead, FollowerType.AuxOutput1);
     }
 
     public void setNeutralMode(NeutralMode neutralMode) {
@@ -132,10 +196,6 @@ public class Drivetrain extends Subsystem {
 
     }
 
-    public double getDistance() {
-        return rightLead.getSelectedSensorPosition();
-    }
-
     public double getLeftSpeed() {
         return leftLead.getSelectedSensorVelocity();
     }
@@ -153,55 +213,7 @@ public class Drivetrain extends Subsystem {
         SmartDashboard.putNumber("Drivetrain / Current Angular Rate", getRoll());
     }
 
-    void setRobotDistanceConfigs(TalonFXInvertType masterInvertType, TalonFXConfiguration masterConfig){
-		/**
-		 * Determine if we need a Sum or Difference.
-		 * 
-		 * The auxiliary Talon FX will always be positive
-		 * in the forward direction because it's a selected sensor
-		 * over the CAN bus.
-		 * 
-		 * The master's native integrated sensor may not always be positive when forward because
-		 * sensor phase is only applied to *Selected Sensors*, not native
-		 * sensor sources.  And we need the native to be combined with the 
-		 * aux (other side's) distance into a single robot distance.
-		 */
-
-		/* THIS FUNCTION should not need to be modified. 
-		   This setup will work regardless of whether the master
-		   is on the Right or Left side since it only deals with
-		   distance magnitude.  */
-
-		/* Check if we're inverted */
-		if (masterInvertType == TalonFXInvertType.Clockwise){
-			/* 
-				If master is inverted, that means the integrated sensor
-				will be negative in the forward direction.
-				If master is inverted, the final sum/diff result will also be inverted.
-				This is how Talon FX corrects the sensor phase when inverting 
-				the motor direction.  This inversion applies to the *Selected Sensor*,
-				not the native value.
-				Will a sensor sum or difference give us a positive total magnitude?
-				Remember the Master is one side of your drivetrain distance and 
-				Auxiliary is the other side's distance.
-					Phase | Term 0   |   Term 1  | Result
-				Sum:  -1 *((-)Master + (+)Aux   )| NOT OK, will cancel each other out
-				Diff: -1 *((-)Master - (+)Aux   )| OK - This is what we want, magnitude will be correct and positive.
-				Diff: -1 *((+)Aux    - (-)Master)| NOT OK, magnitude will be correct but negative
-			*/
-
-			masterConfig.diff0Term = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice(); //Local Integrated Sensor
-			masterConfig.diff1Term = TalonFXFeedbackDevice.RemoteSensor0.toFeedbackDevice();   //Aux Selected Sensor
-			masterConfig.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.SensorDifference.toFeedbackDevice(); //Diff0 - Diff1
-		} else {
-			/* Master is not inverted, both sides are positive so we can sum them. */
-			masterConfig.sum0Term = TalonFXFeedbackDevice.RemoteSensor0.toFeedbackDevice();    //Aux Selected Sensor
-			masterConfig.sum1Term = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice(); //Local IntegratedSensor
-			masterConfig.primaryPID.selectedFeedbackSensor = TalonFXFeedbackDevice.SensorSum.toFeedbackDevice(); //Sum0 + Sum1
-		}
-
-		/* Since the Distance is the sum of the two sides, divide by 2 so the total isn't double
-		   the real-world value */
-		masterConfig.primaryPID.selectedFeedbackCoefficient = 0.5;
-	 }
+    public double getDistance() {
+        return rightLead.getSelectedSensorPosition();
+      }
 }

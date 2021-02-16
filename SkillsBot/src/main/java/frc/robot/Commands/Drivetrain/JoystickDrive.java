@@ -28,10 +28,10 @@ public class JoystickDrive extends Command {
        helper = new DriveHelper();
     }
 
-    protected void initialize() {
+    public void initialize() {
     }
 
-    protected void execute() {
+    public void execute() {
         // Get Joystick Values
         double moveValue = Robot.oi.getDriverLeftStickY();
         double rotateValue = -Robot.oi.getDriverRightStickX();
@@ -83,7 +83,7 @@ public class JoystickDrive extends Command {
     
    }
 
-   protected boolean isFinished() {
+   public boolean isFinished() {
        return false;
    }
 
