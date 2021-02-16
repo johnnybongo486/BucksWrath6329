@@ -2,8 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.Commands.Auto.VisionFollow;
-import frc.robot.Commands.Auto.VisionFollowIntake;
 import frc.robot.Commands.Drivetrain.JoystickAutoAlign;
 import frc.robot.Commands.Drivetrain.JoystickAutoAlignIntake;
 import frc.robot.Commands.Drivetrain.PIDVisionFollow;
@@ -16,7 +14,6 @@ import frc.robot.Commands.Shooter.OPZone1CommandGroup;
 import frc.robot.Commands.Shooter.OPZone2CommandGroup;
 import frc.robot.Commands.Shooter.OPZone3CommandGroup;
 import frc.robot.Commands.Shooter.OPZone4CommandGroup;
-import frc.robot.Subsystems.Intake;
 import edu.wpi.first.wpilibj.GenericHID;
 
 public class OI {

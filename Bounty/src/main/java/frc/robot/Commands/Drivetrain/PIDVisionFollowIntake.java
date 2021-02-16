@@ -14,7 +14,6 @@ public class PIDVisionFollowIntake extends Command {
     private double ta;
     private double[] camtran = new double[6];
     private double angle;
-    private double slide;
 
     private double turnThrottle = 0;
     private double forwardThrottle = 0;

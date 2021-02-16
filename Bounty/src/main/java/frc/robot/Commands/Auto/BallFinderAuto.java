@@ -9,20 +9,20 @@ public class BallFinderAuto extends CommandGroup{
             // turn on the intake now
             if (Robot.Drivetrain.getIsRed() == true) {
                 addSequential(new TurnToAngle(-45, 0.3));
-                addSequential(new VisionFollow());
+                addSequential(new AutoVisionIntake());
                 addSequential(new TurnToAngle(45, 0.3));
-                addSequential(new VisionFollow());
+                addSequential(new AutoVisionIntake());
                 addSequential(new TurnToAngle(-45, 0.3));
-                addSequential(new VisionFollow());
+                addSequential(new AutoVisionIntake());
                 addSequential(new TurnToAngle(0, 0.3));
             }
             else {
                 addSequential(new TurnToAngle(45, 0.3));
-                addSequential(new VisionFollow());
+                addSequential(new AutoVisionIntake());
                 addSequential(new TurnToAngle(-45, 0.3));
-                addSequential(new VisionFollow());
+                addSequential(new AutoVisionIntake());
                 addSequential(new TurnToAngle(45, 0.3));
-                addSequential(new VisionFollow());
+                addSequential(new AutoVisionIntake());
                 addSequential(new TurnToAngle(0, 0.3));
 
             }
