@@ -21,14 +21,14 @@ public class JoystickSlideDrive extends Command {
         absSlideValue = Math.abs(slideValue);
 
         if (absSlideValue >= 0.1) {
-            Robot.SlideDrive.setSlideActive(true);
+            Robot.SlideDrive.setSlideActive(false); // should be true
         }
 
         else {
             Robot.SlideDrive.setSlideActive(false);
         }
 
-        Robot.SlideDrive.drive(slideValue);       
+        // Robot.SlideDrive.drive(slideValue);       
     }
 
     protected boolean isFinished() {

@@ -263,7 +263,7 @@ public class Drivetrain extends Subsystem {
     }
 
     public boolean getIsRed(){
-        return isRed;
+        return this.isRed;
     }
 
     public void setIsRed(boolean isRed) {

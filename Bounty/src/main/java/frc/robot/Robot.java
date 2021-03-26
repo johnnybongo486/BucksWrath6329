@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Commands.Auto.AutoFindTarget;
 import frc.robot.Commands.Auto.BallFinderAuto;
 import frc.robot.Commands.Auto.DriveThreeFeet;
 import frc.robot.Commands.Auto.Turn90Degrees;
@@ -89,24 +90,26 @@ public class Robot extends TimedRobot {
     Drivetrain.resetPigeon();
     Drivetrain.resetDriveEncoders();
     Drivetrain.setNeutralMode(NeutralMode.Coast);
+
+    // Shooter
+    NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camMode").setNumber(0);
+    NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("ledMode").setNumber(3);
+
+    // Intake
+    NetworkTableInstance.getDefault().getTable("limelight-intake").getEntry("camMode").setNumber(0);
+    NetworkTableInstance.getDefault().getTable("limelight-intake").getEntry("ledMode").setNumber(1);
   }
 
   @Override
   public void disabledPeriodic() {
-    // Use for matches
-    NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camMode").setNumber(0);
-    // NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("ledMode").setNumber(1);
-
-    // Use for calibrating vision
-    NetworkTableInstance.getDefault().getTable("limelight-intake").getEntry("camMode").setNumber(0);
-    // NetworkTableInstance.getDefault().getTable("limelight-intake").getEntry("ledMode").setNumber(1);
+   
   }
 
   @Override
   public void autonomousInit() {
     Drivetrain.resetPigeon();
     Drivetrain.setNeutralMode(NeutralMode.Brake);
-    Drivetrain.resetDriveEncoders();
+    Drivetrain.resetDriveEncoders();    
 
     m_autoSelected = m_chooser.getSelected();
 

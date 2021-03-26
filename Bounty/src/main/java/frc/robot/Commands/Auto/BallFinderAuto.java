@@ -24,7 +24,6 @@ public class BallFinderAuto extends CommandGroup{
                 addSequential(new TurnToAngle(45, 0.3));
                 addSequential(new AutoVisionIntake());
                 addSequential(new TurnToAngle(0, 0.3));
-
             }
         }
     }

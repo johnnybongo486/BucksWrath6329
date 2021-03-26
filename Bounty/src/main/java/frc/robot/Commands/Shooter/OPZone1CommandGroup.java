@@ -6,6 +6,6 @@ public class OPZone1CommandGroup extends CommandGroup {
 
 	public OPZone1CommandGroup() {
         addSequential(new DeployZone1ShooterPiston(), 0.25);
-        addSequential(new SetShooterVelocity(10000));// 2445
+        addSequential(new SetShooterVelocity(12000));// 2445
     }
 }

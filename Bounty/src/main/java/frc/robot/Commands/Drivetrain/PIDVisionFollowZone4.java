@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.networktables.*;
 
-public class PIDVisionFollow extends Command {
+public class PIDVisionFollowZone4 extends Command {
 
     private double tx;
     private double ta;
@@ -36,7 +36,7 @@ public class PIDVisionFollow extends Command {
     private double lastTimeStamp = 0;
     private double lastError = 0;
     private double taError = 0;
-    private double targetta = 0.72;  // needs to be found
+    private double targetta = 0.75;  // needs to be found
     private double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */
 
     NetworkTableEntry prelimtx;
@@ -45,13 +45,14 @@ public class PIDVisionFollow extends Command {
     NetworkTable table;
     NetworkTableInstance Inst;
 
-    public PIDVisionFollow() {
+    public PIDVisionFollowZone4() {
         requires(Robot.Drivetrain);
     }
 
     protected void initialize() {
         NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("ledMode").setNumber(3);
         NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camMode").setNumber(0);
+        Timer.delay(0.25);
         Inst = NetworkTableInstance.getDefault();
         table = Inst.getTable("limelight-shooter");
         prelimtx = table.getEntry("tx");
@@ -86,8 +87,13 @@ public class PIDVisionFollow extends Command {
         left = Cap(left, 1.0);
         right = Cap(right, 1.0);
 
-        Robot.Drivetrain.drive(ControlMode.PercentOutput, left, right);
+        if (Math.abs(taError) >= 0.05) {
+            Robot.Drivetrain.drive(ControlMode.PercentOutput, left, right);
+        }
 
+        else {
+            Robot.Drivetrain.drive(ControlMode.PercentOutput, left/4, right/4);
+        }
         lastTimeStamp = Timer.getFPGATimestamp();
         lastError = taError;
     }

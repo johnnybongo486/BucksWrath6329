@@ -4,8 +4,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.Commands.Drivetrain.JoystickAutoAlign;
 import frc.robot.Commands.Drivetrain.JoystickAutoAlignIntake;
-import frc.robot.Commands.Drivetrain.PIDVisionFollow;
 import frc.robot.Commands.Drivetrain.PIDVisionFollowIntake;
+import frc.robot.Commands.Drivetrain.PIDVisionFollowZone1;
+import frc.robot.Commands.Drivetrain.PIDVisionFollowZone2;
+import frc.robot.Commands.Drivetrain.PIDVisionFollowZone3;
+import frc.robot.Commands.Drivetrain.PIDVisionFollowZone4;
 import frc.robot.Commands.Intake.IntakeBallCommandGroup;
 import frc.robot.Commands.Intake.IntakeStop;
 import frc.robot.Commands.Serializer.ShootBallCommandGroup;
@@ -25,6 +28,10 @@ public class OI {
     public JoystickButton VisionShootButton;
     public JoystickButton ShooterAimButton;
     public JoystickButton IntakeAimButton;
+    public JoystickButton AimZone1Button;
+    public JoystickButton AimZone2Button;
+    public JoystickButton AimZone3Button;
+    public JoystickButton AimZone4Button;
 
     public JoystickButton IntakeButton;
     public JoystickButton ShootButton;
@@ -32,7 +39,6 @@ public class OI {
     public JoystickButton OPZone2Shoot;
     public JoystickButton OPZone3Shoot;
     public JoystickButton OPZone4Shoot;
-
 
     public static final  long RUMBLE_MILLIS = 250;
     public static final double RUMBLE_INTENSITY = 1.0;
@@ -43,6 +49,7 @@ public class OI {
         Driver = new Joystick(0);
         Operator = new Joystick(1);
 
+        // Driver Buttons
         ShootButton = new JoystickButton(Driver, 6);
         ShootButton.whileHeld(new ShootBallCommandGroup());
         ShootButton.whenReleased(new StopBallCommandGroup());
@@ -51,18 +58,29 @@ public class OI {
         IntakeButton.whileHeld(new IntakeBallCommandGroup());
         IntakeButton.whenReleased( new IntakeStop());
 
-        IntakeAimButton = new JoystickButton (Driver, 2);
-        IntakeAimButton.whileHeld(new JoystickAutoAlignIntake());
-
-        VisionShootButton = new JoystickButton(Driver, 3);
-        VisionShootButton.whileHeld(new PIDVisionFollow());
-
-        VisionIntakeButton = new JoystickButton(Driver, 4);
-        VisionIntakeButton.whileHeld(new PIDVisionFollowIntake());
-
         ShooterAimButton = new JoystickButton(Driver, 1);
         ShooterAimButton.whileHeld(new JoystickAutoAlign());
 
+        IntakeAimButton = new JoystickButton (Driver, 2);
+        IntakeAimButton.whileHeld(new JoystickAutoAlignIntake());
+
+        AimZone1Button = new JoystickButton(Driver, 7);
+        AimZone1Button.whileHeld(new PIDVisionFollowZone1());
+
+        AimZone2Button = new JoystickButton(Driver, 8);
+        AimZone2Button.whileHeld(new PIDVisionFollowZone2());
+
+        AimZone3Button = new JoystickButton(Driver, 3);
+        AimZone3Button.whileHeld(new PIDVisionFollowZone3());
+
+        AimZone4Button = new JoystickButton(Driver, 4);
+        AimZone4Button.whileHeld(new PIDVisionFollowZone4());
+
+        // Only For Testing
+        //VisionIntakeButton = new JoystickButton(Driver, 4);
+        //VisionIntakeButton.whileHeld(new PIDVisionFollowIntake());
+
+        // Operator Buttons
         OPZone1Shoot = new JoystickButton(Operator, 1);
         OPZone1Shoot.whenPressed(new OPZone1CommandGroup());
 

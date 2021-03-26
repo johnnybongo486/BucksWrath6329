@@ -25,7 +25,7 @@ public class PIDVisionFollowIntake extends Command {
     private double kDgain = 0.0001; /* percent throttle per angular velocity dps */
 
     // speed PID
-    private double dPgain = 0.01; /* percent throttle per degree of error */ //was .04
+    private double dPgain = 0.2; /* percent throttle per degree of error */ //was .04
     private double dIgain = 0.0;
     private double dDgain = 0.0001; /* percent throttle per angular velocity dps */
 
@@ -51,6 +51,7 @@ public class PIDVisionFollowIntake extends Command {
 
     protected void initialize() {
         NetworkTableInstance.getDefault().getTable("limelight-intake").getEntry("camMode").setNumber(0);
+        Timer.delay(0.1);
         Inst = NetworkTableInstance.getDefault();
         table = Inst.getTable("limelight-intake");
         prelimtx = table.getEntry("tx");
@@ -71,12 +72,12 @@ public class PIDVisionFollowIntake extends Command {
         angle = camtran[1];
         currentAngularRate = Robot.Drivetrain.getRoll();
         double dt = Timer.getFPGATimestamp() - lastTimeStamp;
-        taError = targetta - ta;
+        taError = ta - targetta;
         errorRate = (taError - lastError) / dt;
         kErrorSum += tx * dt;
         dErrorSum += taError * dt;
 
-        forwardThrottle = taError *dPgain + dIgain * dErrorSum + errorRate *dDgain;
+        forwardThrottle = taError * dPgain + dIgain * dErrorSum + errorRate *dDgain;
         turnThrottle = tx * kPgain + kIgain * kErrorSum + currentAngularRate * kDgain;
         double maxThrot = MaxCorrection(forwardThrottle, kMaxCorrectionRatio);
         turnThrottle = Cap(turnThrottle, maxThrot);

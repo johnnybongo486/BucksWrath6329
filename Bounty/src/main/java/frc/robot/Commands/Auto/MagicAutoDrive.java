@@ -15,7 +15,7 @@ public class MagicAutoDrive extends Command {
      public MagicAutoDrive(double distance) {
         requires(Robot.Drivetrain);
         
-        this.ticks = distance * 6430;
+        this.ticks = distance * 12860;
      }
 
      protected void initialize() {

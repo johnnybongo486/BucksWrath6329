@@ -19,8 +19,8 @@ public class JoystickAutoAlign extends Command {
     private double forwardThrottle = 0;
     private double currentAngularRate = 0;
 
-    private double kPgain = 0.01; /* percent throttle per degree of error */ //was .04
-    private double kIgain = 0.0;
+    private double kPgain = 0.015; /* percent throttle per degree of error */ //was .04
+    private double kIgain = 0.001;
     private double kDgain = 0.0001; /* percent throttle per angular velocity dps */
     private double errorSum = 0;
     private double lastTimeStamp = 0;
@@ -39,6 +39,7 @@ public class JoystickAutoAlign extends Command {
     protected void initialize() {
         NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("ledMode").setNumber(3);
         NetworkTableInstance.getDefault().getTable("limelight-shooter").getEntry("camMode").setNumber(0);
+        Timer.delay(0.25);
         Inst = NetworkTableInstance.getDefault();
         table = Inst.getTable("limelight-shooter");
         prelimtx = table.getEntry("tx");
@@ -55,7 +56,7 @@ public class JoystickAutoAlign extends Command {
         double dt = Timer.getFPGATimestamp() - lastTimeStamp;
         errorSum += tx * dt;
 
-        turnThrottle = (tx) * kPgain + kIgain * errorSum + (currentAngularRate) * kDgain; // should be added
+        turnThrottle = (tx) * kPgain + kIgain * errorSum - (currentAngularRate) * kDgain; // should be added
         double maxThrot = MaxCorrection(forwardThrottle, kMaxCorrectionRatio);
         turnThrottle = Cap(turnThrottle, maxThrot);
         double left = forwardThrottle + turnThrottle;

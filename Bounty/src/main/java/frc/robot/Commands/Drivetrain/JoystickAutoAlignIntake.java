@@ -38,6 +38,7 @@ public class JoystickAutoAlignIntake extends Command {
 
     protected void initialize() {
         NetworkTableInstance.getDefault().getTable("limelight-intake").getEntry("camMode").setNumber(0);
+        Timer.delay(0.1);
         Inst = NetworkTableInstance.getDefault();
         table = Inst.getTable("limelight-intake");
         prelimtx = table.getEntry("tx");

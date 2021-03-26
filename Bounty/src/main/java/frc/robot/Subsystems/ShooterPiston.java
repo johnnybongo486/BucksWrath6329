@@ -27,18 +27,18 @@ public class ShooterPiston extends Subsystem {
    }
 
    public void zone1Deploy() {
-      leftShooterPiston.setAngle(50);
-      rightShooterPiston.setAngle(50);
+      leftShooterPiston.setAngle(56);
+      rightShooterPiston.setAngle(56);
    }
 
    public void zone2Deploy() {
-      leftShooterPiston.setAngle(70);
-      rightShooterPiston.setAngle(70);
+      leftShooterPiston.setAngle(78);
+      rightShooterPiston.setAngle(78);
    }
 
    public void zone3Deploy() {
-      leftShooterPiston.setAngle(90);
-      rightShooterPiston.setAngle(90);
+      leftShooterPiston.setAngle(92);
+      rightShooterPiston.setAngle(92);
    }
 
    public void zone4Deploy() {

@@ -14,6 +14,8 @@ public class AutoFindTarget extends Command {
     NetworkTable table;
     NetworkTableInstance Inst;
 
+    public boolean redValue = true;
+
     public AutoFindTarget() {
         requires(Robot.Drivetrain);
     }

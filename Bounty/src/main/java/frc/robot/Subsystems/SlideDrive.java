@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.Drivetrain.JoystickSlideDrive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
@@ -101,6 +102,18 @@ public class SlideDrive extends Subsystem {
 
     public void setSlideActive(boolean isSlideActive) {
         this.isSlideActive = isSlideActive;
+    }
+
+    public void magicDrive (double distance) {
+        this.slideESC.set(ControlMode.MotionMagic, distance, DemandType.Neutral, 0.0);
+    }
+
+    public double getSlideDistance() {
+        return slideESC.getSelectedSensorPosition();
+    }
+
+    public void resetDriveEncoders() {
+        slideESC.getSensorCollection().setIntegratedSensorPosition(0, 10);
     }
 
     public void updateDashboard() {
