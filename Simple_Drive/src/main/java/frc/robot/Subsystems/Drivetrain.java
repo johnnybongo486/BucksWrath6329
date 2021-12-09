@@ -11,10 +11,9 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.Models.CustomTalonFX;
 
-public class Drivetrain extends SubsystemBase{
+public class Drivetrain extends SubsystemBase {
     private final CustomTalonFX leftLead = new CustomTalonFX(1);
     private final CustomTalonFX leftFollow = new CustomTalonFX(2);
     private final CustomTalonFX rightLead = new CustomTalonFX(3);
@@ -35,6 +34,9 @@ public class Drivetrain extends SubsystemBase{
     // Set Motor Directions
     TalonFXInvertType rightInvert = TalonFXInvertType.CounterClockwise;
     TalonFXInvertType leftInvert = TalonFXInvertType.Clockwise;
+
+    private double moveValue = 0;
+    private double rotateValue = 0;
 
     public Drivetrain() {
         // Setup Followers
@@ -80,12 +82,9 @@ public class Drivetrain extends SubsystemBase{
         rightFollow.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
     }
 
-    public void teleopDrive() {
-        double moveValue = 0;
-        double rotateValue = 0;
-        
-        moveValue = -Robot.oi.getDriverLeftStickY();
-        rotateValue = rotateValue = Robot.oi.getDriverRightStickX();
+    public void teleopDrive(double moveValue, double rotateValue) {
+        this.moveValue = moveValue;
+        this.rotateValue = rotateValue;
     
         drive.arcadeDrive(moveValue, rotateValue);
     }

@@ -1,10 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.cscore.AxisCamera;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -13,7 +7,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Subsystems.Drivetrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,10 +16,8 @@ import frc.robot.Subsystems.Drivetrain;
  */
 public class Robot extends TimedRobot {
   public static Robot robot;
-  public static Drivetrain drivetrain;
   public static AxisCamera limelight;
-  public static OI oi;
-
+  private RobotContainer robotContainer;
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -38,8 +29,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    robot = this;
-    drivetrain = new Drivetrain();
+    robotContainer = new RobotContainer();
 
     // Turn on Limelight Stream
     limelight = CameraServer.getInstance().addAxisCamera("limelight", "10.63.29.11");
@@ -53,9 +43,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    // Always Last
-    oi = new OI();
-  }
+    }
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -111,15 +99,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    drivetrain.setNeutralMode(NeutralMode.Coast);
-
-    // Use for matches
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
-
-    // Use for calibrating vision
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    //drivetrain.setNeutralMode(NeutralMode.Coast);
   }
 
   /** This function is called periodically when disabled. */
