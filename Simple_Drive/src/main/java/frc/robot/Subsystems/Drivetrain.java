@@ -85,8 +85,8 @@ public class Drivetrain extends SubsystemBase {
         double moveValue = 0;
         double rotateValue = 0;
 
-        moveValue = Robot.oi.getDriverLeftStickY();
-        rotateValue = Robot.oi.getDriverRightStickX();
+        moveValue = Robot.robotContainer.getDriverLeftStickY();
+        rotateValue = Robot.robotContainer.getDriverRightStickX();
 
         drive.arcadeDrive(moveValue, rotateValue);
     }

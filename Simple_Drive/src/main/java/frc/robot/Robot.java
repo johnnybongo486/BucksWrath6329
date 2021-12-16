@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Subsystems.Drivetrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -11,8 +10,6 @@ import frc.robot.Subsystems.Drivetrain;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static Drivetrain drivetrain = new Drivetrain();
-  public static OI oi;
   public static RobotContainer robotContainer;
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -21,7 +18,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
-    oi = new OI();
   }
 
   /**

@@ -2,13 +2,12 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
-import frc.robot.Subsystems.Drivetrain;
+import frc.robot.RobotContainer;
 
 public class JoystickDrive extends CommandBase {
 
     public JoystickDrive() {
-        addRequirements(Robot.drivetrain);
+        addRequirements(RobotContainer.drivetrain);
     }
 
     public void initialize() {
@@ -16,7 +15,7 @@ public class JoystickDrive extends CommandBase {
 
     @Override
     public void execute() {
-        Robot.drivetrain.teleopDrive();
+        RobotContainer.drivetrain.teleopDrive();
     }
 
     public boolean isFinished() {
