@@ -5,19 +5,21 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Models.CustomTalonFX;
+import frc.robot.Robot;
 
 public class Drivetrain extends SubsystemBase {
-    private final CustomTalonFX leftLead = new CustomTalonFX(1);
-    private final CustomTalonFX leftFollow = new CustomTalonFX(2);
-    private final CustomTalonFX rightLead = new CustomTalonFX(3);
-    private final CustomTalonFX rightFollow = new CustomTalonFX(4);
+
+    private final WPI_TalonFX leftLead = new WPI_TalonFX(1);
+    private final WPI_TalonFX leftFollow = new WPI_TalonFX(2);
+    private final WPI_TalonFX rightLead = new WPI_TalonFX(3);
+    private final WPI_TalonFX rightFollow = new WPI_TalonFX(4);
   
     private final TalonSRX spareTalon = new TalonSRX(5);
     private PigeonIMU pigeon = new PigeonIMU(spareTalon);
@@ -35,13 +37,10 @@ public class Drivetrain extends SubsystemBase {
     TalonFXInvertType rightInvert = TalonFXInvertType.CounterClockwise;
     TalonFXInvertType leftInvert = TalonFXInvertType.Clockwise;
 
-    private double moveValue = 0;
-    private double rotateValue = 0;
-
     public Drivetrain() {
         // Setup Followers
-        leftFollow.follow(leftLead);
-        rightFollow.follow(rightLead);
+        //leftFollow.follow(leftLead);
+        //rightFollow.follow(rightLead);
 
         leftLead.setInverted(leftInvert);
         rightLead.setInverted(rightInvert);
@@ -82,10 +81,13 @@ public class Drivetrain extends SubsystemBase {
         rightFollow.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
     }
 
-    public void teleopDrive(double moveValue, double rotateValue) {
-        this.moveValue = moveValue;
-        this.rotateValue = rotateValue;
-    
+    public void teleopDrive() {
+        double moveValue = 0;
+        double rotateValue = 0;
+
+        moveValue = Robot.oi.getDriverLeftStickY();
+        rotateValue = Robot.oi.getDriverRightStickX();
+
         drive.arcadeDrive(moveValue, rotateValue);
     }
     
