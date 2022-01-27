@@ -1,20 +1,20 @@
-package frc.robot.Commands;
+package frc.robot.Commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class RunIntake extends CommandBase {
+public class IntakeRetract extends CommandBase {
 
-    public RunIntake() {
-        addRequirements(RobotContainer.intake);
+    public IntakeRetract() {
+        addRequirements(RobotContainer.intakePiston);
     }
 
     public void initialize() {
-        
+        RobotContainer.intakePiston.intakeIn();
     }
 
     public void execute() {
-        RobotContainer.intake.runIntake();
+
     }
 
     public boolean isFinished() {
@@ -22,10 +22,10 @@ public class RunIntake extends CommandBase {
     }
 
     protected void end() {
-        RobotContainer.intake.stopIntake();
+
     }
 
     protected void interrupted() {
-        end();
+        
     }
 }

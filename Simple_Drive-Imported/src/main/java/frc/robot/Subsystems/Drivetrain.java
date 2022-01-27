@@ -20,7 +20,7 @@ public class Drivetrain extends SubsystemBase {
     private final TalonFX rightLead = new TalonFX(1);
     private final TalonFX rightFollow = new TalonFX(2);
   
-    private final TalonSRX spareTalon = new TalonSRX(5);
+    private final TalonSRX spareTalon = new TalonSRX(7);
     private PigeonIMU pigeon = new PigeonIMU(spareTalon);
 
     // Set Motor Directions

@@ -1,29 +1,31 @@
-package frc.robot.Commands;
+package frc.robot.Commands.Drivetrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class StopIntake extends CommandBase {
+public class HighGear extends CommandBase {
 
-    public StopIntake() {
-        addRequirements(RobotContainer.intake);
+    public HighGear() {
+        addRequirements(RobotContainer.shifter);
     }
 
     public void initialize() {
-        
+        RobotContainer.shifter.highGear();
     }
 
     public void execute() {
-        RobotContainer.intake.stopIntake();
+
     }
 
     public boolean isFinished() {
-        return false;
+        return false; // || Robot.Drivetrain.getSpeed() < 10;
     }
 
     protected void end() {
+
     }
 
     protected void interrupted() {
+        
     }
 }

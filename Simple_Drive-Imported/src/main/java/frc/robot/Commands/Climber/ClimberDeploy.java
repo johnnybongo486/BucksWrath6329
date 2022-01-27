@@ -1,16 +1,16 @@
-package frc.robot.Commands;
+package frc.robot.Commands.Climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class HighGear extends CommandBase {
+public class ClimberDeploy extends CommandBase {
 
-    public HighGear() {
-        addRequirements(RobotContainer.shifter);
+    public ClimberDeploy() {
+        addRequirements(RobotContainer.climberPiston);
     }
 
     public void initialize() {
-        RobotContainer.shifter.highGear();
+        RobotContainer.climberPiston.climberOut();
     }
 
     public void execute() {
@@ -18,7 +18,7 @@ public class HighGear extends CommandBase {
     }
 
     public boolean isFinished() {
-        return false; // || Robot.Drivetrain.getSpeed() < 10;
+        return false;
     }
 
     protected void end() {

@@ -1,12 +1,12 @@
-package frc.robot.Commands;
+package frc.robot.Commands.Serializer;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class ReverseIntake extends CommandBase {
+public class RunSerializer extends CommandBase {
 
-    public ReverseIntake() {
-        addRequirements(RobotContainer.intake);
+    public RunSerializer() {
+        addRequirements(RobotContainer.serializer);
     }
 
     public void initialize() {
@@ -14,7 +14,7 @@ public class ReverseIntake extends CommandBase {
     }
 
     public void execute() {
-        RobotContainer.intake.reverseIntake();
+        RobotContainer.serializer.runSerializer();
     }
 
     public boolean isFinished() {
@@ -22,7 +22,7 @@ public class ReverseIntake extends CommandBase {
     }
 
     protected void end() {
-        RobotContainer.intake.stopIntake();
+        RobotContainer.serializer.stopSerializer();
     }
 
     protected void interrupted() {
