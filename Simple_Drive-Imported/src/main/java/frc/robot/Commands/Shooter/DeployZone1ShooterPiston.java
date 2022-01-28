@@ -1,13 +1,9 @@
 package frc.robot.Commands.Shooter;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
 public class DeployZone1ShooterPiston extends CommandBase {
-
-    private double runTime = 0.25;
-    private double m_startTime = -1;
 
     public DeployZone1ShooterPiston() {
         addRequirements(RobotContainer.shooterPiston);
@@ -15,7 +11,6 @@ public class DeployZone1ShooterPiston extends CommandBase {
 
     public void initialize() {
         RobotContainer.shooterPiston.zone1Deploy();
-        m_startTime = Timer.getFPGATimestamp();
     }
 
     public void execute() {
@@ -23,7 +18,7 @@ public class DeployZone1ShooterPiston extends CommandBase {
     }
 
    public boolean isFinished() {
-       return false || this.timeSinceInitialized() >= runTime;
+       return false;
    }
 
    protected void end() {
@@ -33,9 +28,4 @@ public class DeployZone1ShooterPiston extends CommandBase {
    protected void interrupted(){
 
    }
-
-   public synchronized final double timeSinceInitialized() {
-    return m_startTime < 0 ? 0 : Timer.getFPGATimestamp() - m_startTime;
-    }
-
 }

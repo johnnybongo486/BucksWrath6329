@@ -4,20 +4,26 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Commands.Intake.StopCenterIntake;
 import frc.robot.Commands.Climber.ClimberDeploy;
 import frc.robot.Commands.Climber.JoystickClimber;
 import frc.robot.Commands.Drivetrain.CompressorCommand;
 import frc.robot.Commands.Drivetrain.HighGear;
 import frc.robot.Commands.Drivetrain.JoystickDrive;
 import frc.robot.Commands.Drivetrain.LowGear;
+import frc.robot.Commands.Intake.IntakeBallCommandGroup;
 import frc.robot.Commands.Intake.IntakeRetract;
-import frc.robot.Commands.Intake.ReverseIntake;
-import frc.robot.Commands.Intake.RunIntake;
+import frc.robot.Commands.Intake.ReverseCenterIntake;
+import frc.robot.Commands.Intake.RunCenterIntake;
 import frc.robot.Commands.Intake.StopIntake;
+import frc.robot.Commands.Intake.StoreIntakeCommandGroup;
+import frc.robot.Commands.Serializer.ReverseSerializer;
+import frc.robot.Commands.Serializer.RunSerializer;
 import frc.robot.Commands.Serializer.StopSerializer;
 import frc.robot.Commands.Shooter.JoystickShooter;
 import frc.robot.Commands.Shooter.StoreShooterPiston;
 import frc.robot.Subsystems.AirCompressor;
+import frc.robot.Subsystems.CenterIntake;
 import frc.robot.Subsystems.ClimberPiston;
 import frc.robot.Subsystems.Drivetrain;
 import frc.robot.Subsystems.Intake;
@@ -34,6 +40,7 @@ public class RobotContainer {
     public static Drivetrain drivetrain = new Drivetrain();
     public static Shifter shifter = new Shifter();
     public static Intake intake = new Intake();
+    public static CenterIntake centerIntake = new CenterIntake();
     public static Serializer serializer = new Serializer();
     public static Shooter shooter = new Shooter();
     public static ShooterPiston shooterPiston = new ShooterPiston();
@@ -53,7 +60,8 @@ public class RobotContainer {
     public JoystickButton lowGearButton;
     public JoystickButton highGearButton;
     public JoystickButton intakeButton;
-    public JoystickButton reverseIntakeButton;
+    public JoystickButton shootButton;
+    public JoystickButton spitBallButton;
   
     public RobotContainer() {
         Driver = new Joystick(0);
@@ -64,6 +72,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.drivetrain, new JoystickDrive());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.shifter, new LowGear());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.intake, new StopIntake());
+        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.centerIntake, new StopCenterIntake());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.intakePiston, new IntakeRetract());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.serializer, new StopSerializer());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.shooter, new JoystickShooter());
@@ -75,6 +84,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        // Driver Buttons
         lowGearButton = new JoystickButton(Driver, 1);
         lowGearButton.whenPressed(new LowGear());
 
@@ -82,12 +92,16 @@ public class RobotContainer {
         highGearButton.whenPressed(new HighGear());
 
         intakeButton = new JoystickButton(Driver, 5);
-        intakeButton.whileHeld(new ReverseIntake());
-        intakeButton.whenReleased(new StopIntake());
+        intakeButton.whileHeld(new IntakeBallCommandGroup());
+        intakeButton.whenReleased(new StoreIntakeCommandGroup());
 
-        reverseIntakeButton = new JoystickButton(Driver, 6);
-        reverseIntakeButton.whileHeld(new RunIntake());
-        reverseIntakeButton.whenReleased(new StopIntake());
+        shootButton = new JoystickButton(Driver, 6);
+        shootButton.whileHeld(new RunSerializer().alongWith(new RunCenterIntake()));
+        shootButton.whenReleased(new StopSerializer().alongWith(new StopCenterIntake()));
+
+        spitBallButton = new JoystickButton(Driver, 3);
+        spitBallButton.whileHeld(new ReverseCenterIntake().alongWith(new ReverseSerializer()));
+        spitBallButton.whenReleased(new StopCenterIntake().alongWith(new StopSerializer()));
     } 
 
     public Joystick getDriver() {

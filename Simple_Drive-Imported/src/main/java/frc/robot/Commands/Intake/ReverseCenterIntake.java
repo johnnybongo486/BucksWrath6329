@@ -3,18 +3,18 @@ package frc.robot.Commands.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class IntakeRetract extends CommandBase {
-    
-    public IntakeRetract() {
-        addRequirements(RobotContainer.intakePiston);
+public class ReverseCenterIntake extends CommandBase {
+
+    public ReverseCenterIntake() {
+        addRequirements(RobotContainer.centerIntake);
     }
 
     public void initialize() {
-        RobotContainer.intakePiston.intakeIn();
+        
     }
 
     public void execute() {
-
+        RobotContainer.centerIntake.reverseCenterIntake();
     }
 
     public boolean isFinished() {
@@ -22,11 +22,10 @@ public class IntakeRetract extends CommandBase {
     }
 
     protected void end() {
-
+        RobotContainer.centerIntake.stopCenterIntake();
     }
 
     protected void interrupted() {
-        
+        end();
     }
-
 }

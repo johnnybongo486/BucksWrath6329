@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AirCompressor extends SubsystemBase {
-    Compressor compressor = new Compressor(0, PneumaticsModuleType.REVPH);
+    Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
     public boolean pressureCheck() {
         boolean pressureSwitch = compressor.getPressureSwitchValue();
@@ -13,7 +13,7 @@ public class AirCompressor extends SubsystemBase {
     }
 
     public void runCompressor() {
-        compressor.enabled();
+        compressor.enableDigital();
     }
 
     public void stopCompressor() {

@@ -1,13 +1,10 @@
 package frc.robot.Commands.Shooter;
 
 import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SetShooterVelocity extends CommandBase {
 	private double shotVelocity = 0;
-	private double runTime = 3;
-    private double m_startTime = -1;
 
 	public SetShooterVelocity(double velocity) {
 		this.shotVelocity = velocity;
@@ -17,7 +14,6 @@ public class SetShooterVelocity extends CommandBase {
 	// Called just before this Command runs the first time
 	public void initialize() {
 		RobotContainer.shooter.setTargetVelocity(shotVelocity);
-        m_startTime = Timer.getFPGATimestamp();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -27,7 +23,7 @@ public class SetShooterVelocity extends CommandBase {
 
 	// Make this return true when this Command no longer needs to run execute()
 	public boolean isFinished() {
-			return RobotContainer.shooter.isAtVelocity(shotVelocity) || this.timeSinceInitialized() >= runTime;
+			return RobotContainer.shooter.isAtVelocity(shotVelocity);
 	}
 
 	// Called once after isFinished returns true
@@ -40,8 +36,4 @@ public class SetShooterVelocity extends CommandBase {
 	protected void interrupted() {
 
 	}
-
-    public synchronized final double timeSinceInitialized() {
-        return m_startTime < 0 ? 0 : Timer.getFPGATimestamp() - m_startTime;
-    }
 }
