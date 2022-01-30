@@ -2,10 +2,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.Intake.StopCenterIntake;
+import frc.robot.Commands.Auto.AutonomousSelector;
+import frc.robot.Commands.Auto.JoystickVisionAlign;
 import frc.robot.Commands.Climber.ClimberDeploy;
+import frc.robot.Commands.Climber.ClimberVertical;
+import frc.robot.Commands.Climber.GoToClimbPosition;
+import frc.robot.Commands.Climber.GoToFullDownPosition;
 import frc.robot.Commands.Climber.JoystickClimber;
 import frc.robot.Commands.Drivetrain.CompressorCommand;
 import frc.robot.Commands.Drivetrain.HighGear;
@@ -29,6 +35,7 @@ import frc.robot.Subsystems.Drivetrain;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.IntakePiston;
 import frc.robot.Subsystems.LeftClimber;
+import frc.robot.Subsystems.Limelight;
 import frc.robot.Subsystems.RightClimber;
 import frc.robot.Subsystems.Serializer;
 import frc.robot.Subsystems.Shifter;
@@ -49,19 +56,32 @@ public class RobotContainer {
     public static IntakePiston intakePiston = new IntakePiston();
     public static ClimberPiston climberPiston = new ClimberPiston();
     public static AirCompressor airCompressor = new AirCompressor();
+    public static Limelight limelight = new Limelight();
+
+    /* Autonomous Selector */
+    private final AutonomousSelector autonomousSelector = new AutonomousSelector();
 
     // Joysticks
     public Joystick Driver;
     public Joystick Operator;
 
+    // Rumble Data
     public static final  long RUMBLE_MILLIS = 250;
     public static final double RUMBLE_INTENSITY = 1.0;
 
+    //Driver Buttons
     public JoystickButton lowGearButton;
     public JoystickButton highGearButton;
     public JoystickButton intakeButton;
     public JoystickButton shootButton;
     public JoystickButton spitBallButton;
+    public JoystickButton joystickAutoAlignButton;
+    
+    // Operator Buttons
+    public JoystickButton climbButton;
+    public JoystickButton climberUpButton;
+    public JoystickButton climberPistonDownButton;
+    public JoystickButton climberPistonVerticalButton;
   
     public RobotContainer() {
         Driver = new Joystick(0);
@@ -85,10 +105,10 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         // Driver Buttons
-        lowGearButton = new JoystickButton(Driver, 1);
+        lowGearButton = new JoystickButton(Driver, 3);
         lowGearButton.whenPressed(new LowGear());
 
-        highGearButton = new JoystickButton(Driver, 2);
+        highGearButton = new JoystickButton(Driver, 4);
         highGearButton.whenPressed(new HighGear());
 
         intakeButton = new JoystickButton(Driver, 5);
@@ -99,9 +119,25 @@ public class RobotContainer {
         shootButton.whileHeld(new RunSerializer().alongWith(new RunCenterIntake()));
         shootButton.whenReleased(new StopSerializer().alongWith(new StopCenterIntake()));
 
-        spitBallButton = new JoystickButton(Driver, 3);
+        spitBallButton = new JoystickButton(Driver, 2);
         spitBallButton.whileHeld(new ReverseCenterIntake().alongWith(new ReverseSerializer()));
         spitBallButton.whenReleased(new StopCenterIntake().alongWith(new StopSerializer()));
+
+        joystickAutoAlignButton = new JoystickButton(Driver, 1);
+        joystickAutoAlignButton.whileHeld(new JoystickVisionAlign());
+
+        //Operator Buttons
+        climbButton = new JoystickButton(Operator, 1);
+        climbButton.whenPressed(new GoToFullDownPosition());
+
+        climberUpButton = new JoystickButton(Operator, 2);
+        climberUpButton.whenPressed(new GoToClimbPosition());
+
+        climberPistonDownButton = new JoystickButton(Operator, 5);
+        climberPistonDownButton.whenPressed(new ClimberDeploy());
+
+        climberPistonVerticalButton = new JoystickButton(Operator, 6);
+        climberPistonVerticalButton.whenPressed(new ClimberVertical());
     } 
 
     public Joystick getDriver() {
@@ -144,4 +180,8 @@ public class RobotContainer {
         Driver.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
         Driver.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     }
+
+    public Command getAutonomousCommand() {
+        return autonomousSelector.getCommand();
+      }
 }

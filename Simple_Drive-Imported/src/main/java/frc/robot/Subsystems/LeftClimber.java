@@ -37,7 +37,7 @@ public class LeftClimber extends SubsystemBase implements IPositionControlledSub
 	private final SRXGains downGains = new SRXGains(Climber_DOWN, 0.4, 0, 0, 0, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
-	private MotionParameters highGearUpMotionParameters = new MotionParameters(11000, 5500, upGains);// 4700
+	private MotionParameters highGearUpMotionParameters = new MotionParameters(11000, 5500, upGains);
 	private MotionParameters highGearDownMotionParameters = new MotionParameters(11000, 5000, downGains);
 	
 	private double peakOutputReverse = -1.0;

@@ -1,5 +1,10 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.AxisCamera;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -13,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   public static RobotContainer robotContainer;
   private Command m_autonomousCommand;
+  public static AxisCamera limelight;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -20,6 +26,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
+    
+    limelight = CameraServer.addAxisCamera("limelight", "10.63.29.11");
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    limelight.setFPS(50);
+    limelight.setResolution(160,120);
   }
 
   /**
@@ -32,6 +44,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    RobotContainer.drivetrain.updateDashboard();
+    RobotContainer.shooter.updateDashboard();
+    RobotContainer.leftClimber.updateDashboard();
+    RobotContainer.rightClimber.updateDashboard();
+    RobotContainer.limelight.updateDashboard();
   }
 
   /**
@@ -46,7 +63,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = null;
+    RobotContainer.drivetrain.resetPigeon();
+    RobotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+    RobotContainer.drivetrain.resetDriveEncoders(); 
+    
+    m_autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -75,7 +96,15 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    //drivetrain.setNeutralMode(NeutralMode.Coast);
+    RobotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
+    
+    // Use for matches
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+
+    // Use for calibrating vision
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
   }
 
   /** This function is called periodically when disabled. */
