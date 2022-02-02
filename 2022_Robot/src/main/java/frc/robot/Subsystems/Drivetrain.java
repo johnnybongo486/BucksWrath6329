@@ -26,7 +26,7 @@ public class Drivetrain extends SubsystemBase {
     private final TalonFX rightLead = new TalonFX(3);
     private final TalonFX rightFollow = new TalonFX(4);
   
-    private final TalonSRX spareTalon = new TalonSRX(7);
+    private final TalonSRX spareTalon = new TalonSRX(5);
     private PigeonIMU pigeon = new PigeonIMU(spareTalon);
 
     // Set Motor Directions
@@ -102,19 +102,19 @@ public class Drivetrain extends SubsystemBase {
         rightFollow.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
 
         // PID coefficients
-        kP = 0.1; 
+        kP = 0.079; 
         kI = 0;         
         kD = 0;         
         kIz = 12;       
-        kF = 0; 
+        kF = 0.058; 
         kMaxOutput = 1; 
         kMinOutput = -1;
                 
-        tkP = 0.1; 
+        tkP = 0.079; 
         tkI = 0;
         tkD = 0; 
         tkIz = 12; 
-        tkF = 0; 
+        tkF = 0.058; 
         tkMaxOutput = 1; 
         tkMinOutput = -1;
         
@@ -160,11 +160,11 @@ public class Drivetrain extends SubsystemBase {
         leftConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
 
         // Motion Magic Configs 
-        rightConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
-        rightConfig.motionCruiseVelocity = 10000; //distance units per 100 ms // could be up to 21k
+        rightConfig.motionAcceleration = 8700; //(distance units per 100 ms) per second
+        rightConfig.motionCruiseVelocity = 8700; //distance units per 100 ms // could be up to 21k
 
-        leftConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
-        leftConfig.motionCruiseVelocity = 10000; //distance units per 100 ms // could be up to 21k
+        leftConfig.motionAcceleration = 8700; //(distance units per 100 ms) per second
+        leftConfig.motionCruiseVelocity = 8700; //distance units per 100 ms // could be up to 21k
 
         /* APPLY the config settings */
 		leftLead.configAllSettings(leftConfig);

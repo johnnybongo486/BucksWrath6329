@@ -14,8 +14,8 @@ public class PositionAutoDrive extends CommandBase {
 
     public PositionAutoDrive(double leftDistance, double rightDistance) {
         addRequirements(RobotContainer.drivetrain);
-        this.leftTicks = leftDistance * 6430;
-        this.rightTicks = rightDistance * 6430;
+        this.leftTicks = leftDistance * 10866;
+        this.rightTicks = rightDistance * 10866;
     }
 
     public void initialize() {

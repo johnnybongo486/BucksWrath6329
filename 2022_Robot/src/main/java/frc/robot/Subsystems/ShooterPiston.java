@@ -23,8 +23,8 @@ public class ShooterPiston extends SubsystemBase {
    }
 
    public void zone1Deploy() {
-      leftShooterPiston.setAngle(56);
-      rightShooterPiston.setAngle(56);
+      leftShooterPiston.setAngle(80);
+      rightShooterPiston.setAngle(80);
    }
 
    public void zone2Deploy() {

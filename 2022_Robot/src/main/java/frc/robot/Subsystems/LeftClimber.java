@@ -33,12 +33,12 @@ public class LeftClimber extends SubsystemBase implements IPositionControlledSub
 
 	private final static int onTargetThreshold = 100;
 	
-	private final SRXGains upGains = new SRXGains(Climber_UP, 0.4, 0, 0, 0, 100);//0.2, 0, 0, 0.05, 100
-	private final SRXGains downGains = new SRXGains(Climber_DOWN, 0.4, 0, 0, 0, 100);//0.1, 0, 0, 0.05, 100
+	private final SRXGains upGains = new SRXGains(Climber_UP, 0.029, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
+	private final SRXGains downGains = new SRXGains(Climber_DOWN, 0.029, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
-	private MotionParameters highGearUpMotionParameters = new MotionParameters(11000, 5500, upGains);
-	private MotionParameters highGearDownMotionParameters = new MotionParameters(11000, 5000, downGains);
+	private MotionParameters highGearUpMotionParameters = new MotionParameters(180000, 90000, upGains);
+	private MotionParameters highGearDownMotionParameters = new MotionParameters(180000, 90000, downGains);
 	
 	private double peakOutputReverse = -1.0;
 	

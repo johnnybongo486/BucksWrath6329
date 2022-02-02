@@ -15,7 +15,7 @@ public class MagicAutoDrive extends CommandBase {
      public MagicAutoDrive(double distance) {
         addRequirements(RobotContainer.drivetrain);
         
-        this.ticks = distance * 12860;
+        this.ticks = distance * 10866;
      }
 
      public void initialize() {

@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Serializer extends SubsystemBase {
     
-    private final TalonSRX SerializerTalon = new TalonSRX(7);
-    private final TalonSRX UpperSerializerTalon = new TalonSRX(8);
+    private final TalonSRX SerializerTalon = new TalonSRX(8);
+    private final TalonSRX UpperSerializerTalon = new TalonSRX(7);
 
     public Serializer() {
         SerializerTalon.configOpenloopRamp(0.25);
@@ -24,12 +24,12 @@ public class Serializer extends SubsystemBase {
 
     public void reverseSerializer() {
         SerializerTalon.set(ControlMode.PercentOutput, -1);
-        UpperSerializerTalon.set(ControlMode.PercentOutput, -1);
+        UpperSerializerTalon.set(ControlMode.PercentOutput, 1);
     }
 
     public void runSerializer() {
         SerializerTalon.set(ControlMode.PercentOutput, 1);
-        UpperSerializerTalon.set(ControlMode.PercentOutput, 1);
+        UpperSerializerTalon.set(ControlMode.PercentOutput, -1);
     }
 
     public void stopSerializer(){

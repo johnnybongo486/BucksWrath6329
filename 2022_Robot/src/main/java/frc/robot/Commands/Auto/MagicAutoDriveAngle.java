@@ -15,7 +15,7 @@ public class MagicAutoDriveAngle extends CommandBase {
     public MagicAutoDriveAngle(double distance, double targetAngle) {
         addRequirements(RobotContainer.drivetrain);
         
-        this.ticks = distance * 6430;
+        this.ticks = distance * 10866;
         this.angle = targetAngle;
     }
 
