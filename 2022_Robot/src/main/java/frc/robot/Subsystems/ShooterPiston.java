@@ -8,6 +8,8 @@ public class ShooterPiston extends SubsystemBase {
    private final Servo leftShooterPiston = new Servo(1);
    private final Servo rightShooterPiston = new Servo(2);
 
+   private double setAngle = 0;
+
    public ShooterPiston(){
       
    }
@@ -22,24 +24,9 @@ public class ShooterPiston extends SubsystemBase {
       rightShooterPiston.setAngle(135);
    }
 
-   public void zone1Deploy() {
-      leftShooterPiston.setAngle(80);
-      rightShooterPiston.setAngle(80);
-   }
-
-   public void zone2Deploy() {
-      leftShooterPiston.setAngle(78);
-      rightShooterPiston.setAngle(78);
-   }
-
-   public void zone3Deploy() {
-      leftShooterPiston.setAngle(92);
-      rightShooterPiston.setAngle(92);
-   }
-
-   public void zone4Deploy() {
-      leftShooterPiston.setAngle(100);
-      rightShooterPiston.setAngle(100);
-   }
-  
+   public void setPosition(double angle) {
+      this.setAngle = angle;
+      leftShooterPiston.setAngle(setAngle);
+      rightShooterPiston.setAngle(setAngle);
+   }  
 }

@@ -5,83 +5,47 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Models.Buffer;
-import frc.robot.Models.HelperFunctions;
 
 public class Limelight extends SubsystemBase {
 
-   private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+   private double ta;
+   private double tx;
+   private double ty;
 
-   private Buffer limelightbuffer;
-   private NetworkTableEntry tx = table.getEntry("tx");
-   private NetworkTableEntry ty = table.getEntry("ty");
-   private NetworkTableEntry ta = table.getEntry("ta");
-   private NetworkTableEntry ledMode = table.getEntry("ledMode");
-   private NetworkTableEntry stream = table.getEntry("stream");
-
-   private static double fovX = 59.6;
-   private static double fovY = 49.7;
+   NetworkTableEntry prelimtx;
+   NetworkTableEntry prelimty;
+   NetworkTableEntry prelimta;
+   NetworkTableEntry prelimCamtran;
+   NetworkTable table;
+   NetworkTableInstance Inst;
 
    public Limelight() {
-      this.limelightbuffer = new Buffer(3);
+      Inst = NetworkTableInstance.getDefault();
+      table = Inst.getTable("limelight");
+      prelimta = table.getEntry("ta");
+      prelimtx = table.getEntry("tx");
+      prelimty = table.getEntry("ty");
    }
 
-   public double getX() {
-      return tx.getDouble(0.0);
+   public void updateGameState(){
+      ta = prelimta.getDouble(0);
+      tx = prelimtx.getDouble(0);
+      ty = prelimty.getDouble(0);
    }
 
-   public double getSmoothX() {
-      return HelperFunctions.mean(limelightbuffer.toArray());
+   public double getArea(){
+      ta = prelimta.getDouble(0);
+      return ta;
    }
 
-   public double getXProportional() {
-      return getX() / (getFovX() / 2);
+   public double getX(){
+      tx = prelimtx.getDouble(0);
+      return tx;
    }
 
-   public double getY() {
-      return ty.getDouble(0.0);
-   }
-
-   public double getArea() {
-      return ta.getDouble(0.0);
-   }
-
-   public boolean setLedModeOn() {
-      return this.ledMode.setNumber(3);// 3 is Limelight LED force on
-   }
-
-   public boolean setLedModeOff() {
-      return this.ledMode.setNumber(1);// 1 is Limelight LED force off
-   }
-
-   public double getFovX() {
-      return fovX;
-   }
-
-   public double getFovY() {
-      return fovY;
-   }
-
-   public double getDistance() {
-      double area = this.getArea();
-      SmartDashboard.putNumber("Limelight Distance", area);
-      // System.out.println("Area" + area);
-      // System.out.println("Distance in feet:" + distance);
-      return area;
-   }
-
-   public boolean enableSecondaryCameraStream() {
-      return stream.setNumber(2);
-   }
-
-   public double getDistanceBasedOnArea() {
-      return HelperFunctions.mean(limelightbuffer.toArray());
-
-   }
-
-   @Override
-   public void periodic() {
-      limelightbuffer.addLast(getX());
+   public double getY(){
+      ty = prelimty.getDouble(0);
+      return ty;
    }
 
    public void updateDashboard() {
