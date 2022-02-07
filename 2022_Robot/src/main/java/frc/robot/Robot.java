@@ -99,14 +99,14 @@ public class Robot extends TimedRobot {
     RobotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
     
     // Use for matches
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
 
     RobotContainer.shooterPiston.store();
 
     // Use for calibrating vision
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
   }
 
   /** This function is called periodically when disabled. */

@@ -11,6 +11,7 @@ public class Intake extends SubsystemBase {
     private final TalonSRX intakeTalon = new TalonSRX(5);
 
     public Intake() {
+        intakeTalon.configFactoryDefault();
         intakeTalon.configOpenloopRamp(0.25);
         intakeTalon.configPeakOutputForward(1);
         intakeTalon.configPeakOutputReverse(-1);

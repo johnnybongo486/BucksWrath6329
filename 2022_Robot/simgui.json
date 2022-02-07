@@ -1,0 +1,31 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/AirCompressor": "Subsystem",
+      "/LiveWindow/CenterIntake": "Subsystem",
+      "/LiveWindow/ClimberPiston": "Subsystem",
+      "/LiveWindow/Drivetrain": "Subsystem",
+      "/LiveWindow/Intake": "Subsystem",
+      "/LiveWindow/IntakePiston": "Subsystem",
+      "/LiveWindow/LeftClimber": "Subsystem",
+      "/LiveWindow/Limelight": "Subsystem",
+      "/LiveWindow/PDH": "Subsystem",
+      "/LiveWindow/RightClimber": "Subsystem",
+      "/LiveWindow/Serializer": "Subsystem",
+      "/LiveWindow/Shifter": "Subsystem",
+      "/LiveWindow/Shooter": "Subsystem",
+      "/LiveWindow/ShooterPiston": "Subsystem",
+      "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX [2]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [4]": "Motor Controller",
+      "/Shuffleboard/Auto settings/Mode": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "open": true
+    }
+  }
+}

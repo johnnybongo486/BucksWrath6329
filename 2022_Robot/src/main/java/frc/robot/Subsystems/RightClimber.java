@@ -45,6 +45,9 @@ public class RightClimber extends SubsystemBase implements IPositionControlledSu
 	private CustomTalonSRX RightClimberESC = new CustomTalonSRX(10);
 
 	public RightClimber() {
+		RightClimberESC.configFactoryDefault();
+		RightClimberESC.clearStickyFaults();
+
 		this.RightClimberESC.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0);
 	
 		this.RightClimberESC.configForwardSoftLimitEnable(true);

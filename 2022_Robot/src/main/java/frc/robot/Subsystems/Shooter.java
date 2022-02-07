@@ -48,6 +48,9 @@ public class Shooter extends SubsystemBase implements IVelocityControlledSubsyst
 	private CustomTalonFX ShooterFollower = new CustomTalonFX(12);
 
 	public Shooter() {
+		this.ShooterFalcon.configFactoryDefault();
+		this.ShooterFollower.configFactoryDefault();
+
 		this.ShooterFollower.follow(ShooterFalcon);
 		this.ShooterFalcon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 

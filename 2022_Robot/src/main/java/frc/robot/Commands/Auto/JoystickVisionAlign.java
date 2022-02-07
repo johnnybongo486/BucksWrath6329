@@ -17,9 +17,9 @@ public class JoystickVisionAlign extends CommandBase {
     private double forwardThrottle = 0;
     private double currentAngularRate = 0;
 
-    private double kPgain = 0.015; /* percent throttle per degree of error */
-    private double kIgain = 0.001;
-    private double kDgain = 0.0001; /* percent throttle per angular velocity dps */
+    private double kPgain = 0.005; /* percent throttle per degree of error */
+    private double kIgain = 0.000;
+    private double kDgain = 0.0000; /* percent throttle per angular velocity dps */
     private double errorSum = 0;
     private double lastTimeStamp = 0;
     private double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */

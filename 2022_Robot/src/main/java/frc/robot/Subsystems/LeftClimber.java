@@ -45,6 +45,9 @@ public class LeftClimber extends SubsystemBase implements IPositionControlledSub
 	private CustomTalonSRX leftClimberESC = new CustomTalonSRX(9);
 
 	public LeftClimber() {
+		leftClimberESC.configFactoryDefault();
+		leftClimberESC.clearStickyFaults();
+
 		this.leftClimberESC.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0);
 	
 		this.leftClimberESC.configForwardSoftLimitEnable(true);

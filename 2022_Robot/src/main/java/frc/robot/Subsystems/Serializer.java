@@ -12,6 +12,9 @@ public class Serializer extends SubsystemBase {
     private final TalonSRX UpperSerializerTalon = new TalonSRX(7);
 
     public Serializer() {
+        SerializerTalon.configFactoryDefault();
+        UpperSerializerTalon.configFactoryDefault();
+
         SerializerTalon.configOpenloopRamp(0.25);
         SerializerTalon.configPeakOutputForward(1);
         SerializerTalon.configPeakOutputReverse(-1);

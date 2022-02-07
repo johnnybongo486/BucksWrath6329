@@ -10,6 +10,10 @@ public class Shifter extends SubsystemBase {
     
     private final Solenoid shifterSol = new Solenoid(1, PneumaticsModuleType.REVPH, 8);
 
+    public Shifter() {
+        
+    }
+
     public void lowGear() {
         shifterSol.set(true);
         RobotContainer.drivetrain.setIsHighGear(true);

@@ -2,9 +2,12 @@ package frc.robot.Commands.Drivetrain;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class JoystickDrive extends CommandBase {
+    private double turnValue = 0;
+    private double moveValue = 0;
 
     public JoystickDrive() {
         addRequirements(RobotContainer.drivetrain);
@@ -15,7 +18,10 @@ public class JoystickDrive extends CommandBase {
 
     @Override
     public void execute() {
-        RobotContainer.drivetrain.teleopDrive();
+        moveValue = Robot.robotContainer.getDriverLeftStickY();
+        turnValue = -Robot.robotContainer.getDriverRightStickX();
+        
+        RobotContainer.drivetrain.teleopDrive(moveValue,turnValue);
     }
 
     public boolean isFinished() {

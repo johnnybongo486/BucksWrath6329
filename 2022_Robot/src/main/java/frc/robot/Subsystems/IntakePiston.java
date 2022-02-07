@@ -9,6 +9,10 @@ public class IntakePiston extends SubsystemBase {
     
     private final Solenoid intakeSol = new Solenoid(1, PneumaticsModuleType.REVPH, 10);
 
+    public IntakePiston(){
+        
+    }
+
     public void intakeIn() {
         intakeSol.set(false);
     }

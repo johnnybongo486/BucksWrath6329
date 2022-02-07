@@ -11,6 +11,7 @@ public class CenterIntake extends SubsystemBase {
     private final TalonSRX centerTalon = new TalonSRX(6);
 
     public CenterIntake() {
+        centerTalon.configFactoryDefault();
         centerTalon.configOpenloopRamp(0.25);
         centerTalon.configPeakOutputForward(1);
         centerTalon.configPeakOutputReverse(-1);

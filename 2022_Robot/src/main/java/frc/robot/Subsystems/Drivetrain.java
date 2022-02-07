@@ -9,28 +9,30 @@ import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 
 public class Drivetrain extends SubsystemBase {
 
-    private final TalonFX leftLead = new TalonFX(1);
-    private final TalonFX leftFollow = new TalonFX(2);
-    private final TalonFX rightLead = new TalonFX(3);
-    private final TalonFX rightFollow = new TalonFX(4);
+    private final WPI_TalonFX leftLead = new WPI_TalonFX(1);
+    private final WPI_TalonFX leftFollow = new WPI_TalonFX(2);
+    private final WPI_TalonFX rightLead = new WPI_TalonFX(3);
+    private final WPI_TalonFX rightFollow = new WPI_TalonFX(4);
   
     private final TalonSRX spareTalon = new TalonSRX(5);
     private PigeonIMU pigeon = new PigeonIMU(spareTalon);
+    
+    private DifferentialDrive drive = new DifferentialDrive(leftLead, rightLead);
 
     // Set Motor Directions
-    TalonFXInvertType rightInvert = TalonFXInvertType.CounterClockwise;
+    TalonFXInvertType rightInvert = TalonFXInvertType.Clockwise;
     TalonFXInvertType leftInvert = TalonFXInvertType.Clockwise;
 
     public TalonFXConfiguration leftConfig = new TalonFXConfiguration();
@@ -50,10 +52,23 @@ public class Drivetrain extends SubsystemBase {
 	boolean _state = false;
 	double _targetAngle = 0;
 
+    public double moveValue = 0;
+    public double turnValue = 0;
+
     // For Tracking High/Low Gear
     private boolean isHighGear = false;
 
     public Drivetrain() {
+        leftLead.configFactoryDefault();
+        leftFollow.configFactoryDefault();
+        rightLead.configFactoryDefault();
+        rightFollow.configFactoryDefault();
+
+        leftLead.clearStickyFaults();
+        leftFollow.clearStickyFaults();
+        rightLead.clearStickyFaults();
+        rightFollow.clearStickyFaults();
+        
         leftLead.setInverted(leftInvert);
         rightLead.setInverted(rightInvert);
         leftFollow.setInverted(leftInvert);
@@ -61,11 +76,14 @@ public class Drivetrain extends SubsystemBase {
 
         leftFollow.follow(leftLead);
         rightFollow.follow(rightLead);
+
+        leftLead.setSensorPhase(false);
+        rightLead.setSensorPhase(false);
         
         // Zero Sensors
         resetPigeon();
         resetDriveEncoders();
-        setNeutralMode(NeutralMode.Brake);
+        setNeutralMode(NeutralMode.Coast);
 
         // Set Ramp Rates
         leftLead.configOpenloopRamp(0.25);
@@ -83,6 +101,12 @@ public class Drivetrain extends SubsystemBase {
         rightLead.configClosedLoopPeakOutput(0, 1.0);
         leftFollow.configClosedLoopPeakOutput(0, 1.0);
         rightFollow.configClosedLoopPeakOutput(0, 1.0);
+
+        // Config Peak Voltage
+        leftLead.configVoltageCompSaturation(11.5);
+        rightLead.configVoltageCompSaturation(11.5);
+        leftLead.enableVoltageCompensation(true);
+        rightLead.enableVoltageCompensation(true);
 
         /**
          * Configure the current limits that will be used Stator Current is the current
@@ -106,7 +130,7 @@ public class Drivetrain extends SubsystemBase {
         kI = 0;         
         kD = 0;         
         kIz = 12;       
-        kF = 0.058; 
+        kF = 0; 
         kMaxOutput = 1; 
         kMinOutput = -1;
                 
@@ -114,7 +138,7 @@ public class Drivetrain extends SubsystemBase {
         tkI = 0;
         tkD = 0; 
         tkIz = 12; 
-        tkF = 0.058; 
+        tkF = 0; 
         tkMaxOutput = 1; 
         tkMinOutput = -1;
         
@@ -189,20 +213,11 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
     }
 
-    public void teleopDrive() {
-        double moveValue = 0;
-        double rotateValue = 0;
-        double left = 0;
-        double right = 0;
+    public void teleopDrive(double move, double turn) {
+        this.moveValue = move;
+        this.turnValue = turn;
 
-        moveValue = Robot.robotContainer.getDriverLeftStickY();
-        rotateValue = -Robot.robotContainer.getDriverRightStickX();
-
-        left = moveValue + rotateValue;
-        right = moveValue - rotateValue;
-
-        leftLead.set(ControlMode.PercentOutput, left);
-        rightLead.set(ControlMode.PercentOutput, right);
+        drive.arcadeDrive(moveValue, turnValue);
     }
 
     public void stopDrivetrain() {
@@ -248,7 +263,9 @@ public class Drivetrain extends SubsystemBase {
 
     public void setNeutralMode(NeutralMode neutralMode) {
         this.leftLead.setNeutralMode(neutralMode);
+        this.leftFollow.setNeutralMode(neutralMode);
         this.rightLead.setNeutralMode(neutralMode);
+        this.rightFollow.setNeutralMode(neutralMode);
     }
 
     public void resetDriveEncoders() {
@@ -298,7 +315,9 @@ public class Drivetrain extends SubsystemBase {
 
     public void updateDashboard() {
         SmartDashboard.putNumber("Drivetrain / Left Lead Current", leftLead.getSupplyCurrent());
+        SmartDashboard.putNumber("Drivetrain / Left Follow Current", leftFollow.getSupplyCurrent());
         SmartDashboard.putNumber("Drivetrain / Right Lead Current", rightLead.getSupplyCurrent());
+        SmartDashboard.putNumber("Drivetrain / Right Follow Current", rightFollow.getSupplyCurrent());
         SmartDashboard.putNumber("Drivetrain / Left Speed", getLeftSpeed());
         SmartDashboard.putNumber("Drivetrain / Right Speed", getRightSpeed());
         SmartDashboard.putNumber("Drivetrain / Current Angle", getAngle());

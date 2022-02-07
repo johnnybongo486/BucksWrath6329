@@ -9,6 +9,10 @@ public class ClimberPiston extends SubsystemBase {
     
     private final Solenoid climberSol = new Solenoid(1, PneumaticsModuleType.REVPH, 9);
 
+    public ClimberPiston() {
+        
+    }
+
     public void climberIn() {
         climberSol.set(true);
     }

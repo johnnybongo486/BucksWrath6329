@@ -37,6 +37,7 @@ import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.IntakePiston;
 import frc.robot.Subsystems.LeftClimber;
 import frc.robot.Subsystems.Limelight;
+import frc.robot.Subsystems.PDH;
 import frc.robot.Subsystems.RightClimber;
 import frc.robot.Subsystems.Serializer;
 import frc.robot.Subsystems.Shifter;
@@ -58,6 +59,7 @@ public class RobotContainer {
     public static ClimberPiston climberPiston = new ClimberPiston();
     public static AirCompressor airCompressor = new AirCompressor();
     public static Limelight limelight = new Limelight();
+    public static PDH pdh = new PDH();
 
     /* Autonomous Selector */
     private final AutonomousSelector autonomousSelector = new AutonomousSelector();
@@ -108,6 +110,13 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         // Driver Buttons
+        joystickAutoAlignButton = new JoystickButton(Driver, 1);
+        joystickAutoAlignButton.whileHeld(new JoystickVisionAlign());
+        
+        spitBallButton = new JoystickButton(Driver, 2);
+        spitBallButton.whileHeld(new ReverseCenterIntake().alongWith(new ReverseSerializer()));
+        spitBallButton.whenReleased(new StopCenterIntake().alongWith(new StopSerializer()));
+        
         lowGearButton = new JoystickButton(Driver, 3);
         lowGearButton.whenPressed(new LowGear());
 
@@ -122,17 +131,19 @@ public class RobotContainer {
         shootButton.whileHeld(new RunSerializer().alongWith(new RunCenterIntake()));
         shootButton.whenReleased(new StopSerializer().alongWith(new StopCenterIntake()));
 
-        spitBallButton = new JoystickButton(Driver, 2);
-        spitBallButton.whileHeld(new ReverseCenterIntake().alongWith(new ReverseSerializer()));
-        spitBallButton.whenReleased(new StopCenterIntake().alongWith(new StopSerializer()));
-
-        joystickAutoAlignButton = new JoystickButton(Driver, 1);
-        joystickAutoAlignButton.whileHeld(new JoystickVisionAlign());
-
 
         //Operator Buttons
         //climbButton = new JoystickButton(Operator, 1);
         //climbButton.whenPressed(new GoToFullDownPosition());
+
+        fenderLowGoalButton = new JoystickButton(Operator, 1);
+        fenderLowGoalButton.whenPressed(new FenderShotLowCommandGroup());
+
+        fenderHighGoalButton = new JoystickButton(Operator, 2);
+        fenderHighGoalButton.whenPressed(new FenderShotHighCommandGroup());
+
+        tarmacHighGoalButton = new JoystickButton(Operator, 3);
+        tarmacHighGoalButton.whenPressed(new TarmacShotCommandGroup());
 
         climberUpButton = new JoystickButton(Operator, 4);
         climberUpButton.whenPressed(new GoToClimbPosition());
@@ -142,15 +153,6 @@ public class RobotContainer {
 
         climberPistonVerticalButton = new JoystickButton(Operator, 6);
         climberPistonVerticalButton.whenPressed(new ClimberVertical());
-
-        fenderHighGoalButton = new JoystickButton(Operator, 2);
-        fenderHighGoalButton.whenPressed(new FenderShotHighCommandGroup());
-
-        fenderLowGoalButton = new JoystickButton(Operator, 1);
-        fenderLowGoalButton.whenPressed(new FenderShotLowCommandGroup());
-
-        tarmacHighGoalButton = new JoystickButton(Operator, 3);
-        tarmacHighGoalButton.whenPressed(new TarmacShotCommandGroup());
     } 
 
     public Joystick getDriver() {
