@@ -1,45 +1,37 @@
 package frc.robot.Subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.FollowerType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
-
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.Commands.Drivetrain.JoystickDrive;
+import frc.robot.Models.DriveSignal;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
+
 public class Drivetrain extends SubsystemBase {
 
-    private final WPI_TalonFX leftLead = new WPI_TalonFX(1);
-    private final WPI_TalonFX leftFollow = new WPI_TalonFX(2);
-    private final WPI_TalonFX rightLead = new WPI_TalonFX(3);
-    private final WPI_TalonFX rightFollow = new WPI_TalonFX(4);
-  
-    private final TalonSRX spareTalon = new TalonSRX(5);
-    private PigeonIMU pigeon = new PigeonIMU(spareTalon);
+    public TalonFX leftLead = new TalonFX(1);
+    public TalonFX rightLead = new TalonFX(3);
+    public TalonFX leftFollower = new TalonFX(2);
+    public TalonFX rightFollower = new TalonFX(4);
+    public TalonSRX spareTalon = new TalonSRX(5);
+
+    public PigeonIMU pigeon = new PigeonIMU(spareTalon);
     
-    private DifferentialDrive drive = new DifferentialDrive(leftLead, rightLead);
-
-    // Set Motor Directions
-    TalonFXInvertType rightInvert = TalonFXInvertType.Clockwise;
-    TalonFXInvertType leftInvert = TalonFXInvertType.Clockwise;
-
+    // Motion Magic Stuff
     public TalonFXConfiguration leftConfig = new TalonFXConfiguration();
     public TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+    TalonFXInvertType rightInvert = TalonFXInvertType.CounterClockwise;
+    TalonFXInvertType leftInvert = TalonFXInvertType.Clockwise;
 
     public double _leftOffset;
     public double _rightOffset;
+
+    private boolean isHighGear = true;
 
     public double kP, kI, kD, kF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
     public double tkP, tkI, tkD, tkF, tkMaxOutput, tkMinOutput, tmaxRPM, tmaxVel, tminVel, tmaxAcc, tallowedErr;
@@ -48,93 +40,48 @@ public class Drivetrain extends SubsystemBase {
     public double distanceError = 0;
     public double targetDistance = 0;
 
-    boolean _firstCall = false;
+    /** Tracking variables */
+	boolean _firstCall = false;
 	boolean _state = false;
 	double _targetAngle = 0;
 
-    public double moveValue = 0;
-    public double turnValue = 0;
-
-    // For Tracking High/Low Gear
-    private boolean isHighGear = false;
+    public void initDefaultCommand() {
+        setDefaultCommand(new JoystickDrive());
+    }
 
     public Drivetrain() {
         leftLead.configFactoryDefault();
-        leftFollow.configFactoryDefault();
+        leftFollower.configFactoryDefault();
         rightLead.configFactoryDefault();
-        rightFollow.configFactoryDefault();
+        rightFollower.configFactoryDefault();
 
         leftLead.clearStickyFaults();
-        leftFollow.clearStickyFaults();
+        leftFollower.clearStickyFaults();
         rightLead.clearStickyFaults();
-        rightFollow.clearStickyFaults();
+        rightFollower.clearStickyFaults();
         
+        // Setup Followers
+        leftFollower.follow(leftLead);
+        rightFollower.follow(rightLead);
+
         leftLead.setInverted(leftInvert);
         rightLead.setInverted(rightInvert);
-        leftFollow.setInverted(leftInvert);
-        rightFollow.setInverted(rightInvert);
+        leftFollower.setInverted(leftInvert);
+        rightFollower.setInverted(rightInvert);
 
-        leftFollow.follow(leftLead);
-        rightFollow.follow(rightLead);
-
-        leftLead.setSensorPhase(false);
-        rightLead.setSensorPhase(false);
-        
-        // Zero Sensors
         resetPigeon();
-        resetDriveEncoders();
-        setNeutralMode(NeutralMode.Coast);
-
-        // Set Ramp Rates
-        leftLead.configOpenloopRamp(0.25);
-        rightLead.configOpenloopRamp(0.25);
-        leftFollow.configOpenloopRamp(0.25);
-        rightFollow.configOpenloopRamp(0.25);
-
-        leftLead.configClosedloopRamp(0.25);
-        rightLead.configClosedloopRamp(0.25);
-        leftFollow.configClosedloopRamp(0.25);
-        rightFollow.configClosedloopRamp(0.25);
-
-        // Set Peak Output
-        leftLead.configClosedLoopPeakOutput(0, 1.0);
-        rightLead.configClosedLoopPeakOutput(0, 1.0);
-        leftFollow.configClosedLoopPeakOutput(0, 1.0);
-        rightFollow.configClosedLoopPeakOutput(0, 1.0);
-
-        // Config Peak Voltage
-        leftLead.configVoltageCompSaturation(11.5);
-        rightLead.configVoltageCompSaturation(11.5);
-        leftLead.enableVoltageCompensation(true);
-        rightLead.enableVoltageCompensation(true);
-
-        /**
-         * Configure the current limits that will be used Stator Current is the current
-         * that passes through the motor stators. Use stator current limits to limit
-         * rotor acceleration/heat production Supply Current is the current that passes
-         * into the controller from the supply Use supply current limits to prevent
-         * breakers from tripping
-         * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s) */
-        leftLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
-        leftLead.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
-        leftFollow.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
-        leftFollow.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
-
-        rightLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
-        rightLead.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
-        rightFollow.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
-        rightFollow.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
+        setNeutralMode(NeutralMode.Brake);
 
         // PID coefficients
-        kP = 0.079; 
-        kI = 0;         
-        kD = 0;         
-        kIz = 12;       
+        kP = 0.11; 
+        kI = 0;         // .000005
+        kD = 0;         // .05
+        kIz = 12;       // 12
         kF = 0; 
         kMaxOutput = 1; 
         kMinOutput = -1;
                 
-        tkP = 0.079; 
+        tkP = 0.1; 
         tkI = 0;
         tkD = 0; 
         tkIz = 12; 
@@ -184,16 +131,16 @@ public class Drivetrain extends SubsystemBase {
         leftConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
 
         // Motion Magic Configs 
-        rightConfig.motionAcceleration = 8700; //(distance units per 100 ms) per second
-        rightConfig.motionCruiseVelocity = 8700; //distance units per 100 ms // could be up to 21k
+        rightConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
+        rightConfig.motionCruiseVelocity = 10000; //distance units per 100 ms // could be up to 21k
 
-        leftConfig.motionAcceleration = 8700; //(distance units per 100 ms) per second
-        leftConfig.motionCruiseVelocity = 8700; //distance units per 100 ms // could be up to 21k
+        leftConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
+        leftConfig.motionCruiseVelocity = 10000; //distance units per 100 ms // could be up to 21k
 
         /* APPLY the config settings */
 		leftLead.configAllSettings(leftConfig);
         rightLead.configAllSettings(rightConfig);
-
+        
         /* Set status frame periods to ensure we don't have stale data */
 		/* These aren't configs (they're not persistant) so we can set these after the configs.  */
 		rightLead.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
@@ -203,26 +150,52 @@ public class Drivetrain extends SubsystemBase {
 		leftLead.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 30);
 		pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR , 5, 30);
 
+        /**
+         * Configure the current limits that will be used Stator Current is the current
+         * that passes through the motor stators. Use stator current limits to limit
+         * rotor acceleration/heat production Supply Current is the current that passes
+         * into the controller from the supply Use supply current limits to prevent
+         * breakers from tripping
+         * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s) */
+        leftLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
+        leftLead.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
+        leftFollower.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
+        leftFollower.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
+
+        rightLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
+        rightLead.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
+        rightFollower.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
+        rightFollower.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
+       
+        // Set Ramp Rates
+        leftLead.configOpenloopRamp(0.25);
+        rightLead.configOpenloopRamp(0.25);
+
+        leftLead.configClosedloopRamp(0.25);
+        rightLead.configClosedloopRamp(0.25);
+
+        leftLead.configClosedLoopPeakOutput(0, 1.0);
+        rightLead.configClosedLoopPeakOutput(0, 1.0);
+
         rightLead.selectProfileSlot(0, 0);
         rightLead.selectProfileSlot(1, 1);
         leftLead.selectProfileSlot(0, 0);
         leftLead.selectProfileSlot(1, 1);
+
     }
 
-    @Override
-    public void periodic() {
-    }
-
-    public void teleopDrive(double move, double turn) {
-        this.moveValue = move;
-        this.turnValue = turn;
-
-        drive.arcadeDrive(moveValue, turnValue);
+    public void drive(ControlMode controlMode, double left, double right) {
+        this.leftLead.set(controlMode, left);
+        this.rightLead.set(controlMode, right);
     }
 
     public void stopDrivetrain() {
         this.leftLead.set(ControlMode.PercentOutput, 0);
         this.rightLead.set(ControlMode.PercentOutput, 0);
+    }
+
+    public void drive(ControlMode controlMode, DriveSignal driveSignal) {
+        this.drive(controlMode, driveSignal.getLeft(), driveSignal.getRight());
     }
 
     public void smartDrive (double leftRotations, double rightRotations) {
@@ -240,17 +213,17 @@ public class Drivetrain extends SubsystemBase {
         this.rightLead.set(ControlMode.MotionMagic, distance, DemandType.AuxPID, angle);
     }
 
-    public void drive(ControlMode controlMode, double left, double right) {
-        this.leftLead.set(controlMode, left);
-        this.rightLead.set(controlMode, right);
+    public void setNeutralMode(NeutralMode neutralMode) {
+        this.leftLead.setNeutralMode(neutralMode);
+        this.rightLead.setNeutralMode(neutralMode);
     }
-    
+
     public double getAngle() {
         double[] ypr = new double[3];
         pigeon.getYawPitchRoll(ypr);
         return ypr[0];
     }
-    
+
     public double getRoll() {
         double[] ypr = new double[3];
         pigeon.getYawPitchRoll(ypr);
@@ -259,13 +232,6 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetPigeon() {
         this.pigeon.setYaw(0.0, 0);
-    }
-
-    public void setNeutralMode(NeutralMode neutralMode) {
-        this.leftLead.setNeutralMode(neutralMode);
-        this.leftFollow.setNeutralMode(neutralMode);
-        this.rightLead.setNeutralMode(neutralMode);
-        this.rightFollow.setNeutralMode(neutralMode);
     }
 
     public void resetDriveEncoders() {
@@ -305,19 +271,17 @@ public class Drivetrain extends SubsystemBase {
         this.distanceError = distanceError;
     }
 
-    public boolean isHighGear() {
+    public boolean getIsHighGear() {
         return isHighGear;
     }
 
-    public void setIsHighGear(boolean isHighGear) {
-        this.isHighGear = isHighGear;
+    public void setIsHighGear(boolean gear){
+        this.isHighGear = gear;
     }
 
     public void updateDashboard() {
         SmartDashboard.putNumber("Drivetrain / Left Lead Current", leftLead.getSupplyCurrent());
-        SmartDashboard.putNumber("Drivetrain / Left Follow Current", leftFollow.getSupplyCurrent());
         SmartDashboard.putNumber("Drivetrain / Right Lead Current", rightLead.getSupplyCurrent());
-        SmartDashboard.putNumber("Drivetrain / Right Follow Current", rightFollow.getSupplyCurrent());
         SmartDashboard.putNumber("Drivetrain / Left Speed", getLeftSpeed());
         SmartDashboard.putNumber("Drivetrain / Right Speed", getRightSpeed());
         SmartDashboard.putNumber("Drivetrain / Current Angle", getAngle());
@@ -326,7 +290,6 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Drivetrain / Right Distance", rightLead.getSelectedSensorPosition());
         SmartDashboard.putNumber("Drivetrain / Target Distance", targetDistance);
         SmartDashboard.putNumber("Drivetrain / Distance Error", distanceError);
-        SmartDashboard.putBoolean("Drivetrain / High Gear", isHighGear());
     }
 
     void setRobotDistanceConfigs(TalonFXInvertType masterInvertType, TalonFXConfiguration masterConfig){

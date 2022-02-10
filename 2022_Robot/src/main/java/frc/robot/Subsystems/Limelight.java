@@ -48,6 +48,16 @@ public class Limelight extends SubsystemBase {
       return ty;
    }
 
+   public void visionMode(){
+      NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+      NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+   }
+
+   public void cameraMode(){
+      NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+      NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+   }
+
    public void updateDashboard() {
 		SmartDashboard.putNumber("ta", getArea());
       SmartDashboard.putNumber("tx", getX());

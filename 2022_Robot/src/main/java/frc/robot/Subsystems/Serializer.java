@@ -14,6 +14,8 @@ public class Serializer extends SubsystemBase {
     public Serializer() {
         SerializerTalon.configFactoryDefault();
         UpperSerializerTalon.configFactoryDefault();
+        SerializerTalon.clearStickyFaults();
+        UpperSerializerTalon.clearStickyFaults();
 
         SerializerTalon.configOpenloopRamp(0.25);
         SerializerTalon.configPeakOutputForward(1);

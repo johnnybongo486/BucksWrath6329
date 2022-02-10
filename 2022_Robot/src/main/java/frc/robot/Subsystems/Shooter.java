@@ -35,7 +35,6 @@ public class Shooter extends SubsystemBase implements IVelocityControlledSubsyst
 	private final SRXGains shooterGains = new SRXGains(Shooter_PIDX, 0.05, 0, 0, .05, 100);//0.2, 0, 0, 0.05, 100
 	private final SRXGains slowShooterGains = new SRXGains(Shooter_PIDX, 0.05, 0, 0, 0, 100);//0.2, 0, 0, 0.05, 100
 
-	
 	//Uses PID values to go to a Velocity
 	private MotionParameters shooterMotionParameters = new MotionParameters(5000, 20000, shooterGains);// velocity could be up to 21k
 	private MotionParameters slowShooterMotionParameters = new MotionParameters(5000, 20000, slowShooterGains);// 4700
@@ -50,6 +49,8 @@ public class Shooter extends SubsystemBase implements IVelocityControlledSubsyst
 	public Shooter() {
 		this.ShooterFalcon.configFactoryDefault();
 		this.ShooterFollower.configFactoryDefault();
+		this.ShooterFalcon.clearStickyFaults();
+		this.ShooterFollower.clearStickyFaults();
 
 		this.ShooterFollower.follow(ShooterFalcon);
 		this.ShooterFalcon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);

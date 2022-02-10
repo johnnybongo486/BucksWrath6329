@@ -18,14 +18,14 @@ public class PIDVisionFollow extends CommandBase {
     private double currentAngularRate = 0;
 
     // turn PID
-    private double kPgain = 0.01; /* percent throttle per degree of error */ 
+    private double kPgain = 0.02; /* percent throttle per degree of error */ 
     private double kIgain = 0.0;
-    private double kDgain = 0.0001; /* percent throttle per angular velocity dps */
+    private double kDgain = 0.000; /* percent throttle per angular velocity dps */
 
     // speed PID
-    private double dPgain = 1.69; /* percent throttle per degree of error */ 
+    private double dPgain = .65; /* percent throttle per degree of error */ 
     private double dIgain = 0.0;
-    private double dDgain = 0.000001; /* percent throttle per angular velocity dps */
+    private double dDgain = 0.0; /* percent throttle per angular velocity dps */
 
     // Math
     private double kErrorSum = 0;
@@ -34,8 +34,8 @@ public class PIDVisionFollow extends CommandBase {
     private double lastTimeStamp = 0;
     private double lastError = 0;
     private double taError = 0;
-    private double targetta = 0.72;  // needs to be found
-    private double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */
+    private double targetta = 1.0;  // needs to be found
+    private double kMaxCorrectionRatio = 0.150; /* cap corrective turning throttle to 30 percent of forward throttle */
 
     NetworkTableEntry prelimtx;
     NetworkTableEntry prelimta;
@@ -48,8 +48,6 @@ public class PIDVisionFollow extends CommandBase {
     }
 
     public void initialize() {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
         Inst = NetworkTableInstance.getDefault();
         table = Inst.getTable("limelight");
         prelimtx = table.getEntry("tx");
@@ -78,8 +76,8 @@ public class PIDVisionFollow extends CommandBase {
         turnThrottle = tx * kPgain + kIgain * kErrorSum + currentAngularRate * kDgain;
         double maxThrot = MaxCorrection(forwardThrottle, kMaxCorrectionRatio);
         turnThrottle = Cap(turnThrottle, maxThrot);
-        double left = forwardThrottle + turnThrottle;
-        double right = forwardThrottle - turnThrottle;
+        double left = -forwardThrottle - turnThrottle;
+        double right = -forwardThrottle + turnThrottle;
         left = Cap(left, 1.0);
         right = Cap(right, 1.0);
 
@@ -94,12 +92,11 @@ public class PIDVisionFollow extends CommandBase {
     }
 
     protected void end() {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+
     }
 
     protected void interrupted(){
-        end();
+  
     }
 
     double MaxCorrection(double forwardThrot, double scalor) {

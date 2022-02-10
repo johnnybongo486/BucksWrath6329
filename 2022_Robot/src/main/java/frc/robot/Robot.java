@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.AxisCamera;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +20,7 @@ public class Robot extends TimedRobot {
   public static RobotContainer robotContainer;
   private Command m_autonomousCommand;
   public static AxisCamera limelight;
+  public static UsbCamera intakeCamera;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,10 +30,14 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
     
     limelight = CameraServer.addAxisCamera("limelight", "10.63.29.11");
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
-    limelight.setFPS(50);
+    RobotContainer.limelight.cameraMode();
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(2);
+    limelight.setFPS(10);
     limelight.setResolution(160,120);
+
+    intakeCamera = CameraServer.startAutomaticCapture("Intake", 0);
+    intakeCamera.setResolution(240 ,180);
+    intakeCamera.setFPS(30);
   }
 
   /**
@@ -97,16 +103,13 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
+    RobotContainer.drivetrain.resetDriveEncoders();
     
     // Use for matches
-    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
-
-    RobotContainer.shooterPiston.store();
+    RobotContainer.limelight.cameraMode();
 
     // Use for calibrating vision
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    // RobotContainer.limelight.visionMode();
   }
 
   /** This function is called periodically when disabled. */

@@ -1,27 +1,31 @@
 package frc.robot.Commands.Drivetrain;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-
+import frc.robot.Models.*;
 public class JoystickDrive extends CommandBase {
-    private double turnValue = 0;
-    private double moveValue = 0;
+
+    DriveHelper helper;
+
+    private double quickTurnThreshold = 0.2;
 
     public JoystickDrive() {
         addRequirements(RobotContainer.drivetrain);
+        helper = new DriveHelper();
     }
 
     public void initialize() {
     }
 
-    @Override
     public void execute() {
-        moveValue = Robot.robotContainer.getDriverLeftStickY();
-        turnValue = -Robot.robotContainer.getDriverRightStickX();
-        
-        RobotContainer.drivetrain.teleopDrive(moveValue,turnValue);
+        double moveValue = Robot.robotContainer.getDriverLeftStickY();
+        double rotateValue = Robot.robotContainer.getDriverRightStickX();
+		boolean quickTurn = (moveValue < quickTurnThreshold && moveValue > -quickTurnThreshold);
+        DriveSignal driveSignal = helper.cheesyDrive(moveValue, -rotateValue, quickTurn, RobotContainer.drivetrain.getIsHighGear());
+        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, driveSignal); 
     }
 
     public boolean isFinished() {
@@ -29,9 +33,11 @@ public class JoystickDrive extends CommandBase {
     }
 
     protected void end() {
+        RobotContainer.drivetrain.stopDrivetrain();
     }
 
-    protected void interrupted() {
-        SmartDashboard.putBoolean("Drive Command Interrupted", true);
+    protected void interrupted(){
+        end();
     }
+    
 }

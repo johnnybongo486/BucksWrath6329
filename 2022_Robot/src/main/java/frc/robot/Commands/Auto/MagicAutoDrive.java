@@ -24,8 +24,8 @@ public class MagicAutoDrive extends CommandBase {
    }
 
    public void execute() {
-          RobotContainer.drivetrain.magicDrive(ticks);
-          RobotContainer.drivetrain.setTargetDistance(ticks);
+          RobotContainer.drivetrain.magicDrive(-ticks);
+          RobotContainer.drivetrain.setTargetDistance(-ticks);
           error = Math.abs(ticks - RobotContainer.drivetrain.getRightDistance());
           RobotContainer.drivetrain.setDistanceError(error);
 

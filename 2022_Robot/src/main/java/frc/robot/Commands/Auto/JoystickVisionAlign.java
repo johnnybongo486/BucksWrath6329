@@ -17,7 +17,7 @@ public class JoystickVisionAlign extends CommandBase {
     private double forwardThrottle = 0;
     private double currentAngularRate = 0;
 
-    private double kPgain = 0.005; /* percent throttle per degree of error */
+    private double kPgain = 0.025; /* percent throttle per degree of error */
     private double kIgain = 0.000;
     private double kDgain = 0.0000; /* percent throttle per angular velocity dps */
     private double errorSum = 0;
@@ -29,14 +29,11 @@ public class JoystickVisionAlign extends CommandBase {
     NetworkTable table;
     NetworkTableInstance Inst;
 
-    public void JoystickAutoAlign() {
+    public JoystickVisionAlign() {
         addRequirements(RobotContainer.drivetrain);
     }
 
     public void initialize() {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-        Timer.delay(0.25);
         Inst = NetworkTableInstance.getDefault();
         table = Inst.getTable("limelight");
         prelimtx = table.getEntry("tx");
@@ -54,8 +51,8 @@ public class JoystickVisionAlign extends CommandBase {
         turnThrottle = (tx) * kPgain + kIgain * errorSum - (currentAngularRate) * kDgain;
         double maxThrot = MaxCorrection(forwardThrottle, kMaxCorrectionRatio);
         turnThrottle = Cap(turnThrottle, maxThrot);
-        double left = forwardThrottle + turnThrottle;
-        double right = forwardThrottle - turnThrottle;
+        double left = forwardThrottle - turnThrottle;
+        double right = forwardThrottle + turnThrottle;
         left = Cap(left, 1.0);
         right = Cap(right, 1.0);
 
@@ -69,12 +66,11 @@ public class JoystickVisionAlign extends CommandBase {
     }
 
     protected void end() {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+        RobotContainer.drivetrain.stopDrivetrain();
     }
 
     protected void interrupted(){
-        end();
+        
     }
 
     double MaxCorrection(double forwardThrot, double scalor) {

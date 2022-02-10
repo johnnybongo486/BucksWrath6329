@@ -12,6 +12,7 @@ public class CenterIntake extends SubsystemBase {
 
     public CenterIntake() {
         centerTalon.configFactoryDefault();
+        centerTalon.clearStickyFaults();
         centerTalon.configOpenloopRamp(0.25);
         centerTalon.configPeakOutputForward(1);
         centerTalon.configPeakOutputReverse(-1);
@@ -19,11 +20,11 @@ public class CenterIntake extends SubsystemBase {
     }
 
     public void reverseCenterIntake() {
-        centerTalon.set(ControlMode.PercentOutput, -1);
+        centerTalon.set(ControlMode.PercentOutput, 1);
     }
 
     public void runCenterIntake() {
-        centerTalon.set(ControlMode.PercentOutput, 1);
+        centerTalon.set(ControlMode.PercentOutput, -1);
     }
 
     public void stopCenterIntake(){

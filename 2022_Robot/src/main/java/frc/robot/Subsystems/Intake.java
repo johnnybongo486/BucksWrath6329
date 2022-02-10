@@ -12,6 +12,7 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         intakeTalon.configFactoryDefault();
+        intakeTalon.clearStickyFaults();
         intakeTalon.configOpenloopRamp(0.25);
         intakeTalon.configPeakOutputForward(1);
         intakeTalon.configPeakOutputReverse(-1);
@@ -19,11 +20,11 @@ public class Intake extends SubsystemBase {
     }
 
     public void reverseIntake() {
-        intakeTalon.set(ControlMode.PercentOutput, .85);
+        intakeTalon.set(ControlMode.PercentOutput, 1);
     }
 
     public void runIntake() {
-        intakeTalon.set(ControlMode.PercentOutput, -.85);
+        intakeTalon.set(ControlMode.PercentOutput, -1);
     }
 
     public void stopIntake(){

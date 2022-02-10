@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.Intake.StopCenterIntake;
 import frc.robot.Commands.Auto.AutonomousSelector;
 import frc.robot.Commands.Auto.JoystickVisionAlign;
+import frc.robot.Commands.Auto.PIDVisionFollow;
+import frc.robot.Commands.Auto.TurnOffLimelight;
+import frc.robot.Commands.Auto.TurnOnLimelight;
 import frc.robot.Commands.Climber.ClimberDeploy;
 import frc.robot.Commands.Climber.ClimberVertical;
 import frc.robot.Commands.Climber.GoToClimbPosition;
@@ -106,12 +109,14 @@ public class RobotContainer {
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.rightClimber, new JoystickClimber());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.climberPiston, new ClimberDeploy());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.airCompressor, new CompressorCommand());
+        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.limelight, new TurnOffLimelight());
     }
 
     private void configureButtonBindings() {
         // Driver Buttons
         joystickAutoAlignButton = new JoystickButton(Driver, 1);
-        joystickAutoAlignButton.whileHeld(new JoystickVisionAlign());
+        joystickAutoAlignButton.whileHeld(new TurnOnLimelight().alongWith(new JoystickVisionAlign()));
+        joystickAutoAlignButton.whenReleased(new TurnOffLimelight());
         
         spitBallButton = new JoystickButton(Driver, 2);
         spitBallButton.whileHeld(new ReverseCenterIntake().alongWith(new ReverseSerializer()));
