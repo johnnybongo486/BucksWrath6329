@@ -34,7 +34,7 @@ public class Serializer extends SubsystemBase {
 
     public void runSerializer() {
         SerializerTalon.set(ControlMode.PercentOutput, 1);
-        UpperSerializerTalon.set(ControlMode.PercentOutput, -1);
+        UpperSerializerTalon.set(ControlMode.PercentOutput, -1);  // was 0.7
     }
 
     public void stopSerializer(){

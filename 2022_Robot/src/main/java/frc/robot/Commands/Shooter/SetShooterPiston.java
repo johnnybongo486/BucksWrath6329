@@ -12,7 +12,7 @@ public class SetShooterPiston extends CommandBase {
     }
 
     public void initialize() {
-        RobotContainer.shooterPiston.setPosition(setPosition);
+        //RobotContainer.shooterPiston.setPosition(setPosition);
     }
 
     public void execute() {
@@ -21,7 +21,7 @@ public class SetShooterPiston extends CommandBase {
     }
 
    public boolean isFinished() {
-       return false;
+       return true;  // was false
    }
 
    protected void end() {

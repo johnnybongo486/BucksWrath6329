@@ -19,22 +19,22 @@ public class LeftClimber extends SubsystemBase implements IPositionControlledSub
 
     // Set Different Heights
 	private int homePosition = 0;
-	private int climbPosition = -13500;
-	private int raiseRobotPosition = -10000;
-	private int maxUpTravelPosition = 0;
+	private int climbPosition = 24000;
+	private int raiseRobotPosition = 0;
+	private int maxUpTravelPosition = 26000;
 
 	public final static int Climber_UP = 0;
 	public final static int Climber_DOWN = 1;
 
 	public int upPositionLimit = maxUpTravelPosition;
-	public int downPositionLimit = -14000;
+	public int downPositionLimit = -1;
 	private int targetPosition = 0;
 	private double arbitraryFeedForward = 0.0;
 
 	private final static int onTargetThreshold = 100;
 	
-	private final SRXGains upGains = new SRXGains(Climber_UP, 0.029, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
-	private final SRXGains downGains = new SRXGains(Climber_DOWN, 0.029, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
+	private final SRXGains upGains = new SRXGains(Climber_UP, 0.2, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
+	private final SRXGains downGains = new SRXGains(Climber_DOWN, 0.9, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
 	private MotionParameters highGearUpMotionParameters = new MotionParameters(180000, 90000, upGains);
@@ -56,7 +56,7 @@ public class LeftClimber extends SubsystemBase implements IPositionControlledSub
 		this.leftClimberESC.configReverseSoftLimitEnable(true);
 		this.leftClimberESC.configReverseSoftLimitThreshold(downPositionLimit);
 
-		this.leftClimberESC.setInverted(false);
+		this.leftClimberESC.setInverted(true);
 		this.leftClimberESC.setSensorPhase(true);
 
 		this.leftClimberESC.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
@@ -193,6 +193,10 @@ public class LeftClimber extends SubsystemBase implements IPositionControlledSub
 		else {
 				leftClimberESC.selectMotionParameters(highGearDownMotionParameters);
 		}
+	}
+
+	public void zeroTarget() {
+		targetPosition = 0;
 	}
 
 	public void updateDashboard() {

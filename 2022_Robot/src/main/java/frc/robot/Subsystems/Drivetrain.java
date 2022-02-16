@@ -131,11 +131,11 @@ public class Drivetrain extends SubsystemBase {
         leftConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
 
         // Motion Magic Configs 
-        rightConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
-        rightConfig.motionCruiseVelocity = 10000; //distance units per 100 ms // could be up to 21k
+        rightConfig.motionAcceleration = 4000; //(distance units per 100 ms) per second
+        rightConfig.motionCruiseVelocity = 12000; //distance units per 100 ms // could be up to 21k
 
-        leftConfig.motionAcceleration = 2000; //(distance units per 100 ms) per second
-        leftConfig.motionCruiseVelocity = 10000; //distance units per 100 ms // could be up to 21k
+        leftConfig.motionAcceleration = 4000; //(distance units per 100 ms) per second
+        leftConfig.motionCruiseVelocity = 12000; //distance units per 100 ms // could be up to 21k
 
         /* APPLY the config settings */
 		leftLead.configAllSettings(leftConfig);

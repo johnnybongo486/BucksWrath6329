@@ -92,6 +92,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    RobotContainer.leftClimber.resetClimberEncoder();
+    RobotContainer.rightClimber.resetClimberEncoder();
   }
 
   /** This function is called periodically during operator control. */
@@ -104,6 +106,10 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     RobotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
     RobotContainer.drivetrain.resetDriveEncoders();
+    RobotContainer.leftClimber.resetClimberEncoder();
+    RobotContainer.rightClimber.resetClimberEncoder();
+    RobotContainer.leftClimber.zeroTarget();
+    RobotContainer.rightClimber.zeroTarget();
     
     // Use for matches
     RobotContainer.limelight.cameraMode();

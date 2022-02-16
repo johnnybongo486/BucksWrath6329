@@ -10,21 +10,33 @@ public class TurnToAngle extends CommandBase {
     public double turnThrottle = 0;
     public double forwardThrottle = 0;
     public double rotateGain = 0;
-    public double kPgain = 0.04; /* percent throttle per degree of error */ //was .04
-	public double kDgain = 0.00004; /* percent throttle per angular velocity dps */
-	public double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */
+
+    public double kPgain = 0.008;
+    public double lPgain = 0.008; /* percent throttle per degree of error */ //was .04
+	public double kDgain = 0; /* percent throttle per angular velocity dps */
+	public double kMaxCorrectionRatio = 0.50; /* cap corrective turning throttle to 30 percent of forward throttle */
+    public double sPgain = 0.04;
+
     public double targetAngle = 0;
     public double currentAngle = 0;
     public double currentAngularRate = 0;
     public double currentDistance = 0;
     public double error = 0;
-    public double acceptableError = 2;
+    public double acceptableError = 5;
     public double maxSpeed = 0;
 
     public TurnToAngle(int angle, double maxSpeed) {
         addRequirements(RobotContainer.drivetrain);
         this.targetAngle = angle;   
         this.maxSpeed = maxSpeed;
+        currentAngle = RobotContainer.drivetrain.getAngle();
+        // error = Math.abs(targetAngle - currentAngle);
+        // if(error > 30) {
+        //     kPgain = lPgain;
+         //}
+        //else  {
+        //    kPgain = sPgain;
+        //}
     }
 
     public void initialize() {
@@ -41,8 +53,8 @@ public class TurnToAngle extends CommandBase {
 			 * and larger correction the faster we move.  Otherwise you may need stiffer pgain at higher velocities. */
 		double maxThrot = MaxCorrection(forwardThrottle, kMaxCorrectionRatio);
         turnThrottle = Cap(turnThrottle, maxThrot);
-        double left = forwardThrottle - turnThrottle;
-        double right = forwardThrottle + turnThrottle;
+        double left = forwardThrottle + turnThrottle;
+        double right = forwardThrottle - turnThrottle;
         left = Cap(left, maxSpeed);
         right = Cap(right, maxSpeed);
         RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, right);
@@ -57,7 +69,7 @@ public class TurnToAngle extends CommandBase {
     }
 
     protected void interrupted(){
-
+        end();
     }
    
     double MaxCorrection(double forwardThrot, double scalor) {

@@ -8,19 +8,19 @@ import frc.robot.RobotContainer;
 
 public class Shifter extends SubsystemBase {
     
-    private final Solenoid shifterSol = new Solenoid(1, PneumaticsModuleType.REVPH, 8);
+    private final Solenoid shifterSol = new Solenoid(1, PneumaticsModuleType.REVPH, 9);
 
     public Shifter() {
         
     }
 
     public void lowGear() {
-        shifterSol.set(true);
+        shifterSol.set(false);
         RobotContainer.drivetrain.setIsHighGear(true);
     }
 
     public void highGear() {
-        shifterSol.set(false);
+        shifterSol.set(true);
         RobotContainer.drivetrain.setIsHighGear(false);
     }
 }

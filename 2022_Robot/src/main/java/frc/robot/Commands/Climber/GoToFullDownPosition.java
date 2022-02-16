@@ -5,7 +5,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class GoToFullDownPosition extends CommandBase {
 
-	private int desiredPosition = RobotContainer.leftClimber.getClimbPosition();
+	private int ldesiredPosition = RobotContainer.leftClimber.getRaiseRobotPosition();
+	private int rdesiredPosition = RobotContainer.rightClimber.getRaiseRobotPosition();
 
 	public GoToFullDownPosition() {
 		addRequirements(RobotContainer.leftClimber);
@@ -14,8 +15,8 @@ public class GoToFullDownPosition extends CommandBase {
 
 	// Called just before this Command runs the first time
 	public void initialize() {
-		RobotContainer.leftClimber.setTargetPosition(desiredPosition);
-		RobotContainer.rightClimber.setTargetPosition(desiredPosition);
+		RobotContainer.leftClimber.setTargetPosition(ldesiredPosition);
+		RobotContainer.rightClimber.setTargetPosition(rdesiredPosition);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -26,7 +27,7 @@ public class GoToFullDownPosition extends CommandBase {
 
 	// Make this return true when this Command no longer needs to run execute()
 	public boolean isFinished() {
-		return RobotContainer.leftClimber.isInPosition(desiredPosition) && RobotContainer.rightClimber.isInPosition(desiredPosition);
+		return RobotContainer.leftClimber.isInPosition(ldesiredPosition) && RobotContainer.rightClimber.isInPosition(rdesiredPosition);
 	}
 
 	// Called once after isFinished returns true

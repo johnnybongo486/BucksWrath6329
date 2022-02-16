@@ -8,13 +8,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.Intake.StopCenterIntake;
 import frc.robot.Commands.Auto.AutonomousSelector;
 import frc.robot.Commands.Auto.JoystickVisionAlign;
-import frc.robot.Commands.Auto.PIDVisionFollow;
 import frc.robot.Commands.Auto.TurnOffLimelight;
 import frc.robot.Commands.Auto.TurnOnLimelight;
-import frc.robot.Commands.Climber.ClimberDeploy;
+import frc.robot.Commands.Climber.ClimbCommandGroup;
 import frc.robot.Commands.Climber.ClimberVertical;
 import frc.robot.Commands.Climber.GoToClimbPosition;
-import frc.robot.Commands.Climber.JoystickClimber;
+import frc.robot.Commands.Climber.NextBarCommandGroup;
 import frc.robot.Commands.Drivetrain.CompressorCommand;
 import frc.robot.Commands.Drivetrain.HighGear;
 import frc.robot.Commands.Drivetrain.JoystickDrive;
@@ -22,12 +21,12 @@ import frc.robot.Commands.Drivetrain.LowGear;
 import frc.robot.Commands.Intake.IntakeBallCommandGroup;
 import frc.robot.Commands.Intake.IntakeRetract;
 import frc.robot.Commands.Intake.ReverseCenterIntake;
-import frc.robot.Commands.Intake.RunCenterIntake;
 import frc.robot.Commands.Intake.StopIntake;
 import frc.robot.Commands.Intake.StoreIntakeCommandGroup;
 import frc.robot.Commands.Serializer.ReverseSerializer;
-import frc.robot.Commands.Serializer.RunSerializer;
+import frc.robot.Commands.Serializer.ShootBallCommandGroup;
 import frc.robot.Commands.Serializer.StopSerializer;
+import frc.robot.Commands.Serializer.StopShooterCommandGroup;
 import frc.robot.Commands.Shooter.JoystickShooter;
 import frc.robot.Commands.Shooter.TarmacShotCommandGroup;
 import frc.robot.Commands.Shooter.FenderShotHighCommandGroup;
@@ -105,9 +104,9 @@ public class RobotContainer {
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.intakePiston, new IntakeRetract());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.serializer, new StopSerializer());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.shooter, new JoystickShooter());
-        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.leftClimber, new JoystickClimber());
-        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.rightClimber, new JoystickClimber());
-        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.climberPiston, new ClimberDeploy());
+        //CommandScheduler.getInstance().setDefaultCommand(RobotContainer.leftClimber, new JoystickClimber());
+        //CommandScheduler.getInstance().setDefaultCommand(RobotContainer.rightClimber, new JoystickClimber());
+        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.climberPiston, new ClimberVertical());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.airCompressor, new CompressorCommand());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.limelight, new TurnOffLimelight());
     }
@@ -133,8 +132,8 @@ public class RobotContainer {
         intakeButton.whenReleased(new StoreIntakeCommandGroup());
 
         shootButton = new JoystickButton(Driver, 6);
-        shootButton.whileHeld(new RunSerializer().alongWith(new RunCenterIntake()));
-        shootButton.whenReleased(new StopSerializer().alongWith(new StopCenterIntake()));
+        shootButton.whileHeld(new ShootBallCommandGroup());
+        shootButton.whenReleased(new StopShooterCommandGroup());
 
 
         //Operator Buttons
@@ -151,13 +150,13 @@ public class RobotContainer {
         tarmacHighGoalButton.whenPressed(new TarmacShotCommandGroup());
 
         climberUpButton = new JoystickButton(Operator, 4);
-        climberUpButton.whenPressed(new GoToClimbPosition());
+        climberUpButton.whenPressed(new GoToClimbPosition().withTimeout(2));
 
         climberPistonDownButton = new JoystickButton(Operator, 5);
-        climberPistonDownButton.whenPressed(new ClimberDeploy());
+        climberPistonDownButton.whenPressed(new ClimbCommandGroup());
 
         climberPistonVerticalButton = new JoystickButton(Operator, 6);
-        climberPistonVerticalButton.whenPressed(new ClimberVertical());
+        climberPistonVerticalButton.whenPressed(new NextBarCommandGroup());
     } 
 
     public Joystick getDriver() {
@@ -185,7 +184,7 @@ public class RobotContainer {
     }
  
     public double getOperatorRightStickY() {
-        return stickDeadband(this.Operator.getRawAxis(3), 0.05, 0.0);
+        return stickDeadband(this.Operator.getRawAxis(5), 0.05, 0.0);
     }
 
     public void rumbleLeft() {

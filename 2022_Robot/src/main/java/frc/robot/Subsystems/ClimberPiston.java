@@ -7,17 +7,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberPiston extends SubsystemBase {
     
-    private final Solenoid climberSol = new Solenoid(1, PneumaticsModuleType.REVPH, 9);
+    private final Solenoid climberSol = new Solenoid(1, PneumaticsModuleType.REVPH, 8);
 
     public ClimberPiston() {
         
     }
 
     public void climberIn() {
-        climberSol.set(true);
+        climberSol.set(false);
     }
 
     public void climberOut() {
-        climberSol.set(false);
+        climberSol.set(true);
     }
 }
