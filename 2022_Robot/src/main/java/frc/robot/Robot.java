@@ -29,14 +29,14 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotContainer = new RobotContainer();
     
-    limelight = CameraServer.addAxisCamera("limelight", "10.63.29.11");
-    RobotContainer.limelight.cameraMode();
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(2);
-    limelight.setFPS(10);
-    limelight.setResolution(160,120);
+    //limelight = CameraServer.addAxisCamera("limelight", "10.63.29.11");
+    //RobotContainer.limelight.cameraMode();
+    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(2);
+    //limelight.setFPS(10);
+    //limelight.setResolution(160,120);
 
     intakeCamera = CameraServer.startAutomaticCapture("Intake", 0);
-    intakeCamera.setResolution(240 ,180);
+    intakeCamera.setResolution(1600 ,120);
     intakeCamera.setFPS(30);
   }
 
@@ -94,6 +94,8 @@ public class Robot extends TimedRobot {
     }
     RobotContainer.leftClimber.resetClimberEncoder();
     RobotContainer.rightClimber.resetClimberEncoder();
+    RobotContainer.leftClimber.zeroTarget();
+    RobotContainer.rightClimber.zeroTarget();
   }
 
   /** This function is called periodically during operator control. */

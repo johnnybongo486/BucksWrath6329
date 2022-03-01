@@ -20,11 +20,11 @@ public class CenterIntake extends SubsystemBase {
     }
 
     public void reverseCenterIntake() {
-        centerTalon.set(ControlMode.PercentOutput, 1);
+        centerTalon.set(ControlMode.PercentOutput, -1);
     }
 
     public void runCenterIntake() {
-        centerTalon.set(ControlMode.PercentOutput, -1);
+        centerTalon.set(ControlMode.PercentOutput, 1);
     }
 
     public void stopCenterIntake(){

@@ -9,7 +9,7 @@ public class DriveSignal {
 	protected boolean mBrakeMode;
 
 	public DriveSignal(double left, double right) {
-		this(left, right, false);
+		this(left, right, true);
 	}
 
 	public DriveSignal(double left, double right, boolean brakeMode) {

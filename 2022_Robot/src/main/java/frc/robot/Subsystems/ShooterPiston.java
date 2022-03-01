@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ShooterPiston extends SubsystemBase {
 
    private final Servo leftShooterPiston = new Servo(2);
-   private final Servo rightShooterPiston = new Servo(3);
+   private final Servo rightShooterPiston = new Servo(1);
 
    private double setAngle = 0;
 
@@ -15,8 +15,8 @@ public class ShooterPiston extends SubsystemBase {
    }
 
    public void store() {
-      leftShooterPiston.setAngle(30);
-      rightShooterPiston.setAngle(30);
+      leftShooterPiston.setAngle(0);
+      rightShooterPiston.setAngle(0);
    }
 
    public void fullDeploy() {

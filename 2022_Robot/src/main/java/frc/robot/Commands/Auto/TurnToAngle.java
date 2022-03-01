@@ -11,10 +11,10 @@ public class TurnToAngle extends CommandBase {
     public double forwardThrottle = 0;
     public double rotateGain = 0;
 
-    public double kPgain = 0.008;
-    public double lPgain = 0.008; /* percent throttle per degree of error */ //was .04
+    public double kPgain = 0.01;
+    public double lPgain = 0.00; /* percent throttle per degree of error */ //was .04
 	public double kDgain = 0; /* percent throttle per angular velocity dps */
-	public double kMaxCorrectionRatio = 0.50; /* cap corrective turning throttle to 30 percent of forward throttle */
+	public double kMaxCorrectionRatio = 1; /* cap corrective turning throttle to 30 percent of forward throttle */
     public double sPgain = 0.04;
 
     public double targetAngle = 0;
@@ -53,8 +53,8 @@ public class TurnToAngle extends CommandBase {
 			 * and larger correction the faster we move.  Otherwise you may need stiffer pgain at higher velocities. */
 		double maxThrot = MaxCorrection(forwardThrottle, kMaxCorrectionRatio);
         turnThrottle = Cap(turnThrottle, maxThrot);
-        double left = forwardThrottle + turnThrottle;
-        double right = forwardThrottle - turnThrottle;
+        double left = forwardThrottle - turnThrottle;
+        double right = forwardThrottle + turnThrottle;
         left = Cap(left, maxSpeed);
         right = Cap(right, maxSpeed);
         RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, right);
@@ -79,8 +79,8 @@ public class TurnToAngle extends CommandBase {
         forwardThrot *= scalor;
         /* ensure caller is allowed at least 10% throttle,
         * regardless of forward throttle */
-        if(forwardThrot < 0.30)
-        return 0.30;
+        if(forwardThrot < 0.70)
+        return 0.70;
         return forwardThrot;    
     }
 

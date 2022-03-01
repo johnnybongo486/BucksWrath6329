@@ -21,11 +21,11 @@ public class JoystickDrive extends CommandBase {
     }
 
     public void execute() {
-        double moveValue = Robot.robotContainer.getDriverLeftStickY();
+        double moveValue = -Robot.robotContainer.getDriverLeftStickY();
         double rotateValue = Robot.robotContainer.getDriverRightStickX();
 		boolean quickTurn = (moveValue < quickTurnThreshold && moveValue > -quickTurnThreshold);
-        DriveSignal driveSignal = helper.cheesyDrive(moveValue, -rotateValue, quickTurn, RobotContainer.drivetrain.getIsHighGear());
-        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, driveSignal); 
+        DriveSignal driveSignal = helper.cheesyDrive(moveValue, rotateValue, quickTurn, RobotContainer.drivetrain.getIsHighGear());
+        RobotContainer.drivetrain.setDrive(ControlMode.PercentOutput, driveSignal); 
     }
 
     public boolean isFinished() {

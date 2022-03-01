@@ -19,21 +19,21 @@ public class RightClimber extends SubsystemBase implements IPositionControlledSu
 
     // Set Different Heights
 	private int homePosition = 0;
-	private int climbPosition = 24000;
+	private int climbPosition = 26000;
 	private int raiseRobotPosition = 0;
-	private int maxUpTravelPosition = 24000;
+	private int maxUpTravelPosition = 27000;
 
 	public final static int Climber_UP = 0;
 	public final static int Climber_DOWN = 1;
 
 	public int upPositionLimit = maxUpTravelPosition;
-	public int downPositionLimit = -1;
+	public int downPositionLimit = 0;
 	private int targetPosition = 0;
 	private double arbitraryFeedForward = 0.0;
 
 	private final static int onTargetThreshold = 100;
 	
-	private final SRXGains upGains = new SRXGains(Climber_UP, 0.2, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
+	private final SRXGains upGains = new SRXGains(Climber_UP, 0.3, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
 	private final SRXGains downGains = new SRXGains(Climber_DOWN, 0.9, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
@@ -56,8 +56,8 @@ public class RightClimber extends SubsystemBase implements IPositionControlledSu
 		this.RightClimberESC.configReverseSoftLimitEnable(true);
 		this.RightClimberESC.configReverseSoftLimitThreshold(downPositionLimit);
 
-		this.RightClimberESC.setInverted(false);
-		this.RightClimberESC.setSensorPhase(true);
+		this.RightClimberESC.setInverted(true);
+		this.RightClimberESC.setSensorPhase(false);
 
 		this.RightClimberESC.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
 		this.RightClimberESC.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);

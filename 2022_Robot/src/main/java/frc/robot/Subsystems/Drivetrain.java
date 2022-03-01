@@ -1,6 +1,5 @@
 package frc.robot.Subsystems;
 
-import frc.robot.Commands.Drivetrain.JoystickDrive;
 import frc.robot.Models.DriveSignal;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 
@@ -18,15 +16,14 @@ public class Drivetrain extends SubsystemBase {
     public TalonFX rightLead = new TalonFX(3);
     public TalonFX leftFollower = new TalonFX(2);
     public TalonFX rightFollower = new TalonFX(4);
-    public TalonSRX spareTalon = new TalonSRX(5);
 
-    public PigeonIMU pigeon = new PigeonIMU(spareTalon);
+    public PigeonIMU pigeon = new PigeonIMU(0);
     
     // Motion Magic Stuff
     public TalonFXConfiguration leftConfig = new TalonFXConfiguration();
     public TalonFXConfiguration rightConfig = new TalonFXConfiguration();
-    TalonFXInvertType rightInvert = TalonFXInvertType.CounterClockwise;
-    TalonFXInvertType leftInvert = TalonFXInvertType.Clockwise;
+    TalonFXInvertType rightInvert = TalonFXInvertType.Clockwise;
+    TalonFXInvertType leftInvert = TalonFXInvertType.CounterClockwise;
 
     public double _leftOffset;
     public double _rightOffset;
@@ -40,27 +37,18 @@ public class Drivetrain extends SubsystemBase {
     public double distanceError = 0;
     public double targetDistance = 0;
 
-    /** Tracking variables */
-	boolean _firstCall = false;
-	boolean _state = false;
-	double _targetAngle = 0;
-
-    public void initDefaultCommand() {
-        setDefaultCommand(new JoystickDrive());
-    }
-
     public Drivetrain() {
-        leftLead.configFactoryDefault();
-        leftFollower.configFactoryDefault();
-        rightLead.configFactoryDefault();
-        rightFollower.configFactoryDefault();
+        leftLead.configFactoryDefault(10);
+        leftFollower.configFactoryDefault(10);
+        rightLead.configFactoryDefault(10);
+        rightFollower.configFactoryDefault(10);
 
-        leftLead.clearStickyFaults();
-        leftFollower.clearStickyFaults();
-        rightLead.clearStickyFaults();
-        rightFollower.clearStickyFaults();
+        leftLead.clearStickyFaults(10);
+        leftFollower.clearStickyFaults(10);
+        rightLead.clearStickyFaults(10);
+        rightFollower.clearStickyFaults(10);
         
-        // Setup Followers
+        //Setup Followers
         leftFollower.follow(leftLead);
         rightFollower.follow(rightLead);
 
@@ -68,6 +56,12 @@ public class Drivetrain extends SubsystemBase {
         rightLead.setInverted(rightInvert);
         leftFollower.setInverted(leftInvert);
         rightFollower.setInverted(rightInvert);
+
+        leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+        leftLead.setSensorPhase(true);
+        rightLead.setSensorPhase(true);
 
         resetPigeon();
         setNeutralMode(NeutralMode.Brake);
@@ -131,15 +125,17 @@ public class Drivetrain extends SubsystemBase {
         leftConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
 
         // Motion Magic Configs 
-        rightConfig.motionAcceleration = 4000; //(distance units per 100 ms) per second
-        rightConfig.motionCruiseVelocity = 12000; //distance units per 100 ms // could be up to 21k
+        rightConfig.motionAcceleration = 12000; //(distance units per 100 ms) per second
+        rightConfig.motionCruiseVelocity = 20000; //distance units per 100 ms // could be up to 21k
 
-        leftConfig.motionAcceleration = 4000; //(distance units per 100 ms) per second
-        leftConfig.motionCruiseVelocity = 12000; //distance units per 100 ms // could be up to 21k
+        leftConfig.motionAcceleration = 12000; //(distance units per 100 ms) per second
+        leftConfig.motionCruiseVelocity = 20000; //distance units per 100 ms // could be up to 21k
 
         /* APPLY the config settings */
 		leftLead.configAllSettings(leftConfig);
+        //leftFollower.configAllSettings(leftConfig);
         rightLead.configAllSettings(rightConfig);
+        //rightFollower.configAllSettings(rightConfig);
         
         /* Set status frame periods to ensure we don't have stale data */
 		/* These aren't configs (they're not persistant) so we can set these after the configs.  */
@@ -148,6 +144,10 @@ public class Drivetrain extends SubsystemBase {
 		rightLead.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
 		rightLead.setStatusFramePeriod(StatusFrame.Status_10_Targets, 10, 30);
 		leftLead.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 30);
+        //leftLead.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
+		//leftLead.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20, 30);
+		//leftLead.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
+		//leftLead.setStatusFramePeriod(StatusFrame.Status_10_Targets, 10, 30);
 		pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR , 5, 30);
 
         /**
@@ -169,13 +169,35 @@ public class Drivetrain extends SubsystemBase {
        
         // Set Ramp Rates
         leftLead.configOpenloopRamp(0.25);
+        leftFollower.configOpenloopRamp(0.25);
         rightLead.configOpenloopRamp(0.25);
+        rightFollower.configOpenloopRamp(0.25);
 
         leftLead.configClosedloopRamp(0.25);
+        leftFollower.configClosedloopRamp(0.25);
         rightLead.configClosedloopRamp(0.25);
+        rightFollower.configClosedloopRamp(0.25);
 
         leftLead.configClosedLoopPeakOutput(0, 1.0);
+        leftFollower.configClosedLoopPeakOutput(0, 1.0);
         rightLead.configClosedLoopPeakOutput(0, 1.0);
+        rightFollower.configClosedLoopPeakOutput(0, 1.0);
+
+        leftLead.configPeakOutputForward(1.0);
+        leftFollower.configPeakOutputForward(1.0);
+        rightLead.configPeakOutputForward(1.0);
+        rightFollower.configPeakOutputForward(1.0);
+
+        leftLead.configPeakOutputReverse(-1.0);
+        leftFollower.configPeakOutputReverse(-1.0);
+        rightLead.configPeakOutputReverse(-1.0);
+        rightFollower.configPeakOutputReverse(-1.0);
+
+        leftLead.enableVoltageCompensation(false);
+        rightLead.enableVoltageCompensation(false);
+        leftFollower.enableVoltageCompensation(false);
+        rightFollower.enableVoltageCompensation(false);
+
 
         rightLead.selectProfileSlot(0, 0);
         rightLead.selectProfileSlot(1, 1);
@@ -186,7 +208,9 @@ public class Drivetrain extends SubsystemBase {
 
     public void drive(ControlMode controlMode, double left, double right) {
         this.leftLead.set(controlMode, left);
+        //this.leftFollower.set(controlMode, left);
         this.rightLead.set(controlMode, right);
+        //this.rightFollower.set(controlMode, right);
     }
 
     public void stopDrivetrain() {
@@ -194,7 +218,7 @@ public class Drivetrain extends SubsystemBase {
         this.rightLead.set(ControlMode.PercentOutput, 0);
     }
 
-    public void drive(ControlMode controlMode, DriveSignal driveSignal) {
+    public void setDrive(ControlMode controlMode, DriveSignal driveSignal) {
         this.drive(controlMode, driveSignal.getLeft(), driveSignal.getRight());
     }
 
@@ -215,7 +239,9 @@ public class Drivetrain extends SubsystemBase {
 
     public void setNeutralMode(NeutralMode neutralMode) {
         this.leftLead.setNeutralMode(neutralMode);
+        this.leftFollower.setNeutralMode(neutralMode);
         this.rightLead.setNeutralMode(neutralMode);
+        this.rightFollower.setNeutralMode(neutralMode);
     }
 
     public double getAngle() {
@@ -281,7 +307,9 @@ public class Drivetrain extends SubsystemBase {
 
     public void updateDashboard() {
         SmartDashboard.putNumber("Drivetrain / Left Lead Current", leftLead.getSupplyCurrent());
+        SmartDashboard.putNumber("Drivetrain / Left Follow Current", leftFollower.getSupplyCurrent());
         SmartDashboard.putNumber("Drivetrain / Right Lead Current", rightLead.getSupplyCurrent());
+        SmartDashboard.putNumber("Drivetrain / Right Follow Current", rightFollower.getSupplyCurrent());
         SmartDashboard.putNumber("Drivetrain / Left Speed", getLeftSpeed());
         SmartDashboard.putNumber("Drivetrain / Right Speed", getRightSpeed());
         SmartDashboard.putNumber("Drivetrain / Current Angle", getAngle());
