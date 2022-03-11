@@ -3,7 +3,7 @@ package frc.robot.Commands.Auto;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class MagicAutoDrive extends CommandBase {
+public class MagicAutoAngle extends CommandBase {
 
      public double leftRotations = 0;
      public double rightRotations = 0;
@@ -14,10 +14,10 @@ public class MagicAutoDrive extends CommandBase {
      public double acceptableError = 500;
      public double kP = 0;
 
-     public MagicAutoDrive(double distance, double p) {
+     public MagicAutoAngle(double angle, double p) {
         addRequirements(RobotContainer.drivetrain);
         this.kP = p;
-        this.ticks = distance * 13870;  //2046*Gearbox / 1.5708 // 10360 on practice bot
+        this.ticks = angle * 275;  //2046*Gearbox / 1.5708 // 10360 on practice bot
      }
 
      public void initialize() {
@@ -32,7 +32,7 @@ public class MagicAutoDrive extends CommandBase {
    }
 
    public void execute() {
-          RobotContainer.drivetrain.magicDrive(ticks);
+          RobotContainer.drivetrain.magicTurn(-ticks, ticks);
           RobotContainer.drivetrain.setTargetDistance(ticks);
           errorRight = Math.abs(ticks - RobotContainer.drivetrain.getRightDistance());
           errorLeft = Math.abs(ticks - RobotContainer.drivetrain.getLeftDistance());
@@ -41,7 +41,7 @@ public class MagicAutoDrive extends CommandBase {
    }
 
    public boolean isFinished() {
-          return errorRight < acceptableError && errorLeft < acceptableError;
+          return errorRight < acceptableError;
    }
 
    protected void end() {

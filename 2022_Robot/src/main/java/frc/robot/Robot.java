@@ -29,14 +29,14 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotContainer = new RobotContainer();
     
-    //limelight = CameraServer.addAxisCamera("limelight", "10.63.29.11");
-    //RobotContainer.limelight.cameraMode();
-    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(2);
-    //limelight.setFPS(10);
-    //limelight.setResolution(160,120);
+    limelight = CameraServer.addAxisCamera("limelight", "10.63.29.11");
+    RobotContainer.limelight.cameraMode();
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(2);
+    limelight.setFPS(10);
+    limelight.setResolution(160,120);
 
     intakeCamera = CameraServer.startAutomaticCapture("Intake", 0);
-    intakeCamera.setResolution(1600 ,120);
+    intakeCamera.setResolution(160,120);
     intakeCamera.setFPS(30);
   }
 
@@ -72,6 +72,10 @@ public class Robot extends TimedRobot {
     RobotContainer.drivetrain.resetPigeon();
     RobotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
     RobotContainer.drivetrain.resetDriveEncoders(); 
+    RobotContainer.leftClimber.resetClimberEncoder();
+    RobotContainer.rightClimber.resetClimberEncoder();
+    RobotContainer.leftClimber.zeroTarget();
+    RobotContainer.rightClimber.zeroTarget();
     
     m_autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -91,7 +95,10 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+
+      RobotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
     }
+    // Comment out for matches
     RobotContainer.leftClimber.resetClimberEncoder();
     RobotContainer.rightClimber.resetClimberEncoder();
     RobotContainer.leftClimber.zeroTarget();
@@ -107,17 +114,12 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     RobotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
-    RobotContainer.drivetrain.resetDriveEncoders();
-    RobotContainer.leftClimber.resetClimberEncoder();
-    RobotContainer.rightClimber.resetClimberEncoder();
-    RobotContainer.leftClimber.zeroTarget();
-    RobotContainer.rightClimber.zeroTarget();
     
     // Use for matches
     RobotContainer.limelight.cameraMode();
 
     // Use for calibrating vision
-    // RobotContainer.limelight.visionMode();
+    //RobotContainer.limelight.visionMode();
   }
 
   /** This function is called periodically when disabled. */

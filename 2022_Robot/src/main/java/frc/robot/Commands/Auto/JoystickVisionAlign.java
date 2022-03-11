@@ -19,7 +19,7 @@ public class JoystickVisionAlign extends CommandBase {
 
     private double kPgain = 0.025; /* percent throttle per degree of error */   // 0.025 
     private double kIgain = 0.000;
-    private double kDgain = 0.00005; /* percent throttle per angular velocity dps */
+    private double kDgain = 0.0000; /* percent throttle per angular velocity dps */
     private double errorSum = 0;
     private double lastTimeStamp = 0;
     private double kMaxCorrectionRatio = 0.30; /* cap corrective turning throttle to 30 percent of forward throttle */
@@ -56,7 +56,7 @@ public class JoystickVisionAlign extends CommandBase {
         left = Cap(left, 1.0);
         right = Cap(right, 1.0);
 
-        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, right);
+        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, left, right, right);
 
         lastTimeStamp = Timer.getFPGATimestamp();
     }
@@ -80,8 +80,8 @@ public class JoystickVisionAlign extends CommandBase {
         forwardThrot *= scalor;
         /* ensure caller is allowed at least 10% throttle,
          * regardless of forward throttle */
-        if(forwardThrot < 0.30)
-            return 0.30;
+        if(forwardThrot < 1)    // was 0.3
+            return 1;           // was 0.3
         return forwardThrot;    
         }
 

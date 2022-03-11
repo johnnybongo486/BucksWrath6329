@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePiston extends SubsystemBase {
     
-    private final Solenoid intakeSol = new Solenoid(1, PneumaticsModuleType.REVPH, 10);
+    private final Solenoid intakeSol = new Solenoid(0, PneumaticsModuleType.CTREPCM, 2);
 
     public IntakePiston(){
         

@@ -1,42 +1,22 @@
 package frc.robot.Subsystems;
 
-import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterPiston extends SubsystemBase {
 
-   private final Servo leftShooterPiston = new Servo(2);
-   private final Servo rightShooterPiston = new Servo(1);
-
-   private double setAngle = 0;
+   private final Solenoid shooterSol = new Solenoid(0, PneumaticsModuleType.CTREPCM, 0);
 
    public ShooterPiston(){
       
    }
 
    public void store() {
-      leftShooterPiston.setAngle(0);
-      rightShooterPiston.setAngle(0);
+      shooterSol.set(true);
    }
 
-   public void fullDeploy() {
-      leftShooterPiston.setAngle(135);
-      rightShooterPiston.setAngle(135);
+   public void deploy() {
+      shooterSol.set(false);
    }
-
-   public void tarmacDeploy() {
-      leftShooterPiston.setAngle(90);
-      rightShooterPiston.setAngle(90);
-   }
-
-   public void lowgoalDeploy() {
-      leftShooterPiston.setAngle(100);
-      rightShooterPiston.setAngle(100);
-   }
-
-   public void setPosition(double angle) {
-      this.setAngle = angle;
-      leftShooterPiston.setAngle(setAngle);
-      rightShooterPiston.setAngle(setAngle);
-   }  
 }

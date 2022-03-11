@@ -5,6 +5,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class StoreIntakeCommandGroup extends SequentialCommandGroup {
 
 	public StoreIntakeCommandGroup() {
-        addCommands(new IntakeRetract().withTimeout(0.1), new StopIntake().alongWith(new StopCenterIntake()));
+        addCommands(new StopIntake().alongWith(new StopCenterIntake()));
     }  
 }

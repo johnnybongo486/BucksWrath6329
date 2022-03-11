@@ -3,25 +3,22 @@ package frc.robot.Commands.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class SetShooterPiston extends CommandBase {
-    private double setPosition = 0;
+public class ShooterPistonDeploy extends CommandBase {
 
-    public SetShooterPiston(double position) {
-        this.setPosition = position;
+    public ShooterPistonDeploy() {
         addRequirements(RobotContainer.shooterPiston);
     }
 
     public void initialize() {
-        //RobotContainer.shooterPiston.setPosition(setPosition);
+        RobotContainer.shooterPiston.deploy();
     }
 
     public void execute() {
-        RobotContainer.shooterPiston.setPosition(setPosition);
 
     }
 
    public boolean isFinished() {
-       return true;  // was false
+       return false;
    }
 
    protected void end() {

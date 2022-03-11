@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AirCompressor extends SubsystemBase {
-    Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+    Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
     public AirCompressor(){
 
@@ -17,7 +17,7 @@ public class AirCompressor extends SubsystemBase {
     }
 
     public void runCompressor() {
-        compressor.enableDigital();
+        compressor.enabled();
     }
 
     public void stopCompressor() {

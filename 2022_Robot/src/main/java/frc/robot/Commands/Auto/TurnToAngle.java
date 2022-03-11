@@ -11,11 +11,10 @@ public class TurnToAngle extends CommandBase {
     public double forwardThrottle = 0;
     public double rotateGain = 0;
 
-    public double kPgain = 0.01;
+    public double kPgain = 0.008; // 0.01
     public double lPgain = 0.00; /* percent throttle per degree of error */ //was .04
-	public double kDgain = 0; /* percent throttle per angular velocity dps */
-	public double kMaxCorrectionRatio = 1; /* cap corrective turning throttle to 30 percent of forward throttle */
-    public double sPgain = 0.04;
+	public double kDgain = 0.075; /* percent throttle per angular velocity dps */
+	public double kMaxCorrectionRatio = 1; /* cap corrective turning throttle to 30 percent of forward throttle was 0.3*/
 
     public double targetAngle = 0;
     public double currentAngle = 0;
@@ -25,18 +24,12 @@ public class TurnToAngle extends CommandBase {
     public double acceptableError = 5;
     public double maxSpeed = 0;
 
-    public TurnToAngle(int angle, double maxSpeed) {
+    public TurnToAngle(int angle, double maxSpeed, double kp) {
         addRequirements(RobotContainer.drivetrain);
         this.targetAngle = angle;   
         this.maxSpeed = maxSpeed;
+        this.kPgain = kp;
         currentAngle = RobotContainer.drivetrain.getAngle();
-        // error = Math.abs(targetAngle - currentAngle);
-        // if(error > 30) {
-        //     kPgain = lPgain;
-         //}
-        //else  {
-        //    kPgain = sPgain;
-        //}
     }
 
     public void initialize() {
@@ -46,7 +39,7 @@ public class TurnToAngle extends CommandBase {
     public void execute() {
         currentAngle = RobotContainer.drivetrain.getAngle();
         currentAngularRate = RobotContainer.drivetrain.getRoll();
-        turnThrottle = (targetAngle - currentAngle) * kPgain - (currentAngularRate) * kDgain;
+        turnThrottle = (targetAngle - currentAngle) * kPgain + (currentAngularRate) * kDgain;
         error = Math.abs(targetAngle - currentAngle);
 			/* the max correction is the forward throttle times a scalar,
 			 * This can be done a number of ways but basically only apply small turning correction when we are moving slow
@@ -57,7 +50,7 @@ public class TurnToAngle extends CommandBase {
         double right = forwardThrottle + turnThrottle;
         left = Cap(left, maxSpeed);
         right = Cap(right, maxSpeed);
-        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, right);
+        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, left, right, right);
     }
 
     public boolean isFinished() {
@@ -79,8 +72,8 @@ public class TurnToAngle extends CommandBase {
         forwardThrot *= scalor;
         /* ensure caller is allowed at least 10% throttle,
         * regardless of forward throttle */
-        if(forwardThrot < 0.70)
-        return 0.70;
+        if(forwardThrot < 1)    // was 0.3 then 0.7
+            return 1;           // was 0.3 then 0.7
         return forwardThrot;    
     }
 

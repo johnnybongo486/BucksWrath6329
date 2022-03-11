@@ -10,9 +10,9 @@ import frc.robot.Commands.Serializer.ShootBallCommandGroup;
 import frc.robot.Commands.Serializer.StopShooterCommandGroup;
 import frc.robot.Commands.Shooter.TarmacShotCommandGroup;
 
-public class RightFiveBall extends SequentialCommandGroup{
+public class RightThreeBall extends SequentialCommandGroup{
    
-    public RightFiveBall() {
+    public RightThreeBall() {
         addCommands(
             new IntakeBallCommandGroup().alongWith(new MagicAutoDrive(3, 0.091).alongWith(new TarmacShotCommandGroup())).withTimeout(1.5),
             new TurnToAngle(0, 0, 0).withTimeout(0.1),
@@ -25,13 +25,9 @@ public class RightFiveBall extends SequentialCommandGroup{
             new TurnToAngle(0, 0, 0).withTimeout(0.1),
             new MagicAutoDrive(7, 0.11).alongWith(new IntakeBallCommandGroup()).withTimeout(2),
             new TurnToAngle(0, 0, 0).withTimeout(0.1),
-            new MagicAutoAngle(22, 0.1),
+            new MagicAutoAngle(-70, 0.1), // total angle guess
             new TurnToAngle(0, 0, 0).withTimeout(0.1),
-            new MagicAutoDrive(12.5, 0.11).withTimeout(2),
-            new TurnToAngle(0, 0, 0).withTimeout(0.1),
-            new MagicAutoAngle(-165, 0.08),
-            new TurnToAngle(0, 0, 0).withTimeout(0.1),
-            new MagicAutoDrive(14, .11).alongWith(new StoreIntakeCommandGroup()).withTimeout(3),
+            new MagicAutoDrive(5, 0.009).alongWith(new StoreIntakeCommandGroup()).withTimeout(2),  // total distance guess
             new ShootBallCommandGroup().withTimeout(1.5),
             new StopShooterCommandGroup().withTimeout(0.05)
         );

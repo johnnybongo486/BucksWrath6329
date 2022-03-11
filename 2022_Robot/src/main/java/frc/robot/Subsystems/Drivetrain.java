@@ -47,10 +47,6 @@ public class Drivetrain extends SubsystemBase {
         leftFollower.clearStickyFaults(10);
         rightLead.clearStickyFaults(10);
         rightFollower.clearStickyFaults(10);
-        
-        //Setup Followers
-        leftFollower.follow(leftLead);
-        rightFollower.follow(rightLead);
 
         leftLead.setInverted(leftInvert);
         rightLead.setInverted(rightInvert);
@@ -59,9 +55,13 @@ public class Drivetrain extends SubsystemBase {
 
         leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        leftFollower.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        rightFollower.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-        leftLead.setSensorPhase(true);
-        rightLead.setSensorPhase(true);
+        leftLead.setSensorPhase(false);
+        leftFollower.setSensorPhase(false);
+        rightLead.setSensorPhase(false);
+        rightFollower.setSensorPhase(false);
 
         resetPigeon();
         setNeutralMode(NeutralMode.Brake);
@@ -125,29 +125,25 @@ public class Drivetrain extends SubsystemBase {
         leftConfig.slot3.closedLoopPeriod = closedLoopTimeMs;
 
         // Motion Magic Configs 
-        rightConfig.motionAcceleration = 12000; //(distance units per 100 ms) per second
-        rightConfig.motionCruiseVelocity = 20000; //distance units per 100 ms // could be up to 21k
+        rightConfig.motionAcceleration = 14000; //(distance units per 100 ms) per second
+        rightConfig.motionCruiseVelocity = 21000; //distance units per 100 ms // could be up to 21k
 
-        leftConfig.motionAcceleration = 12000; //(distance units per 100 ms) per second
-        leftConfig.motionCruiseVelocity = 20000; //distance units per 100 ms // could be up to 21k
+        leftConfig.motionAcceleration = 14000; //(distance units per 100 ms) per second
+        leftConfig.motionCruiseVelocity = 21000; //distance units per 100 ms // could be up to 21k
 
         /* APPLY the config settings */
 		leftLead.configAllSettings(leftConfig);
-        //leftFollower.configAllSettings(leftConfig);
+        leftFollower.configAllSettings(leftConfig);
         rightLead.configAllSettings(rightConfig);
-        //rightFollower.configAllSettings(rightConfig);
+        rightFollower.configAllSettings(rightConfig);
         
         /* Set status frame periods to ensure we don't have stale data */
-		/* These aren't configs (they're not persistant) so we can set these after the configs.  */
+		// These aren't configs (they're not persistant) so we can set these after the configs.  
 		rightLead.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
 		rightLead.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20, 30);
 		rightLead.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
 		rightLead.setStatusFramePeriod(StatusFrame.Status_10_Targets, 10, 30);
 		leftLead.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 30);
-        //leftLead.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
-		//leftLead.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, 20, 30);
-		//leftLead.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
-		//leftLead.setStatusFramePeriod(StatusFrame.Status_10_Targets, 10, 30);
 		pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR , 5, 30);
 
         /**
@@ -156,22 +152,22 @@ public class Drivetrain extends SubsystemBase {
          * rotor acceleration/heat production Supply Current is the current that passes
          * into the controller from the supply Use supply current limits to prevent
          * breakers from tripping
-         * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s) */
-        leftLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
-        leftLead.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
-        leftFollower.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
-        leftFollower.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
+         *                                                                          enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s) */
+        leftLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(      true,       40,                 70,                 0.25));
+        leftLead.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(      true,       40,                 70,                 0.25));
+        leftFollower.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(  true,       40,                 70,                 0.25));
+        leftFollower.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(  true,       40,                 70,                 0.25));
 
-        rightLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
-        rightLead.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
-        rightFollower.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 100, 1.0));
-        rightFollower.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 100, 0.5));
-       
+        rightLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(     true,       40,                 70,                 0.25));
+        rightLead.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(     true,       40,                 70,                 0.25));
+        rightFollower.configStatorCurrentLimit(new StatorCurrentLimitConfiguration( true,       40,                 70,                 0.25));
+        rightFollower.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration( true,       40,                 70,                 0.25));
+
         // Set Ramp Rates
-        leftLead.configOpenloopRamp(0.25);
-        leftFollower.configOpenloopRamp(0.25);
-        rightLead.configOpenloopRamp(0.25);
-        rightFollower.configOpenloopRamp(0.25);
+        leftLead.configOpenloopRamp(0.33);
+        leftFollower.configOpenloopRamp(0.33);
+        rightLead.configOpenloopRamp(0.33);
+        rightFollower.configOpenloopRamp(0.33);
 
         leftLead.configClosedloopRamp(0.25);
         leftFollower.configClosedloopRamp(0.25);
@@ -193,48 +189,58 @@ public class Drivetrain extends SubsystemBase {
         rightLead.configPeakOutputReverse(-1.0);
         rightFollower.configPeakOutputReverse(-1.0);
 
+        leftLead.configVoltageCompSaturation(11);
+        leftFollower.configVoltageCompSaturation(11);
+        rightLead.configVoltageCompSaturation(11);
+        rightFollower.configVoltageCompSaturation(11);
+
+
         leftLead.enableVoltageCompensation(false);
         rightLead.enableVoltageCompensation(false);
         leftFollower.enableVoltageCompensation(false);
         rightFollower.enableVoltageCompensation(false);
 
-
         rightLead.selectProfileSlot(0, 0);
         rightLead.selectProfileSlot(1, 1);
+        rightFollower.selectProfileSlot(0, 0);
+        rightFollower.selectProfileSlot(1, 1);
         leftLead.selectProfileSlot(0, 0);
         leftLead.selectProfileSlot(1, 1);
+        leftFollower.selectProfileSlot(0, 0);
+        leftFollower.selectProfileSlot(1, 1);
 
     }
 
-    public void drive(ControlMode controlMode, double left, double right) {
+    public void drive(ControlMode controlMode, double left, double leftFollow, double right, double rightFollow) {
         this.leftLead.set(controlMode, left);
-        //this.leftFollower.set(controlMode, left);
+        this.leftFollower.set(controlMode, leftFollow);
         this.rightLead.set(controlMode, right);
-        //this.rightFollower.set(controlMode, right);
+        this.rightFollower.set(controlMode, rightFollow);
     }
 
     public void stopDrivetrain() {
         this.leftLead.set(ControlMode.PercentOutput, 0);
+        this.leftFollower.set(ControlMode.PercentOutput, 0);
         this.rightLead.set(ControlMode.PercentOutput, 0);
+        this.rightFollower.set(ControlMode.PercentOutput, 0);
     }
 
     public void setDrive(ControlMode controlMode, DriveSignal driveSignal) {
-        this.drive(controlMode, driveSignal.getLeft(), driveSignal.getRight());
-    }
-
-    public void smartDrive (double leftRotations, double rightRotations) {
-		this.leftLead.set(ControlMode.Position, leftRotations);
-        this.rightLead.set(ControlMode.Position, rightRotations);
+        this.drive(controlMode, driveSignal.getLeft(), driveSignal.getLeftFollow(), driveSignal.getRight(), driveSignal.getRightFollow());
     }
 
     public void magicDrive (double distance) {
-        this.rightLead.set(ControlMode.MotionMagic, distance, DemandType.Neutral, 0.0);
         this.leftLead.set(ControlMode.MotionMagic, distance, DemandType.Neutral, 0.0);
+        this.leftFollower.set(ControlMode.MotionMagic, distance, DemandType.Neutral, 0.0);
+        this.rightLead.set(ControlMode.MotionMagic, distance, DemandType.Neutral, 0.0);
+        this.rightFollower.set(ControlMode.MotionMagic, distance, DemandType.Neutral, 0.0);
     }
 
-    public void magicDriveAngle (double distance, double angle) {
-        this.leftLead.follow(rightLead, FollowerType.AuxOutput1);
-        this.rightLead.set(ControlMode.MotionMagic, distance, DemandType.AuxPID, angle);
+    public void magicTurn (double distanceLeft, double distanceRight) {
+        this.leftLead.set(ControlMode.MotionMagic, distanceLeft, DemandType.Neutral, 0.0);
+        this.leftFollower.set(ControlMode.MotionMagic, distanceLeft, DemandType.Neutral, 0.0);
+        this.rightLead.set(ControlMode.MotionMagic, distanceRight, DemandType.Neutral, 0.0);
+        this.rightFollower.set(ControlMode.MotionMagic, distanceRight, DemandType.Neutral, 0.0);
     }
 
     public void setNeutralMode(NeutralMode neutralMode) {
@@ -262,7 +268,9 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetDriveEncoders() {
         leftLead.getSensorCollection().setIntegratedSensorPosition(0, 10);
+        leftFollower.getSensorCollection().setIntegratedSensorPosition(0, 10);
         rightLead.getSensorCollection().setIntegratedSensorPosition(0, 10);
+        rightFollower.getSensorCollection().setIntegratedSensorPosition(0, 10);
     }
 
     public double getRightDistance() {

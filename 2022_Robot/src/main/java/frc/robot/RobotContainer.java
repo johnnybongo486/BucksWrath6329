@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.sql.Driver;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +17,7 @@ import frc.robot.Commands.Climber.ClimberVertical;
 import frc.robot.Commands.Climber.GoToClimbPosition;
 import frc.robot.Commands.Climber.JoystickClimber;
 import frc.robot.Commands.Climber.NextBarCommandGroup;
+import frc.robot.Commands.Drivetrain.AutoShifter;
 import frc.robot.Commands.Drivetrain.CompressorCommand;
 import frc.robot.Commands.Drivetrain.HighGear;
 import frc.robot.Commands.Drivetrain.JoystickDrive;
@@ -40,7 +43,7 @@ import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.IntakePiston;
 import frc.robot.Subsystems.LeftClimber;
 import frc.robot.Subsystems.Limelight;
-import frc.robot.Subsystems.PDH;
+import frc.robot.Subsystems.PDP;
 import frc.robot.Subsystems.RightClimber;
 import frc.robot.Subsystems.Serializer;
 import frc.robot.Subsystems.Shifter;
@@ -62,7 +65,7 @@ public class RobotContainer {
     public static ClimberPiston climberPiston = new ClimberPiston();
     public static AirCompressor airCompressor = new AirCompressor();
     public static Limelight limelight = new Limelight();
-    public static PDH pdh = new PDH();
+    public static PDP pdp = new PDP();
 
     /* Autonomous Selector */
     private final AutonomousSelector autonomousSelector = new AutonomousSelector();
@@ -76,6 +79,7 @@ public class RobotContainer {
     public static final double RUMBLE_INTENSITY = 1.0;
 
     //Driver Buttons
+    public JoystickButton retractIntakeButton;
     public JoystickButton lowGearButton;
     public JoystickButton highGearButton;
     public JoystickButton intakeButton;
@@ -99,12 +103,12 @@ public class RobotContainer {
         configureButtonBindings();
         
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.drivetrain, new JoystickDrive());
-        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.shifter, new LowGear());
+        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.shifter, new HighGear());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.intake, new StopIntake());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.centerIntake, new StopCenterIntake());
-        CommandScheduler.getInstance().setDefaultCommand(RobotContainer.intakePiston, new IntakeRetract());
+        //CommandScheduler.getInstance().setDefaultCommand(RobotContainer.intakePiston, new IntakeRetract());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.serializer, new StopSerializer());
-        // CommandScheduler.getInstance().setDefaultCommand(RobotContainer.shooter, new JoystickShooter());
+        //CommandScheduler.getInstance().setDefaultCommand(RobotContainer.shooter, new JoystickShooter());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.leftClimber, new JoystickClimber());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.rightClimber, new JoystickClimber());
         CommandScheduler.getInstance().setDefaultCommand(RobotContainer.climberPiston, new ClimberVertical());
@@ -122,11 +126,15 @@ public class RobotContainer {
         spitBallButton.whileHeld(new ReverseCenterIntake().alongWith(new ReverseSerializer()));
         spitBallButton.whenReleased(new StopCenterIntake().alongWith(new StopSerializer()));
         
-        lowGearButton = new JoystickButton(Driver, 3);
+        retractIntakeButton = new JoystickButton(Driver, 3);
+        retractIntakeButton.whenPressed(new IntakeRetract());
+
+        lowGearButton = new JoystickButton(Driver, 4);
         lowGearButton.whenPressed(new LowGear());
 
-        highGearButton = new JoystickButton(Driver, 4);
+        highGearButton = new JoystickButton(Driver, 9);
         highGearButton.whenPressed(new HighGear());
+        
 
         intakeButton = new JoystickButton(Driver, 5);
         intakeButton.whileHeld(new IntakeBallCommandGroup());
@@ -138,9 +146,6 @@ public class RobotContainer {
 
 
         //Operator Buttons
-        //climbButton = new JoystickButton(Operator, 1);
-        //climbButton.whenPressed(new GoToFullDownPosition());
-
         fenderLowGoalButton = new JoystickButton(Operator, 1);
         fenderLowGoalButton.whenPressed(new FenderShotLowCommandGroup());
 

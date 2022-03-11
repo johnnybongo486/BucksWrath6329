@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class FenderShotLowCommandGroup extends SequentialCommandGroup {
 
 	public FenderShotLowCommandGroup() {
-        // addCommands(new SetShooterPiston(90).withTimeout(1), new SetShooterVelocity(6000).withTimeout(3));
-        addCommands(new SetShooterPiston(90).raceWith(new SetShooterVelocity(6000)));
+        addCommands(new ShooterPistonDeploy().raceWith(new SetShooterVelocity(6000)));
     }  
 }

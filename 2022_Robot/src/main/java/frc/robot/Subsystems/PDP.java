@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class PDH extends SubsystemBase {
-    private final PowerDistribution PDH = new PowerDistribution(1, ModuleType.kRev);
+public class PDP extends SubsystemBase {
+    private final PowerDistribution PDP = new PowerDistribution(0, ModuleType.kCTRE);
 
-    public PDH() {
-        PDH.clearStickyFaults();
+    public PDP() {
+        PDP.clearStickyFaults();
     }
 }
