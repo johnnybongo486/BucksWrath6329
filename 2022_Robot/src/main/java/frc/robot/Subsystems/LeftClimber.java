@@ -21,7 +21,8 @@ public class LeftClimber extends SubsystemBase implements IPositionControlledSub
 	private int homePosition = 0;
 	private int climbPosition = 28000;
 	private int raiseRobotPosition = 0;
-	private int maxUpTravelPosition = 29000;
+	private int maxUpTravelPosition = 30000;
+	private int nextBarPosition = 29000;
 
 	public final static int Climber_UP = 0;
 	public final static int Climber_DOWN = 1;
@@ -157,6 +158,10 @@ public class LeftClimber extends SubsystemBase implements IPositionControlledSub
 
 	public int getRaiseRobotPosition() {
 		return this.raiseRobotPosition;
+	}
+
+	public int getNextBarPosition() {
+		return this.nextBarPosition;
 	}
 
 	public double getArbitraryFeedForward() {

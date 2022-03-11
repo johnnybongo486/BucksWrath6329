@@ -17,7 +17,6 @@ import frc.robot.Commands.Climber.ClimberVertical;
 import frc.robot.Commands.Climber.GoToClimbPosition;
 import frc.robot.Commands.Climber.JoystickClimber;
 import frc.robot.Commands.Climber.NextBarCommandGroup;
-import frc.robot.Commands.Drivetrain.AutoShifter;
 import frc.robot.Commands.Drivetrain.CompressorCommand;
 import frc.robot.Commands.Drivetrain.HighGear;
 import frc.robot.Commands.Drivetrain.JoystickDrive;
