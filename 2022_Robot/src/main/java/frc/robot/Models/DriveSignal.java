@@ -6,8 +6,10 @@ package frc.robot.Models;
 public class DriveSignal {
 	protected double mLeftMotor;
 	protected double mLeftFollowMotor;
+	protected double mleftTopFollowMotor;
 	protected double mRightMotor;
 	protected double mRightFollowMotor;
+	protected double mRightTopFollowMotor;
 	protected boolean mBrakeMode;
 
 	public DriveSignal(double left, double right) {
@@ -17,22 +19,26 @@ public class DriveSignal {
 	public DriveSignal(double left, double right, boolean brakeMode) {
 		
 		if (left > 0) {
-			mLeftFollowMotor = left;
-			mLeftMotor = left*0.95;
+			mLeftFollowMotor = left*0.91;
+			mLeftMotor = left*0.86;
+			mleftTopFollowMotor = left;
 		}
 		if (left < 0) {
-			mLeftFollowMotor = left;
-			mLeftMotor = left*0.97;
+			mLeftFollowMotor = left*0.93;
+			mLeftMotor = left*0.88;
+			mleftTopFollowMotor = left;
 		}
 
 		if (right > 0) {
-			mRightFollowMotor = right*0.97;
-			mRightMotor = right;
+			mRightFollowMotor = right*0.92;
+			mRightMotor = right*0.92;
+			mRightTopFollowMotor = right;
 		}
 
 		if (right < 0) {
-			mRightFollowMotor = right*0.95;
-			mRightMotor = right;
+			mRightFollowMotor = right*0.92;
+			mRightMotor = right*0.92;
+			mRightTopFollowMotor = right;
 		}
 		
 		mBrakeMode = brakeMode;
@@ -53,8 +59,16 @@ public class DriveSignal {
 		return mRightFollowMotor;
 	}
 
+	public double getRightTopFollow() {
+		return mRightTopFollowMotor;
+	}
+
 	public double getLeftFollow(){
 		return mLeftFollowMotor;
+	}
+
+	public double getLeftTopFollow(){
+		return mleftTopFollowMotor;
 	}
 
 	public boolean getBrakeMode() {

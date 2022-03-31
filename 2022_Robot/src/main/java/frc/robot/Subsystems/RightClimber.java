@@ -19,10 +19,10 @@ public class RightClimber extends SubsystemBase implements IPositionControlledSu
 
     // Set Different Heights
 	private int homePosition = 0;
-	private int climbPosition = 28000;
+	private int climbPosition = 27200;
 	private int raiseRobotPosition = 0;
 	private int maxUpTravelPosition = 30000;
-	private int nextBarPosition = 29000;
+	private int nextBarPosition = 27200;
 
 	public final static int Climber_UP = 0;
 	public final static int Climber_DOWN = 1;
@@ -35,7 +35,7 @@ public class RightClimber extends SubsystemBase implements IPositionControlledSu
 	private final static int onTargetThreshold = 100;
 	
 	private final SRXGains upGains = new SRXGains(Climber_UP, 0.3, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
-	private final SRXGains downGains = new SRXGains(Climber_DOWN, 0.95, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
+	private final SRXGains downGains = new SRXGains(Climber_DOWN, 1.0, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
 	private MotionParameters highGearUpMotionParameters = new MotionParameters(180000, 90000, upGains);

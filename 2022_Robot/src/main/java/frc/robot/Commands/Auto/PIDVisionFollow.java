@@ -81,7 +81,7 @@ public class PIDVisionFollow extends CommandBase {
         left = Cap(left, 1.0);
         right = Cap(right, 1.0);
 
-        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, left, right, right);
+        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, left, left, right, right, right);
 
         lastTimeStamp = Timer.getFPGATimestamp();
         lastError = taError;

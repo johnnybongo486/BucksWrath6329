@@ -11,13 +11,13 @@ public class MagicAutoDrive extends CommandBase {
      public double ticks = 0;
      public double errorRight = 0;
      public double errorLeft = 0;
-     public double acceptableError = 500;
+     public double acceptableError = 1000;
      public double kP = 0;
 
      public MagicAutoDrive(double distance, double p) {
         addRequirements(RobotContainer.drivetrain);
         this.kP = p;
-        this.ticks = distance * 13870;  //2046*Gearbox / 1.5708 // 10360 on practice bot
+        this.ticks = distance * 14668;  //2048*Gearbox / 1.5708 // 10360 on practice bot
      }
 
      public void initialize() {

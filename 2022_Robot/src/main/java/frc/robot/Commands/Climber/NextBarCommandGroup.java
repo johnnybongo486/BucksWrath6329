@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class NextBarCommandGroup extends SequentialCommandGroup {
 
 	public NextBarCommandGroup() {
-        addCommands(new ClimberDeploy().withTimeout(0.05), new GoToNextBarPosition().withTimeout(2));
+        addCommands(
+        new GoToClimbPosition().withTimeout(2).alongWith(new ClimberDeploy().withTimeout(0.05)),
+        new GoToPullUpPosition().withTimeout(0.5),
+        new ClimberVertical().withTimeout(0.01)
+        );
     }  
 }

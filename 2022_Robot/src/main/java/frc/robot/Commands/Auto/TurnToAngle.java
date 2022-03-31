@@ -50,7 +50,7 @@ public class TurnToAngle extends CommandBase {
         double right = forwardThrottle + turnThrottle;
         left = Cap(left, maxSpeed);
         right = Cap(right, maxSpeed);
-        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, left, right, right);
+        RobotContainer.drivetrain.drive(ControlMode.PercentOutput, left, left, left, right, right, right);
     }
 
     public boolean isFinished() {

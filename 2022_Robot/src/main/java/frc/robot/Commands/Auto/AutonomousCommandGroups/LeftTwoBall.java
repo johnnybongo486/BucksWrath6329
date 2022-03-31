@@ -14,14 +14,14 @@ public class LeftTwoBall extends SequentialCommandGroup{
    
     public LeftTwoBall() {
         addCommands(
-            new IntakeBallCommandGroup().alongWith(new MagicAutoDrive(4, 0.08).alongWith(new TarmacShotCommandGroup())).withTimeout(1.75),
+            new IntakeBallCommandGroup().alongWith(new MagicAutoDrive(4, 0.07).alongWith(new TarmacShotCommandGroup())).withTimeout(1.75),
             new TurnToAngle(0, 0, 0).withTimeout(0.1),
-            new MagicAutoAngle(-170, 0.08),
+            new MagicAutoAngle(-170, 0.09),
             new TurnToAngle(0, 0, 0).withTimeout(0.1),
             new MagicAutoDrive(3, 0.08).raceWith(new StoreIntakeCommandGroup()).withTimeout(1.5), 
             new ShootBallCommandGroup().withTimeout(1.5),
             new TurnToAngle(0, 0, 0).withTimeout(0.1),
-            new MagicAutoAngle(-95, 0.08).raceWith(new StopShooterCommandGroup())
+            new MagicAutoAngle(-95, 0.09).raceWith(new StopShooterCommandGroup())
             //new TurnToAngle(0, 0, 0).withTimeout(0.1),
             //new IntakeBallCommandGroup().alongWith(new MagicAutoDrive(18.5, 0.11)).withTimeout(4),
             //new TurnToAngle(0, 0, 0).withTimeout(0.1),
