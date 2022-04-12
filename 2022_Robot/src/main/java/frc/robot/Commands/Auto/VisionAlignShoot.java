@@ -7,6 +7,8 @@ import frc.robot.RobotContainer;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.networktables.*;
 
 public class VisionAlignShoot extends CommandBase {
@@ -89,6 +91,10 @@ public class VisionAlignShoot extends CommandBase {
 
         lastTimeStamp = Timer.getFPGATimestamp();
         lastError = tx;
+
+        if (Math.abs(tx) < 1.5 && Math.abs(tx) != 0) {
+            System.out.println("SHOOT HARRY!");
+        }
     }
 
     public boolean isFinished() {
