@@ -5,9 +5,7 @@ public class NextBarCommandGroup extends SequentialCommandGroup {
 
 	public NextBarCommandGroup() {
         addCommands(
-        new GoToClimbPosition().withTimeout(2).alongWith(new ClimberDeploy().withTimeout(0.05)),
-        new GoToPullUpPosition().withTimeout(0.5),
-        new ClimberVertical().withTimeout(0.01)
+        new GoToClimbPosition().withTimeout(2).alongWith(new ClimberDeploy().withTimeout(0.05))
         );
     }  
 }

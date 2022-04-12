@@ -35,13 +35,13 @@ public class MagicAutoAngle extends CommandBase {
           RobotContainer.drivetrain.magicTurn(-ticks, ticks);
           RobotContainer.drivetrain.setTargetDistance(ticks);
           errorRight = Math.abs(ticks - RobotContainer.drivetrain.getRightDistance());
-          errorLeft = Math.abs(ticks - RobotContainer.drivetrain.getLeftDistance());
+          errorLeft = Math.abs(-ticks - RobotContainer.drivetrain.getLeftDistance());
           RobotContainer.drivetrain.setDistanceError(errorRight);
 
    }
 
    public boolean isFinished() {
-          return errorRight < acceptableError;
+          return errorRight < acceptableError && errorLeft < acceptableError;
    }
 
    protected void end() {

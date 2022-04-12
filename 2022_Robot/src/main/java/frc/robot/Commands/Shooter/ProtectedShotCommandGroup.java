@@ -5,6 +5,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class ProtectedShotCommandGroup extends SequentialCommandGroup {
 
 	public ProtectedShotCommandGroup() {
-        addCommands(new ShooterPistonDeploy().raceWith(new SetShooterVelocity(13100).alongWith(new SetUpperShooterVelocity(21000)))); 
+        addCommands(new ShooterPistonDeploy().raceWith(new SetShooterVelocity(6700).alongWith(new SetUpperShooterVelocity(10050)))); 
     }  
 }

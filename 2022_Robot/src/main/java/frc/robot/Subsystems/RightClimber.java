@@ -19,10 +19,10 @@ public class RightClimber extends SubsystemBase implements IPositionControlledSu
 
     // Set Different Heights
 	private int homePosition = 0;
-	private int climbPosition = 27200;
+	private int climbPosition = 28000;
 	private int raiseRobotPosition = 0;
 	private int maxUpTravelPosition = 30000;
-	private int nextBarPosition = 27200;
+	private int nextBarPosition = 28000;
 
 	public final static int Climber_UP = 0;
 	public final static int Climber_DOWN = 1;

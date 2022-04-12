@@ -10,6 +10,7 @@ import frc.robot.Commands.Auto.AutonomousSelector;
 import frc.robot.Commands.Auto.JoystickVisionAlign;
 import frc.robot.Commands.Auto.TurnOffLimelight;
 import frc.robot.Commands.Auto.TurnOnLimelight;
+import frc.robot.Commands.Auto.VisionAlignShoot;
 import frc.robot.Commands.Climber.ClimbCommandGroup;
 import frc.robot.Commands.Climber.ClimberVertical;
 import frc.robot.Commands.Climber.GoToClimbPosition;
@@ -117,7 +118,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Driver Buttons
         joystickAutoAlignButton = new JoystickButton(Driver, 1);
-        joystickAutoAlignButton.whileHeld(new TurnOnLimelight().alongWith(new JoystickVisionAlign()));
+        joystickAutoAlignButton.whileHeld(new TurnOnLimelight().alongWith(new VisionAlignShoot()));  //  new JoystickVisionAlign())); // joystick 
         joystickAutoAlignButton.whenReleased(new TurnOffLimelight());
         
         spitBallButton = new JoystickButton(Driver, 2);

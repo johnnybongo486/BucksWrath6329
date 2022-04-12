@@ -323,11 +323,19 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getRightDistance() {
-        return rightLead.getSelectedSensorPosition();
+        double rightLeadTicks = rightLead.getSelectedSensorPosition();
+        double rightFollowTicks = rightFollower.getSelectedSensorPosition();
+        double rightTopFollowTicks = rightTopFollower.getSelectedSensorPosition();
+        double rightDistanceTotal = (rightLeadTicks + rightTopFollowTicks + rightFollowTicks) / 3;
+        return rightDistanceTotal;
     }
 
     public double getLeftDistance() {
-        return leftLead.getSelectedSensorPosition();
+        double leftLeadTicks = leftLead.getSelectedSensorPosition();
+        double leftFollowTicks = leftFollower.getSelectedSensorPosition();
+        double leftTopFollowTicks = leftFollower.getSelectedSensorPosition();
+        double leftDistanceTotal = (leftLeadTicks + leftTopFollowTicks + leftFollowTicks) / 3;
+        return leftDistanceTotal;
     }
 
     public double getLeftSpeed() {

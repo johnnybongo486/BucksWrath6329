@@ -18,20 +18,20 @@ public class RightFourBallNHP extends SequentialCommandGroup{
         addCommands(
             new IntakeBallCommandGroup().alongWith(new MagicAutoDrive(3, 0.091).alongWith(new RightAutoShotOne())).withTimeout(1.5),
             new TurnToAngle(0, 0, 0).withTimeout(0.01),
-            new MagicAutoAngle(170, 0.095).alongWith(new StoreIntakeCommandGroup().withTimeout(1)),
+            new MagicAutoAngle(165, 0.095).alongWith(new StoreIntakeCommandGroup().withTimeout(1)),
             new TurnToAngle(0, 0, 0).withTimeout(0.01),
             new ShootBallCommandGroup().withTimeout(1),
-            new MagicAutoAngle(74, 0.095).raceWith(new StopShooterCommandGroup()),
+            new MagicAutoAngle(72, 0.095).raceWith(new StopShooterCommandGroup()),  // was 74
             new TurnToAngle(0, 0, 0).withTimeout(0.01),
             new MagicAutoDrive(7.25, 0.11).alongWith(new IntakeBallCommandGroup()).withTimeout(1.5),
             new TurnToAngle(0, 0, 0).withTimeout(0.01),
-            new MagicAutoAngle(34, 0.1), //31.5
+            new MagicAutoAngle(33, 0.1), //was 34
             new TurnToAngle(0, 0, 0).withTimeout(0.01),
             new MagicAutoDrive(12.75, 0.091).withTimeout(2),
             new TurnToAngle(0, 0, 0).withTimeout(0.01),
             new MagicAutoAngle(-159, 0.095),
             new TurnToAngle(0, 0, 0).withTimeout(0.01),
-            new MagicAutoDrive(12.5, .091).withTimeout(2.5), // was 14
+            new MagicAutoDrive(12.75, .091).alongWith(new StoreIntakeCommandGroup()).withTimeout(2.5),
             new ShootBallCommandGroup().withTimeout(1),
             new StopShooterCommandGroup().withTimeout(0.05)
         );
