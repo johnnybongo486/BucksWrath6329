@@ -151,6 +151,13 @@ public class SwerveModule {
   }
 
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(driveMotor.getEncoder().getPosition(), getAngle());
+    return new SwerveModulePosition(
+      neoToMeters(driveMotor.getEncoder().getPosition(), Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio),
+      getAngle()
+    );
   }
+
+  public static double neoToMeters(double positionCounts, double circumference, double gearRatio){
+    return positionCounts * (circumference / (gearRatio * 42));
+}
 }
