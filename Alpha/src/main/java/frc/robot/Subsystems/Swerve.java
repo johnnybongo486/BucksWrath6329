@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logging.DoubleEntry;
 import frc.lib.logging.Pose2dEntry;
 import frc.robot.Constants;
+import frc.robot.SwerveModule;
 
 public class Swerve extends SubsystemBase {
   private final Pigeon2 gyro;

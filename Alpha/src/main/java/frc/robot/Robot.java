@@ -14,6 +14,9 @@ import frc.lib.logging.LogManager;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  public static CTREConfigs ctreConfigs;
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -25,6 +28,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Silence joystick connection warnings.
+    ctreConfigs = new CTREConfigs();
+
     DriverStation.silenceJoystickConnectionWarning(true);
     LiveWindow.disableAllTelemetry();
 
