@@ -1,4 +1,4 @@
-package frc.robot.Commands;
+package frc.robot.commands;
 
 import frc.robot.*;
 
@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class JoystickElevator extends CommandBase {
 
-	private int positionIncrement = 200;
+	private int positionIncrement = 20000;
 
 	public JoystickElevator() {
 		addRequirements(RobotContainer.elevator);

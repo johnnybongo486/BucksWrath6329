@@ -1,7 +1,7 @@
-package frc.robot.Commands;
+package frc.robot.commands;
 
 import frc.robot.Constants;
-import frc.robot.Subsystems.Swerve;
+import frc.robot.subsystems.Swerve;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;

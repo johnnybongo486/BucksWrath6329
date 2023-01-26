@@ -1,4 +1,4 @@
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import frc.lib.models.*;
 import frc.robot.Robot;
@@ -19,10 +19,10 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 
     // Set Different Heights
 	private int homePosition = 0;
-	private int climbPosition = 28000;
+	private int climbPosition = 230000;
 	private int raiseRobotPosition = 0;
-	private int maxUpTravelPosition = 30000;
-	private int nextBarPosition = 28000;
+	private int maxUpTravelPosition = 230000;
+	private int nextBarPosition = 230000;
 
 	public final static int Elevator_UP = 0;
 	public final static int Elevator_DOWN = 1;
@@ -32,14 +32,14 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 	private int targetPosition = 0;
 	private double arbitraryFeedForward = 0.0;
 
-	private final static int onTargetThreshold = 100;
+	private final static int onTargetThreshold = 10000;
 	
-	private final SRXGains upGains = new SRXGains(Elevator_UP, 0.3, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
-	private final SRXGains downGains = new SRXGains(Elevator_DOWN, 1.0, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
+	private final SRXGains upGains = new SRXGains(Elevator_UP, 0.03, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
+	private final SRXGains downGains = new SRXGains(Elevator_DOWN, 0.03, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
-	private MotionParameters highGearUpMotionParameters = new MotionParameters(180000, 90000, upGains);
-	private MotionParameters highGearDownMotionParameters = new MotionParameters(180000, 90000, downGains);
+	private MotionParameters highGearUpMotionParameters = new MotionParameters(100000000, 100000000, upGains);
+	private MotionParameters highGearDownMotionParameters = new MotionParameters(100000000, 100000000, downGains);
 	
 	private double peakOutputReverse = -1.0;
 	
@@ -57,7 +57,7 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 		this.elevatorESC.configReverseSoftLimitEnable(true);
 		this.elevatorESC.configReverseSoftLimitThreshold(downPositionLimit);
 
-		this.elevatorESC.setInverted(false);
+		this.elevatorESC.setInverted(true);
 		this.elevatorESC.setSensorPhase(false);
 
 		this.elevatorESC.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
@@ -66,7 +66,7 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 		this.elevatorESC.configMotionParameters(highGearUpMotionParameters);
         this.elevatorESC.configMotionParameters(highGearDownMotionParameters);
 
-		this.elevatorESC.setNeutralMode(NeutralMode.Brake);
+		this.elevatorESC.setNeutralMode(NeutralMode.Coast);
 		this.elevatorESC.configClosedloopRamp(0.25);
 
 		this.elevatorESC.configVoltageCompSaturation(11.5);

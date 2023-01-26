@@ -1,4 +1,4 @@
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import frc.lib.models.*;
 import frc.robot.Robot;
@@ -19,23 +19,23 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 
     // Set Different Heights
 	private int homePosition = 0;
-	private int climbPosition = 28000;
+	private int climbPosition = 0;
 	private int raiseRobotPosition = 0;
-	private int maxUpTravelPosition = 30000;
-	private int nextBarPosition = 28000;
+	private int maxUpTravelPosition = 0;
+	private int nextBarPosition = 0;
 
 	public final static int Wrist_UP = 0;
 	public final static int Wrist_DOWN = 1;
 
 	public int upPositionLimit = maxUpTravelPosition;
-	public int downPositionLimit = -1;
+	public int downPositionLimit = -93000;
 	private int targetPosition = 0;
 	private double arbitraryFeedForward = 0.0;
 
-	private final static int onTargetThreshold = 100;
+	private final static int onTargetThreshold = 1000;
 	
-	private final SRXGains upGains = new SRXGains(Wrist_UP, 0.3, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
-	private final SRXGains downGains = new SRXGains(Wrist_DOWN, 1.0, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
+	private final SRXGains upGains = new SRXGains(Wrist_UP, 0.03, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
+	private final SRXGains downGains = new SRXGains(Wrist_DOWN, 0.03, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
 	private MotionParameters highGearUpMotionParameters = new MotionParameters(180000, 90000, upGains);
@@ -57,7 +57,7 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 		this.wristESC.configReverseSoftLimitEnable(true);
 		this.wristESC.configReverseSoftLimitThreshold(downPositionLimit);
 
-		this.wristESC.setInverted(false);
+		this.wristESC.setInverted(true);
 		this.wristESC.setSensorPhase(false);
 
 		this.wristESC.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
