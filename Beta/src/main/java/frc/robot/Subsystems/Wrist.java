@@ -19,10 +19,10 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 
     // Set Different Heights
 	private int homePosition = 0;
-	private int climbPosition = 0;
-	private int raiseRobotPosition = 0;
 	private int maxUpTravelPosition = 0;
-	private int nextBarPosition = 0;
+
+	private int floorCubePosition = -40000;
+	private int floorConePosition = -31000;
 
 	public final static int Wrist_UP = 0;
 	public final static int Wrist_DOWN = 1;
@@ -38,8 +38,8 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 	private final SRXGains downGains = new SRXGains(Wrist_DOWN, 0.03, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
-	private MotionParameters highGearUpMotionParameters = new MotionParameters(180000, 90000, upGains);
-	private MotionParameters highGearDownMotionParameters = new MotionParameters(180000, 90000, downGains);
+	private MotionParameters highGearUpMotionParameters = new MotionParameters(5000, 6000, upGains);
+	private MotionParameters highGearDownMotionParameters = new MotionParameters(5000, 6000, downGains);
 	
 	private double peakOutputReverse = -1.0;
 	
@@ -66,7 +66,7 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 		this.wristESC.configMotionParameters(highGearUpMotionParameters);
         this.wristESC.configMotionParameters(highGearDownMotionParameters);
 
-		this.wristESC.setNeutralMode(NeutralMode.Brake);
+		this.wristESC.setNeutralMode(NeutralMode.Coast);
 		this.wristESC.configClosedloopRamp(0.25);
 
 		this.wristESC.configVoltageCompSaturation(11.5);
@@ -152,16 +152,12 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 		return this.maxUpTravelPosition;
 	}
 
-	public int getClimbPosition() {
-		return this.climbPosition;
+	public int getFloorConePosition() {
+		return this.floorConePosition;
 	}
 
-	public int getRaiseRobotPosition() {
-		return this.raiseRobotPosition;
-	}
-
-	public int getNextBarPosition() {
-		return this.nextBarPosition;
+	public int getFloorCubePosition() {
+		return this.floorCubePosition;
 	}
 
 	public double getArbitraryFeedForward() {

@@ -7,7 +7,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.auto.*;
-import frc.robot.commands.*;
+import frc.robot.commands.Drivetrain.TeleopSwerve;
+import frc.robot.commands.Elevator.ElevatorIn;
+import frc.robot.commands.Elevator.ElevatorOut;
+import frc.robot.commands.Elevator.GoToHighPosition;
+import frc.robot.commands.Elevator.GoToMidPosition;
+import frc.robot.commands.Elevator.JoystickElevator;
+import frc.robot.commands.Intake.IntakeObject;
+import frc.robot.commands.Intake.ScoreObject;
+import frc.robot.commands.Intake.StoreObject;
+import frc.robot.commands.LEDs.SetConeMode;
+import frc.robot.commands.LEDs.SetCubeMode;
+import frc.robot.commands.Wrist.JoystickWrist;
 import frc.robot.subsystems.*;
 
 /**
@@ -28,18 +39,26 @@ public class RobotContainer {
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton intakeButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton scoreButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
     /* Operator Buttons */
-    private final JoystickButton coneModeButton = new JoystickButton(operator, XboxController.Button.kA.value);
-    private final JoystickButton cubeModeButton = new JoystickButton(operator, XboxController.Button.kB.value);
-
+    private final JoystickButton coneModeButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton cubeModeButton = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    private final JoystickButton elevatorVerticalButton = new JoystickButton(operator, XboxController.Button.kA.value);
+    private final JoystickButton elevatorAngledButton = new JoystickButton(operator, XboxController.Button.kB.value);
+    private final JoystickButton midLevelButton = new JoystickButton(operator, XboxController.Button.kX.value);
+    private final JoystickButton highLevelButton = new JoystickButton(operator, XboxController.Button.kY.value);
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
     public static Elevator elevator = new Elevator();
     public static Wrist wrist = new Wrist();
     public static CANdleSubsystem candleSubsystem = new CANdleSubsystem();
+    public static Intake intake = new Intake();
+    public static AirCompressor airCompressor = new AirCompressor();
+    public static ElevatorPiston elevatorPiston = new ElevatorPiston();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -56,6 +75,7 @@ public class RobotContainer {
 
         elevator.setDefaultCommand(new JoystickElevator());
         wrist.setDefaultCommand(new JoystickWrist());
+        airCompressor.setDefaultCommand(new CompressorCommand());
 
         // Configure the button bindings
         configureButtonBindings();
@@ -72,6 +92,18 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
         coneModeButton.onTrue(new SetConeMode());
         cubeModeButton.onTrue(new SetCubeMode());
+
+        intakeButton.whileTrue(new IntakeObject());
+        intakeButton.whileFalse(new StoreObject());
+        
+        scoreButton.whileTrue(new ScoreObject());
+        scoreButton.whileFalse(new StoreObject());
+
+        midLevelButton.onTrue(new GoToMidPosition());
+        highLevelButton.onTrue(new GoToHighPosition());
+
+        elevatorVerticalButton.onTrue(new ElevatorIn());
+        elevatorAngledButton.onTrue(new ElevatorOut());
     }
 
     public Joystick getDriver() {

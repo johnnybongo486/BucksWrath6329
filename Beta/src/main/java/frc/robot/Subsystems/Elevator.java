@@ -19,10 +19,18 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 
     // Set Different Heights
 	private int homePosition = 0;
-	private int climbPosition = 230000;
-	private int raiseRobotPosition = 0;
 	private int maxUpTravelPosition = 230000;
-	private int nextBarPosition = 230000;
+
+	private int readyPosition = 31000;
+
+	private int midConePosition = 97000;
+	private int highConePosition = 107500;
+
+	private int midCubePosition = 107000;
+	private int highCubePosition = 175000;
+
+	private int shelfPosition = 31000;
+	private int singleHPPosition = 31000;
 
 	public final static int Elevator_UP = 0;
 	public final static int Elevator_DOWN = 1;
@@ -34,12 +42,12 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 
 	private final static int onTargetThreshold = 10000;
 	
-	private final SRXGains upGains = new SRXGains(Elevator_UP, 0.03, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
-	private final SRXGains downGains = new SRXGains(Elevator_DOWN, 0.03, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
+	private final SRXGains upGains = new SRXGains(Elevator_UP, 0.03, 0, 0, 0.011, 100);
+	private final SRXGains downGains = new SRXGains(Elevator_DOWN, 0.01, 0, 0, 0.011, 100);
 
 	//Uses PID values to go to a position
-	private MotionParameters highGearUpMotionParameters = new MotionParameters(100000000, 100000000, upGains);
-	private MotionParameters highGearDownMotionParameters = new MotionParameters(100000000, 100000000, downGains);
+	private MotionParameters highGearUpMotionParameters = new MotionParameters(17384, 35000, upGains);
+	private MotionParameters highGearDownMotionParameters = new MotionParameters(17384, 35000, downGains);
 	
 	private double peakOutputReverse = -1.0;
 	
@@ -152,16 +160,32 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 		return this.maxUpTravelPosition;
 	}
 
-	public int getClimbPosition() {
-		return this.climbPosition;
+	public int getReadyPosition(){
+		return this.readyPosition;
 	}
 
-	public int getRaiseRobotPosition() {
-		return this.raiseRobotPosition;
+	public int getMidConePosition(){
+		return this.midConePosition;
 	}
 
-	public int getNextBarPosition() {
-		return this.nextBarPosition;
+	public int getHighConePosition() {
+		return this.highConePosition;
+	}
+
+	public int getMidCubePosition(){
+		return this.midCubePosition;
+	}
+
+	public int getHighCubePosition() {
+		return this.highCubePosition;
+	}
+
+	public int getShelfPosition(){
+		return this.shelfPosition;
+	}
+
+	public int getSingleHPPosition() {
+		return this.singleHPPosition;
 	}
 
 	public double getArbitraryFeedForward() {

@@ -5,8 +5,6 @@ import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.SingleFadeAnimation;
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
-import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 
 public class CANdleSubsystem extends SubsystemBase {
 

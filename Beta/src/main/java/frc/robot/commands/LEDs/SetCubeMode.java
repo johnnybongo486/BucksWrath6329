@@ -1,17 +1,17 @@
-package frc.robot.commands;
+package frc.robot.commands.LEDs;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class SetConeMode extends CommandBase {
+public class SetCubeMode extends CommandBase {
     
-    public SetConeMode() {
+    public SetCubeMode() {
         addRequirements(RobotContainer.candleSubsystem);
     }
 
     public void initialize() {
-        RobotContainer.candleSubsystem.setIsCone(true);
-        RobotContainer.candleSubsystem.setAnimate("Yellow");
+        RobotContainer.candleSubsystem.setIsCone(false);
+        RobotContainer.candleSubsystem.setAnimate("Purple");
     }
 
     public void execute() {
