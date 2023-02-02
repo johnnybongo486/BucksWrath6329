@@ -5,13 +5,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.auto.*;
 import frc.robot.commands.DoubleHPCommandGroup;
 import frc.robot.commands.HomeStateCommandGroup;
 import frc.robot.commands.SingleHPCommandGroup;
 import frc.robot.commands.CompressorCommand;
+import frc.robot.commands.Drivetrain.PIDTurnToAngle;
 import frc.robot.commands.Drivetrain.TeleopSwerve;
-import frc.robot.commands.Drivetrain.TurnToAngle;
 //import frc.robot.commands.Elevator.ElevatorOut;
 import frc.robot.commands.Elevator.GoToHighPosition;
 import frc.robot.commands.Elevator.GoToMidPosition;
@@ -26,6 +25,7 @@ import frc.robot.commands.LEDs.SetConeMode;
 import frc.robot.commands.LEDs.SetCubeMode;
 import frc.robot.commands.Wrist.JoystickWrist;
 import frc.robot.subsystems.*;
+import frc.robot.auto.AutonomousSelector;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,6 +34,9 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    /* Autonomous Selector */
+    private final AutonomousSelector autonomousSelector = new AutonomousSelector();
+    
     /* Controllers */
     private final Joystick driver = new Joystick(0);
     private final Joystick operator = new Joystick(1);
@@ -53,7 +56,7 @@ public class RobotContainer {
     private final JoystickButton homeButton = new JoystickButton(driver, XboxController.Button.kRightStick.value);
     private final JoystickButton intakeButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton scoreButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton faceLeftButton = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton faceRightButton = new JoystickButton(driver, XboxController.Button.kB.value);
 
     /* Operator Buttons */
     private final JoystickButton coneModeButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
@@ -117,7 +120,7 @@ public class RobotContainer {
 
         homeButton.onTrue(new HomeStateCommandGroup().withTimeout(1.5));
 
-        faceLeftButton.onTrue(new TurnToAngle(
+        faceRightButton.whileTrue(new PIDTurnToAngle(
             swerve, 
             () -> -driver.getRawAxis(translationAxis), 
             () -> -driver.getRawAxis(strafeAxis), 
@@ -167,6 +170,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new ExampleAuto(swerve);
+        return autonomousSelector.getCommand();
     }
 }

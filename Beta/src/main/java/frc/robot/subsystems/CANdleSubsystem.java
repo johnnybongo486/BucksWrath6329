@@ -4,11 +4,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 
 public class CANdleSubsystem extends SubsystemBase {
 
     private final CANdle m_candle = new CANdle(20, "rio");
-    private final int LedCount = 600;
+    private final int LedCount = 400;
     public boolean isCone;
     public String color;
 
@@ -20,7 +22,7 @@ public class CANdleSubsystem extends SubsystemBase {
         configAll.statusLedOffWhenActive = true;
         configAll.disableWhenLOS = false;
         configAll.stripType = LEDStripType.RGB;
-        configAll.brightnessScalar = 0.8;
+        configAll.brightnessScalar = 1.0;
         configAll.vBatOutputMode = VBatOutputMode.Modulated;
         m_candle.configAllSettings(configAll, 100);
     }
@@ -51,11 +53,13 @@ public class CANdleSubsystem extends SubsystemBase {
                 m_toAnimate = new SingleFadeAnimation(128, 0, 128, 0, 0.7, LedCount);
                 break;
             case "Strobe Yellow":
-                m_toAnimate = new StrobeAnimation(255, 255, 0, 0, 0.7, LedCount);
+                m_toAnimate = new StrobeAnimation(255, 255, 0, 0, 0.4, LedCount);
                 break;
             case "Strobe Purple":
-                m_toAnimate = new StrobeAnimation(128, 0, 128, 0, 0.7, LedCount);
+                m_toAnimate = new StrobeAnimation(128, 0, 128, 0, 0.4, LedCount);
                 break;
+            case "Rainbow":
+                m_toAnimate = new RainbowAnimation(1.0, 0.7, LedCount);
         }   
     }
 
