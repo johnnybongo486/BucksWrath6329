@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
         lowerIntakeTalon.configPeakOutputForward(1);
         lowerIntakeTalon.configPeakOutputReverse(-1);
         lowerIntakeTalon.setNeutralMode(NeutralMode.Brake);
-        lowerIntakeTalon.setStatusFramePeriod(StatusFrame.Status_1_General, 250, 10);
+        lowerIntakeTalon.setStatusFramePeriod(StatusFrame.Status_1_General, 251, 10);
 
         upperIntakeTalon.configFactoryDefault();
         upperIntakeTalon.clearStickyFaults();
@@ -27,13 +27,13 @@ public class Intake extends SubsystemBase {
         upperIntakeTalon.configPeakOutputForward(1);
         upperIntakeTalon.configPeakOutputReverse(-1);
         upperIntakeTalon.setNeutralMode(NeutralMode.Brake);
-        upperIntakeTalon.setStatusFramePeriod(StatusFrame.Status_1_General, 250, 10);
+        upperIntakeTalon.setStatusFramePeriod(StatusFrame.Status_1_General, 253, 10);
     }
 
     // Cone Commands
     public void intakeCone() {
-        lowerIntakeTalon.set(ControlMode.PercentOutput, -0.7);
-        upperIntakeTalon.set(ControlMode.PercentOutput, -0.7);
+        lowerIntakeTalon.set(ControlMode.PercentOutput, -1);
+        upperIntakeTalon.set(ControlMode.PercentOutput, -1);
     }
 
     public void holdCone(){
@@ -48,15 +48,18 @@ public class Intake extends SubsystemBase {
 
     // Cube Commands
     public void intakeCube() {
-        lowerIntakeTalon.set(ControlMode.PercentOutput, 0.7);
+        lowerIntakeTalon.set(ControlMode.PercentOutput, -0.7);
+        upperIntakeTalon.set(ControlMode.PercentOutput, 0.7);
     }
 
     public void holdCube() {
-        lowerIntakeTalon.set(ControlMode.PercentOutput, 0.2);
+        lowerIntakeTalon.set(ControlMode.PercentOutput, 0.0);
+        upperIntakeTalon.set(ControlMode.PercentOutput, 0.2);
     }
 
     public void scoreCube(){
-        lowerIntakeTalon.set(ControlMode.PercentOutput, -0.7);
+        lowerIntakeTalon.set(ControlMode.PercentOutput, 0.4);
+        upperIntakeTalon.set(ControlMode.PercentOutput, -0.4);
     }
 
     // Stop Intake

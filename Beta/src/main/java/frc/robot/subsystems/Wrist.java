@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.models.SRXGains;
 
 public class Wrist extends SubsystemBase implements IPositionControlledSubsystem {
 
@@ -21,11 +22,11 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 	private int homePosition = 0;
 	private int maxUpTravelPosition = 0;
 
-	private int floorCubePosition = -59000;
-	private int floorConePosition = -50000;
+	private int floorCubePosition = -57000; // 56500
+	private int floorConePosition = -50000;  // 51000
 
-	private int singleHPPosition = -18000;
-	private int doubleHPPosition = -18000;
+	private int singleHPPosition = -20000;  //- 18000
+	private int doubleHPPosition = -28000;	// -18000
 
 	public final static int Wrist_UP = 0;
 	public final static int Wrist_DOWN = 1;
@@ -37,12 +38,12 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 
 	private final static int onTargetThreshold = 2000;
 	
-	private final SRXGains upGains = new SRXGains(Wrist_UP, 0.03, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
-	private final SRXGains downGains = new SRXGains(Wrist_DOWN, 0.03, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
+	private final SRXGains upGains = new SRXGains(Wrist_UP, 0.04, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
+	private final SRXGains downGains = new SRXGains(Wrist_DOWN, 0.08, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
 
 	//Uses PID values to go to a position
-	private MotionParameters highGearUpMotionParameters = new MotionParameters(12000, 10000, upGains);
-	private MotionParameters highGearDownMotionParameters = new MotionParameters(12000, 10000, downGains);
+	private MotionParameters highGearUpMotionParameters = new MotionParameters(24000, 20000, upGains);  // 12 and 10k
+	private MotionParameters highGearDownMotionParameters = new MotionParameters(24000, 20000, downGains);
 	
 	private double peakOutputReverse = -1.0;
 	
@@ -63,8 +64,8 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 		this.wristESC.setInverted(true);
 		this.wristESC.setSensorPhase(false);
 
-		this.wristESC.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
-		this.wristESC.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
+		this.wristESC.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 150);
+		this.wristESC.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 150);
 
 		this.wristESC.configMotionParameters(highGearUpMotionParameters);
         this.wristESC.configMotionParameters(highGearDownMotionParameters);

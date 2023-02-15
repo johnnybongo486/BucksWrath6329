@@ -10,6 +10,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,6 +24,10 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
+
+    private PIDController m_balancePID = new PIDController(0.2, 0.0, 0.0);
+    public static final double BALANCE_TOLERANCE = 0.01;
+
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
@@ -102,14 +108,37 @@ public class Swerve extends SubsystemBase {
         gyro.setYaw(0);
     }
 
+    public void autoZeroGyro() {
+        gyro.setYaw(180);
+    }
+
     public Rotation2d getYaw() {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
+    }
+
+    public double getRoll(){
+        return gyro.getRoll();
+    }
+
+    public void AutoBalance(){
+        m_balancePID.setTolerance(BALANCE_TOLERANCE);
+        double pidOutput = MathUtil.clamp(m_balancePID.calculate(getRoll(), 0), -0.5, 0.5);
+        SmartDashboard.putNumber("Balance PID", pidOutput);
+        drive(new Translation2d(pidOutput, 0), 0.0, true, true);
+    }
+
+    public boolean isRobotBalanced(){
+        return m_balancePID.atSetpoint();
     }
 
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
         }
+    }
+
+    public void stopDrive(){
+        drive(new Translation2d(0, 0), 0, true, true);
     }
 
     @Override
@@ -123,5 +152,6 @@ public class Swerve extends SubsystemBase {
              
         }
         SmartDashboard.putNumber("Current Angle", getYaw().getDegrees());
+        SmartDashboard.putNumber("Current Roll", getRoll());
     }
 }

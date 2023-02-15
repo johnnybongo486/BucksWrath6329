@@ -9,7 +9,7 @@ public class ElevatorPiston extends SubsystemBase {
     
     private final Solenoid elevatorSol = new Solenoid(PneumaticsModuleType.REVPH, 0);
     private final Solenoid elevatorSol2 = new Solenoid(PneumaticsModuleType.REVPH, 1);
-
+    public boolean isTipped = false;
 
     public ElevatorPiston(){
         
@@ -18,12 +18,19 @@ public class ElevatorPiston extends SubsystemBase {
     public void ElevatorIn() {
         elevatorSol.set(false);
         elevatorSol2.set(false);
-
     }
 
     public void ElevatorOut() {
         elevatorSol.set(true);
         elevatorSol2.set(true);
 
+    }
+
+    public void setIsTipped(boolean isTipped) {
+        this.isTipped = isTipped;
+    }
+
+    public boolean getIsTipped() {
+        return isTipped;
     }
 }

@@ -24,13 +24,13 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 	private int readyPosition = 27000;
 
 	private int midConePosition = 84000;
-	private int highConePosition = 141000;
+	private int highConePosition = 143000; // 149000
 
 	private int midCubePosition = 85000;
-	private int highCubePosition = 149000;
+	private int highCubePosition = 150000; // 149000
 
-	private int doubleHPPosition = 35000;
-	private int singleHPConePosition = 41000;
+	private int doubleHPPosition = 77000;
+	private int singleHPConePosition = 44000;
 	private int singleHPCubePosition = 38000;
 
 	public final static int Elevator_UP = 0;
@@ -43,8 +43,8 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 
 	private final static int onTargetThreshold = 2000;
 	
-	private final SRXGains upGains = new SRXGains(Elevator_UP, 0.07, 0, 0, 0.011, 100);
-	private final SRXGains downGains = new SRXGains(Elevator_DOWN, 0.005, 0, 0, 0.011, 100);
+	private final SRXGains upGains = new SRXGains(Elevator_UP, 0.09, 0, 0.5, 0.02, 2000);
+	private final SRXGains downGains = new SRXGains(Elevator_DOWN, 0.04, 0, 0.1, 0.011, 2000); // was 0.011
 
 	//Uses PID values to go to a position
 	private MotionParameters highGearUpMotionParameters = new MotionParameters(41772, 20861, upGains);
@@ -69,8 +69,8 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 		this.elevatorESC.setInverted(true);
 		this.elevatorESC.setSensorPhase(false);
 
-		this.elevatorESC.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
-		this.elevatorESC.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
+		this.elevatorESC.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 150);
+		this.elevatorESC.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 150);
 
 		this.elevatorESC.configMotionParameters(highGearUpMotionParameters);
         this.elevatorESC.configMotionParameters(highGearDownMotionParameters);

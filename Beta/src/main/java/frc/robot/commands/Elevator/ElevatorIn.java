@@ -12,6 +12,7 @@ public class ElevatorIn extends CommandBase {
 
     public void initialize() {
         RobotContainer.elevatorPiston.ElevatorIn();
+        RobotContainer.elevatorPiston.setIsTipped(false);
     }
 
     public void execute() {

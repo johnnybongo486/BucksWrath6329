@@ -1,6 +1,7 @@
 package frc.robot.auto;
 
 import frc.robot.Constants;
+import frc.robot.commands.Intake.FloorIntakeCommandGroup;
 import frc.robot.subsystems.Swerve;
 
 import java.util.List;
@@ -17,24 +18,33 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class ExampleAuto extends SequentialCommandGroup {
-    public ExampleAuto(Swerve s_Swerve){
-        TrajectoryConfig config =
+public class BlueConeBackoffAuto extends SequentialCommandGroup {
+    private double i2m = 0.0254;
+
+    public BlueConeBackoffAuto(Swerve s_Swerve){
+        TrajectoryConfig configFwd =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                     Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 .setKinematics(Constants.Swerve.swerveKinematics);
 
+        TrajectoryConfig configRev =
+            new TrajectoryConfig(
+                    Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                    Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                .setKinematics(Constants.Swerve.swerveKinematics);
+        configRev.setReversed(true);
+
         // An example trajectory to follow.  All units in meters.
-        Trajectory exampleTrajectory =
+        Trajectory GrabBlueCube1 =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
+                new Pose2d(0 * i2m, 0 * i2m, new Rotation2d(Math.toRadians(180))),
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-                // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(3, 0, new Rotation2d(0)),
-                config);
+                List.of(new Translation2d(140 * i2m, 0 * i2m)),
+                //End one meter forward
+                new Pose2d(193 * i2m, 16 * i2m, new Rotation2d(Math.toRadians(0))),
+                configRev);
 
         var thetaController =
             new ProfiledPIDController(
@@ -43,7 +53,7 @@ public class ExampleAuto extends SequentialCommandGroup {
 
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
-                exampleTrajectory,
+                GrabBlueCube1,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -52,9 +62,9 @@ public class ExampleAuto extends SequentialCommandGroup {
                 s_Swerve::setModuleStates,
                 s_Swerve);
 
-
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(exampleTrajectory.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.resetOdometry(GrabBlueCube1.getInitialPose())),
+            //new FloorIntakeCommandGroup().alongWith(swerveControllerCommand).withTimeout(5)
             swerveControllerCommand
         );
     }

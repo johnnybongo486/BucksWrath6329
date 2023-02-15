@@ -17,11 +17,10 @@ public class TeleopSwerve extends CommandBase {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private Boolean robotCentricSup;
-    private DoubleSupplier boostSup;
-    private double slowSpeed = 0.3;
+    private double slowSpeed = 0.2;
     private double elevatorHeight = 0;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, Boolean robotCentricSup, DoubleSupplier boostSup) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, Boolean robotCentricSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -29,7 +28,6 @@ public class TeleopSwerve extends CommandBase {
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
-        this.boostSup = boostSup;
     }
 
     @Override
@@ -39,7 +37,6 @@ public class TeleopSwerve extends CommandBase {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
-        double boostVal = MathUtil.applyDeadband(boostSup.getAsDouble(), Constants.stickDeadband);
 
         if (elevatorHeight >= 30000) {
             translationVal = translationVal * slowSpeed;
@@ -47,9 +44,13 @@ public class TeleopSwerve extends CommandBase {
             rotationVal = rotationVal * slowSpeed;
         }
 
-        else{
-            //boostVal = boostVal + 1.0;
+        else if (elevatorHeight > 5000 && elevatorHeight < 29999) {
+            translationVal = translationVal * 0.5;
+            strafeVal = strafeVal * 0.5;
+            rotationVal = rotationVal * 0.5;
         }
+
+        else {}
 
         /* Drive */
         s_Swerve.drive(

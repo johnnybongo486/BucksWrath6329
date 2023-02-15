@@ -7,7 +7,11 @@ public class GoToHighPosition extends CommandBase {
 
 	private int conePosition = RobotContainer.elevator.getHighConePosition();
 	private int cubePosition = RobotContainer.elevator.getHighCubePosition();
+
+	private int safePosition = 50000;
+
 	private boolean isCone;
+	private boolean isTipped;
 	
 	private int desiredPosition;
 
@@ -18,13 +22,25 @@ public class GoToHighPosition extends CommandBase {
 
 	// Called just before this Command runs the first time
 	public void initialize() {
+		
+		/* Check for game piece and whether elevator is tipped */
 		isCone = RobotContainer.candleSubsystem.getIsCone();
-		if (isCone == true) {
-			desiredPosition = conePosition;
+		isTipped = RobotContainer.elevatorPiston.getIsTipped();
+
+		/* Set desired height based on boolean values */
+		if (isTipped == true) {
+			if (isCone == true) {
+				desiredPosition = conePosition;
+			}
+			else {
+				desiredPosition = cubePosition;
+			}
 		}
+
 		else {
-			desiredPosition = cubePosition;
-		}
+			desiredPosition = safePosition;
+		}	
+
 		RobotContainer.elevator.setTargetPosition(desiredPosition);
 	}
 

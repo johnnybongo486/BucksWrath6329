@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -16,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class Turn90Degrees extends SequentialCommandGroup {
-    public Turn90Degrees(Swerve s_Swerve){
+public class TurnTest extends SequentialCommandGroup {
+    public TurnTest(Swerve s_Swerve){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -30,9 +31,9 @@ public class Turn90Degrees extends SequentialCommandGroup {
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(),
-                //End turned 90 degrees
-                new Pose2d(0, 0, new Rotation2d(90)),
+                List.of(new Translation2d(0.5, 0)),
+                // End 3 meters straight ahead of where we started, facing forward
+                new Pose2d(1, 0, new Rotation2d(Math.toRadians(90))),
                 config);
 
         var thetaController =

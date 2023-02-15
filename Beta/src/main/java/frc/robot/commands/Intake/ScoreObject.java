@@ -12,10 +12,10 @@ public class ScoreObject extends CommandBase {
     }
 
     public void initialize() {
-        isCone = RobotContainer.candleSubsystem.getIsCone();
     }
 
     public void execute() {
+        isCone = RobotContainer.candleSubsystem.getIsCone();
         if (isCone == true){
             RobotContainer.intake.scoreCone();
         }

@@ -9,35 +9,44 @@ import frc.robot.subsystems.Swerve;
 public class AutonomousSelector {
 
     private static SendableChooser<AutonomousMode> autonomousModeChooser;
-    private Swerve s_Swerve;
 
     static {
         ShuffleboardTab autoTab = Shuffleboard.getTab("Auto settings");
 
         autonomousModeChooser = new SendableChooser<>();
-        autonomousModeChooser.addOption("Drive Three Feet", AutonomousMode.Drive_One_Meter);
-        autonomousModeChooser.addOption("Turn 90 Degrees", AutonomousMode.Turn_90_Degrees);
-        autonomousModeChooser.addOption("ExampleAuto", AutonomousMode.Example_Auto);
-        autonomousModeChooser.addOption("First Auto Command Group", AutonomousMode.First_Auto_Command_Group);
+        autonomousModeChooser.addOption("Red 2 Cone Auto", AutonomousMode.Red_2_Cone_Auto);
+        autonomousModeChooser.addOption("Red 2 Cone Balance Auto", AutonomousMode.Red_2_Cone_Balance_Auto);
+        autonomousModeChooser.addOption("Blue 2 Cone Auto", AutonomousMode.Blue_2_Cone_Auto);
+        autonomousModeChooser.addOption("Blue 2 Cone Balance Auto", AutonomousMode.Blue_2_Cone_Balance_Auto);
+        autonomousModeChooser.addOption("Red Cone Cube Auto", AutonomousMode.Red_Cone_Cube_Auto);
+        autonomousModeChooser.addOption("Blue Cone Backoff Auto", AutonomousMode.Blue_Cone_Backoff_Auto);
+        autonomousModeChooser.addOption("Turn Test", AutonomousMode.Turn_Test);
+        autonomousModeChooser.addOption("Distance Test", AutonomousMode.Distance_Test);
 
-
-        
         autoTab.add("Mode", autonomousModeChooser);
         
     }
 
-    public Command getCommand(){
+    public Command getCommand(Swerve s_Swerve){
         AutonomousMode mode = autonomousModeChooser.getSelected();
 
         switch (mode) {
-            case Drive_One_Meter:
-                return new DriveOneMeter(s_Swerve);
-            case Turn_90_Degrees:
-                return new Turn90Degrees(s_Swerve);
-            case Example_Auto:
-                return new ExampleAuto(s_Swerve);
-            case First_Auto_Command_Group:
-                return new FirstAutoComandGroup();
+            case Red_2_Cone_Auto:
+                return new Red2ConeAuto(s_Swerve);
+            case Red_2_Cone_Balance_Auto:
+                return new Red2ConeBalanceAuto(s_Swerve);
+            case Blue_2_Cone_Auto:
+                return new Blue2ConeAuto(s_Swerve);
+            case Blue_2_Cone_Balance_Auto:
+                return new Blue2ConeBalanceAuto(s_Swerve);
+            case Red_Cone_Cube_Auto:
+                return new RedConeCubeAuto(s_Swerve);
+            case Blue_Cone_Backoff_Auto:
+                return new BlueConeBackoffAuto(s_Swerve);
+            case Turn_Test:
+                return new TurnTest(s_Swerve);
+            case Distance_Test:
+                return new DistanceTest(s_Swerve);
             default:
                 System.out.println("ERROR: unexpected auto mode: " + mode);
                 break; 
@@ -50,10 +59,14 @@ public class AutonomousSelector {
     }
 
     private enum AutonomousMode {
-        Drive_One_Meter,
-        Turn_90_Degrees,
-        Example_Auto,
-        First_Auto_Command_Group
+        Red_2_Cone_Auto,
+        Red_2_Cone_Balance_Auto,
+        Blue_2_Cone_Auto,
+        Blue_2_Cone_Balance_Auto,
+        Red_Cone_Cube_Auto,
+        Blue_Cone_Backoff_Auto,
+        Turn_Test,
+        Distance_Test,
     }
 
 }

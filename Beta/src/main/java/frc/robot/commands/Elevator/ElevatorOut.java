@@ -12,23 +12,29 @@ public class ElevatorOut extends CommandBase {
 
     public void initialize() {
         double elevatorPosition = RobotContainer.elevator.getCurrentPosition();
+        
         if (elevatorPosition >= readyPosition) {
             RobotContainer.elevatorPiston.ElevatorOut();
-
+            RobotContainer.elevatorPiston.setIsTipped(true);
         }
+        
         else {
             RobotContainer.elevatorPiston.ElevatorIn();
+            RobotContainer.elevatorPiston.setIsTipped(false);
         }
     }
 
     public void execute() {
         double elevatorPosition = RobotContainer.elevator.getCurrentPosition();
+        
         if (elevatorPosition >= readyPosition) {
             RobotContainer.elevatorPiston.ElevatorOut();
-
+            RobotContainer.elevatorPiston.setIsTipped(true);
         }
+
         else {
             RobotContainer.elevatorPiston.ElevatorIn();
+            RobotContainer.elevatorPiston.setIsTipped(false);
         }
     }
 

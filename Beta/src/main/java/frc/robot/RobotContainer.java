@@ -11,15 +11,12 @@ import frc.robot.commands.SingleHPCommandGroup;
 import frc.robot.commands.CompressorCommand;
 import frc.robot.commands.Drivetrain.PIDTurnToAngle;
 import frc.robot.commands.Drivetrain.TeleopSwerve;
-//import frc.robot.commands.Elevator.ElevatorOut;
 import frc.robot.commands.Elevator.GoToHighPosition;
 import frc.robot.commands.Elevator.GoToMidPosition;
 import frc.robot.commands.Elevator.JoystickElevator;
 import frc.robot.commands.Elevator.ReadyStateCommandGroup;
 import frc.robot.commands.Intake.FloorIntakeCommandGroup;
-//import frc.robot.commands.Intake.IntakeObject;
 import frc.robot.commands.Intake.ScoreObject;
-import frc.robot.commands.Intake.StoreObject;
 import frc.robot.commands.Intake.StoreObjectCommandGroup;
 import frc.robot.commands.LEDs.SetConeMode;
 import frc.robot.commands.LEDs.SetCubeMode;
@@ -45,18 +42,19 @@ public class RobotContainer {
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
-    private final int boostAxis = XboxController.Axis.kRightTrigger.value;
 
-    private final Boolean robotCentric = false;  // added may be dumb?
-
+    /* Setting Bot to Field Centric */
+    private final Boolean robotCentric = false;
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kBack.value);
-    //private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftStick.value);
     private final JoystickButton homeButton = new JoystickButton(driver, XboxController.Button.kRightStick.value);
     private final JoystickButton intakeButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton scoreButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton faceLeftButton = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton faceRightButton = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton faceRearButton = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton faceFrontButton = new JoystickButton(driver, XboxController.Button.kY.value);
 
     /* Operator Buttons */
     private final JoystickButton coneModeButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
@@ -67,7 +65,6 @@ public class RobotContainer {
     private final JoystickButton midLevelButton = new JoystickButton(operator, XboxController.Button.kX.value);
     private final JoystickButton highLevelButton = new JoystickButton(operator, XboxController.Button.kY.value);
 
-
     /* Subsystems */
     private final Swerve swerve = new Swerve();
     public static Elevator elevator = new Elevator();
@@ -77,7 +74,6 @@ public class RobotContainer {
     public static AirCompressor airCompressor = new AirCompressor();
     public static ElevatorPiston elevatorPiston = new ElevatorPiston();
 
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         swerve.setDefaultCommand(
@@ -86,8 +82,7 @@ public class RobotContainer {
                 () -> -driver.getRawAxis(translationAxis), 
                 () -> -driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
-                robotCentric,
-                () -> -driver.getRawAxis(boostAxis)
+                robotCentric
             )
         );
 
@@ -95,7 +90,7 @@ public class RobotContainer {
         wrist.setDefaultCommand(new JoystickWrist());
         airCompressor.setDefaultCommand(new CompressorCommand());
 
-        // Configure the button bindings
+        /* Configure the button bindings */
         configureButtonBindings();
     }
 
@@ -111,14 +106,20 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 
         intakeButton.whileTrue(new FloorIntakeCommandGroup()); 
-        //intakeButton.whileTrue(new IntakeObject()); // only needed for testing
         intakeButton.whileFalse(new StoreObjectCommandGroup());
-        //intakeButton.whileFalse(new StoreObject());  // only needed for testing
 
         scoreButton.whileTrue(new ScoreObject());
-        scoreButton.whileFalse(new StoreObject());
+        scoreButton.whileFalse(new StoreObjectCommandGroup());
 
         homeButton.onTrue(new HomeStateCommandGroup().withTimeout(1.5));
+
+        faceLeftButton.whileTrue(new PIDTurnToAngle(
+            swerve, 
+            () -> -driver.getRawAxis(translationAxis), 
+            () -> -driver.getRawAxis(strafeAxis), 
+            () -> -driver.getRawAxis(rotationAxis), 
+            robotCentric,
+            270));
 
         faceRightButton.whileTrue(new PIDTurnToAngle(
             swerve, 
@@ -127,8 +128,24 @@ public class RobotContainer {
             () -> -driver.getRawAxis(rotationAxis), 
             robotCentric,
             90));
+
+        faceFrontButton.whileTrue(new PIDTurnToAngle(
+            swerve, 
+            () -> -driver.getRawAxis(translationAxis), 
+            () -> -driver.getRawAxis(strafeAxis), 
+            () -> -driver.getRawAxis(rotationAxis), 
+            robotCentric,
+            180));
+                
+        faceRearButton.whileTrue(new PIDTurnToAngle(
+            swerve, 
+            () -> -driver.getRawAxis(translationAxis), 
+            () -> -driver.getRawAxis(strafeAxis), 
+            () -> -driver.getRawAxis(rotationAxis), 
+            robotCentric,
+            360));
         
-        // Operator Buttons
+        /* Operator Buttons */
         coneModeButton.onTrue(new SetConeMode());
         cubeModeButton.onTrue(new SetCubeMode());
 
@@ -140,9 +157,9 @@ public class RobotContainer {
         singleHPButton.onTrue(new SingleHPCommandGroup());
         doubleHPButton.onTrue(new DoubleHPCommandGroup());
 
-        // tipStateButton.onTrue(new ElevatorOut()); // only needed for testing
     }
 
+    /* Public access to joystick values */
     public Joystick getDriver() {
         return driver;
     }
@@ -151,10 +168,12 @@ public class RobotContainer {
         return operator;
     }
 
+    /* Sets Joystick Deadband */
     public static double stickDeadband(double value, double deadband, double center) {
         return (value < (center + deadband) && value > (center - deadband)) ? center : value;
     }
-
+    
+    /* Passes Along Joystick Values for Elevator and Wrist */
     public double getOperatorLeftStickY() {
         return stickDeadband(this.operator.getRawAxis(1), 0.05, 0.0);
     }
@@ -163,13 +182,8 @@ public class RobotContainer {
         return stickDeadband(this.operator.getRawAxis(5), 0.05, 0.0);
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
+    /* Runs the Autonomous Selector*/
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return autonomousSelector.getCommand();
+        return autonomousSelector.getCommand(swerve);
     }
 }

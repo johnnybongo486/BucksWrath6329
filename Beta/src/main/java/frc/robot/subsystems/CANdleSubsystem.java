@@ -4,12 +4,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
-import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 
 public class CANdleSubsystem extends SubsystemBase {
 
-    private final CANdle m_candle = new CANdle(20, "rio");
+    private final CANdle m_candle = new CANdle(20);
     private final int LedCount = 400;
     public boolean isCone;
     public String color;
