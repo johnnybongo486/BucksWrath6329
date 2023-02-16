@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.MathUtil;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -30,6 +32,8 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
 
+    public Field2d m_field;
+
     private PIDController m_balancePID = new PIDController(0.2, 0.0, 0.0);
     public static final double BALANCE_TOLERANCE = 0.01;
 
@@ -38,6 +42,8 @@ public class Swerve extends SubsystemBase {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.configFactoryDefault();
         zeroGyro();
+
+        m_field = new Field2d();
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -151,13 +157,14 @@ public class Swerve extends SubsystemBase {
         PIDController xController = new PIDController(1.0, 0, 0);
         PIDController yController = new PIDController(1.0, 0, 0);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        PathPlannerTrajectory.transformTrajectoryForAlliance(traj, DriverStation.getAlliance());
+        //PathPlannerTrajectory.transformTrajectoryForAlliance(traj, DriverStation.getAlliance());
+        
 
         return new SequentialCommandGroup(
              new InstantCommand(() -> {
                // Reset odometry for the first path you run during auto
                if(isFirstPath){
-                   resetOdometry(traj.getInitialHolonomicPose());
+                   resetOdometry(PathPlannerTrajectory.transformTrajectoryForAlliance(traj, DriverStation.getAlliance()).getInitialHolonomicPose());
                }
              }),
              new PPSwerveControllerCommand(
@@ -168,7 +175,7 @@ public class Swerve extends SubsystemBase {
                  yController, // Y controller (usually the same values as X controller)
                  thetaController, // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                  this::setModuleStates,  // Module states consumer
-                 false, //Automatic mirroring
+                 true, //Automatic mirroring
                  this // Requires this drive subsystem
              ) 
              .andThen(() -> stopDrive())
@@ -187,5 +194,9 @@ public class Swerve extends SubsystemBase {
         }
         SmartDashboard.putNumber("Current Angle", getYaw().getDegrees());
         SmartDashboard.putNumber("Current Roll", getRoll());
+
+        m_field.setRobotPose(swerveOdometry.getPoseMeters());
+
+        SmartDashboard.putData("Field", m_field);
     }
 }
