@@ -9,6 +9,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -16,8 +18,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase {
@@ -25,8 +30,8 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
 
-    private PIDController m_balancePID = new PIDController(0.2, 0.0, 0.0);
-    public static final double BALANCE_TOLERANCE = 0.01;
+    private PIDController m_balancePID = new PIDController(0.08, 0.0, 0.0); // was 0.15
+    public static final double BALANCE_TOLERANCE = 10;
 
 
     public Swerve() {
@@ -122,9 +127,16 @@ public class Swerve extends SubsystemBase {
 
     public void AutoBalance(){
         m_balancePID.setTolerance(BALANCE_TOLERANCE);
-        double pidOutput = MathUtil.clamp(m_balancePID.calculate(getRoll(), 0), -0.5, 0.5);
+        double pidOutput = MathUtil.clamp(m_balancePID.calculate(getRoll(), 0), -0.7, 0.7);  // was 0.7
         SmartDashboard.putNumber("Balance PID", pidOutput);
         drive(new Translation2d(pidOutput, 0), 0.0, true, true);
+    }
+
+    public void AutoBackBalance(){
+        m_balancePID.setTolerance(BALANCE_TOLERANCE);
+        double pidOutput = MathUtil.clamp(m_balancePID.calculate(getRoll(), 0), -0.7, 0.7);  // was 0.7
+        SmartDashboard.putNumber("Balance PID", pidOutput);
+        drive(new Translation2d(-pidOutput, 0), 0.0, true, true);
     }
 
     public boolean isRobotBalanced(){
@@ -141,6 +153,34 @@ public class Swerve extends SubsystemBase {
         drive(new Translation2d(0, 0), 0, true, true);
     }
 
+    public SequentialCommandGroup followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+        PIDController thetaController = new PIDController(3, 0, 0);
+        PIDController xController = new PIDController(3, 0, 0);
+        PIDController yController = new PIDController(3   , 0, 0);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);        
+
+        return new SequentialCommandGroup(
+             new InstantCommand(() -> {
+               // Reset odometry for the first path you run during auto
+               if(isFirstPath){
+                   resetOdometry(PathPlannerTrajectory.transformTrajectoryForAlliance(traj, DriverStation.getAlliance()).getInitialHolonomicPose());
+               }
+             }),
+             new PPSwerveControllerCommand(
+                 traj, 
+                 this::getPose, // Pose supplier
+                 Constants.Swerve.swerveKinematics, // SwerveDriveKinematics
+                 xController, // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                 yController, // Y controller (usually the same values as X controller)
+                 thetaController, // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                 this::setModuleStates,  // Module states consumer
+                 true, //Automatic mirroring
+                 this // Requires this drive subsystem
+             ) 
+             .andThen(() -> stopDrive())
+         );
+     }
+
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions());  
@@ -148,9 +188,11 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);   
-             
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);  
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle Motor Current", mod.getCurrentAngle());  
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Drive Motor Current", mod.getCurrentDrive());        
         }
+        
         SmartDashboard.putNumber("Current Angle", getYaw().getDegrees());
         SmartDashboard.putNumber("Current Roll", getRoll());
     }

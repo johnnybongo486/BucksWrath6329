@@ -77,6 +77,14 @@ public class SwerveModule {
         return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition());
     }
 
+    public double getCurrentDrive(){
+        return mDriveMotor.getStatorCurrent();
+    }
+
+    public double getCurrentAngle(){
+        return mAngleMotor.getStatorCurrent();
+    }
+
     public void resetToAbsolute(){
         double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset.getDegrees(), Constants.Swerve.angleGearRatio);
         mAngleMotor.setSelectedSensorPosition(absolutePosition);

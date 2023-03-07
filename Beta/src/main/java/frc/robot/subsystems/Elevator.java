@@ -23,13 +23,13 @@ public class Elevator extends SubsystemBase implements IPositionControlledSubsys
 
 	private int readyPosition = 27000;
 
-	private int midConePosition = 84000;
-	private int highConePosition = 143000; // 149000
+	private int midConePosition = 80000;
+	private int highConePosition = 143000;
 
 	private int midCubePosition = 85000;
-	private int highCubePosition = 150000; // 149000
+	private int highCubePosition = 155000;   // 160000 w/ wrist tip
 
-	private int doubleHPPosition = 77000;
+	private int doubleHPPosition = 79000;
 	private int singleHPConePosition = 44000;
 	private int singleHPCubePosition = 38000;
 

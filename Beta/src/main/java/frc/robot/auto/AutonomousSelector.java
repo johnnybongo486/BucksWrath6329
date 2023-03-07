@@ -14,12 +14,15 @@ public class AutonomousSelector {
         ShuffleboardTab autoTab = Shuffleboard.getTab("Auto settings");
 
         autonomousModeChooser = new SendableChooser<>();
-        autonomousModeChooser.addOption("Red 2 Cone Auto", AutonomousMode.Red_2_Cone_Auto);
-        autonomousModeChooser.addOption("Red 2 Cone Balance Auto", AutonomousMode.Red_2_Cone_Balance_Auto);
-        autonomousModeChooser.addOption("Blue 2 Cone Auto", AutonomousMode.Blue_2_Cone_Auto);
-        autonomousModeChooser.addOption("Blue 2 Cone Balance Auto", AutonomousMode.Blue_2_Cone_Balance_Auto);
-        autonomousModeChooser.addOption("Red Cone Cube Auto", AutonomousMode.Red_Cone_Cube_Auto);
-        autonomousModeChooser.addOption("Blue Cone Backoff Auto", AutonomousMode.Blue_Cone_Backoff_Auto);
+        autonomousModeChooser.addOption("2 Cone Auto", AutonomousMode.Two_Cone_Auto);
+        autonomousModeChooser.addOption("2 Cone Balance Auto", AutonomousMode.Two_Cone_Balance_Auto);
+        autonomousModeChooser.addOption("Center Balance Auto", AutonomousMode.Center_Balance_Auto);
+        autonomousModeChooser.addOption("Cone Cube Auto", AutonomousMode.Cone_Cube_Auto);
+        autonomousModeChooser.addOption("Cone Cube Balance Auto", AutonomousMode.Cone_Cube_Balance_Auto);
+        autonomousModeChooser.addOption("Barrier Balance Auto", AutonomousMode.Barrier_Balance_Auto);
+        autonomousModeChooser.addOption("Barrier Grab Balance Auto", AutonomousMode.Barrier_Grab_Balance_Auto);
+        autonomousModeChooser.addOption("Barrier Spit Auto", AutonomousMode.Barrier_Spit_Auto);
+        autonomousModeChooser.addOption("Barrier Spit Balance Auto", AutonomousMode.Barrier_Spit_Balance_Auto);
         autonomousModeChooser.addOption("Turn Test", AutonomousMode.Turn_Test);
         autonomousModeChooser.addOption("Distance Test", AutonomousMode.Distance_Test);
 
@@ -31,40 +34,50 @@ public class AutonomousSelector {
         AutonomousMode mode = autonomousModeChooser.getSelected();
 
         switch (mode) {
-            case Red_2_Cone_Auto:
-                return new Red2ConeAuto(s_Swerve);
-            case Red_2_Cone_Balance_Auto:
-                return new Red2ConeBalanceAuto(s_Swerve);
-            case Blue_2_Cone_Auto:
-                return new Blue2ConeAuto(s_Swerve);
-            case Blue_2_Cone_Balance_Auto:
-                return new Blue2ConeBalanceAuto(s_Swerve);
-            case Red_Cone_Cube_Auto:
-                return new RedConeCubeAuto(s_Swerve);
-            case Blue_Cone_Backoff_Auto:
-                return new BlueConeBackoffAuto(s_Swerve);
+            case Two_Cone_Auto:
+                return new TwoConeAuto(s_Swerve);
+            case Two_Cone_Balance_Auto:
+                return new TwoConeBalanceAuto(s_Swerve);
+            case Center_Balance_Auto:
+                return new CenterBalanceAuto(s_Swerve);
+            case Cone_Cube_Auto:
+                return new ConeCubeAuto(s_Swerve);
+            case Cone_Cube_Balance_Auto:
+                return new ConeCubeBalanceAuto(s_Swerve);
+            case Barrier_Balance_Auto:
+                return new BarrierBalanceAuto(s_Swerve);
+            case Barrier_Grab_Balance_Auto:
+                return new BarrierGrabBalanceAuto(s_Swerve);
+            case Barrier_Spit_Auto:
+                return new BarrierSpitAuto(s_Swerve);
+            case Barrier_Spit_Balance_Auto:
+                return new BarrierSpitBalanceAuto(s_Swerve);
             case Turn_Test:
                 return new TurnTest(s_Swerve);
             case Distance_Test:
                 return new DistanceTest(s_Swerve);
             default:
-                System.out.println("ERROR: unexpected auto mode: " + mode);
-                break; 
+                return new DefaultAuto(s_Swerve);
+                //break; 
         }
 
-        return null;
+        //return null;
     }
 
     public AutonomousSelector() {
+        
     }
 
     private enum AutonomousMode {
-        Red_2_Cone_Auto,
-        Red_2_Cone_Balance_Auto,
-        Blue_2_Cone_Auto,
-        Blue_2_Cone_Balance_Auto,
-        Red_Cone_Cube_Auto,
-        Blue_Cone_Backoff_Auto,
+        Two_Cone_Auto,
+        Two_Cone_Balance_Auto,
+        Center_Balance_Auto,
+        Cone_Cube_Auto,
+        Cone_Cube_Balance_Auto,
+        Barrier_Balance_Auto,
+        Barrier_Grab_Balance_Auto,
+        Barrier_Spit_Auto,
+        Barrier_Spit_Balance_Auto,
         Turn_Test,
         Distance_Test,
     }

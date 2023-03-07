@@ -18,6 +18,7 @@ public class TeleopSwerve extends CommandBase {
     private DoubleSupplier rotationSup;
     private Boolean robotCentricSup;
     private double slowSpeed = 0.2;
+    private double midSpeed = 0.5;
     private double elevatorHeight = 0;
 
     public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, Boolean robotCentricSup) {
@@ -45,9 +46,9 @@ public class TeleopSwerve extends CommandBase {
         }
 
         else if (elevatorHeight > 5000 && elevatorHeight < 29999) {
-            translationVal = translationVal * 0.5;
-            strafeVal = strafeVal * 0.5;
-            rotationVal = rotationVal * 0.5;
+            translationVal = translationVal * midSpeed;
+            strafeVal = strafeVal * midSpeed;
+            rotationVal = rotationVal * midSpeed;
         }
 
         else {}

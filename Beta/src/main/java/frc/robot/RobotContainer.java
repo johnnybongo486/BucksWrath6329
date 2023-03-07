@@ -20,6 +20,7 @@ import frc.robot.commands.Intake.ScoreObject;
 import frc.robot.commands.Intake.StoreObjectCommandGroup;
 import frc.robot.commands.LEDs.SetConeMode;
 import frc.robot.commands.LEDs.SetCubeMode;
+import frc.robot.commands.Wrist.GoToHighScoreWristPosition;
 import frc.robot.commands.Wrist.JoystickWrist;
 import frc.robot.subsystems.*;
 import frc.robot.auto.AutonomousSelector;
@@ -150,7 +151,7 @@ public class RobotContainer {
         cubeModeButton.onTrue(new SetCubeMode());
 
         midLevelButton.onTrue(new GoToMidPosition());
-        highLevelButton.onTrue(new GoToHighPosition());
+        highLevelButton.onTrue(new GoToHighPosition().andThen(new GoToHighScoreWristPosition()));
 
         readyStateButton.onTrue(new ReadyStateCommandGroup());
 

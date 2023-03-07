@@ -22,11 +22,13 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 	private int homePosition = 0;
 	private int maxUpTravelPosition = 0;
 
-	private int floorCubePosition = -57000; // 56500
-	private int floorConePosition = -50000;  // 51000
+	private int floorCubePosition = -62000;
+	private int floorConePosition = -55000;
 
-	private int singleHPPosition = -20000;  //- 18000
-	private int doubleHPPosition = -28000;	// -18000
+	private int singleHPPosition = -23000;  // was -20000
+	private int doubleHPPosition = -33000;
+
+	private int highScorePosition = -15000;
 
 	public final static int Wrist_UP = 0;
 	public final static int Wrist_DOWN = 1;
@@ -38,11 +40,11 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 
 	private final static int onTargetThreshold = 2000;
 	
-	private final SRXGains upGains = new SRXGains(Wrist_UP, 0.04, 0, 0, 0.011, 100);//0.2, 0, 0, 0.05, 100
-	private final SRXGains downGains = new SRXGains(Wrist_DOWN, 0.08, 0, 0, 0.011, 100);//0.1, 0, 0, 0.05, 100
+	private final SRXGains upGains = new SRXGains(Wrist_UP, 0.04, 0, 0, 0.011, 100);
+	private final SRXGains downGains = new SRXGains(Wrist_DOWN, 0.08, 0, 0, 0.011, 100);
 
 	//Uses PID values to go to a position
-	private MotionParameters highGearUpMotionParameters = new MotionParameters(24000, 20000, upGains);  // 12 and 10k
+	private MotionParameters highGearUpMotionParameters = new MotionParameters(24000, 20000, upGains);
 	private MotionParameters highGearDownMotionParameters = new MotionParameters(24000, 20000, downGains);
 	
 	private double peakOutputReverse = -1.0;
@@ -170,6 +172,10 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 
 	public int getDoubleHPPosition() {
 		return this.doubleHPPosition;
+	}
+
+	public int getHighScorePosition() {
+		return this.highScorePosition;
 	}
 
 	public double getArbitraryFeedForward() {

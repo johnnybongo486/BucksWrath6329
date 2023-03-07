@@ -18,6 +18,10 @@ public class Intake extends SubsystemBase {
         lowerIntakeTalon.configOpenloopRamp(0.25);
         lowerIntakeTalon.configPeakOutputForward(1);
         lowerIntakeTalon.configPeakOutputReverse(-1);
+        lowerIntakeTalon.configPeakCurrentLimit(15);
+        lowerIntakeTalon.configPeakCurrentDuration(10);
+        lowerIntakeTalon.configContinuousCurrentLimit(10);
+        lowerIntakeTalon.enableCurrentLimit(true);
         lowerIntakeTalon.setNeutralMode(NeutralMode.Brake);
         lowerIntakeTalon.setStatusFramePeriod(StatusFrame.Status_1_General, 251, 10);
 
@@ -26,6 +30,10 @@ public class Intake extends SubsystemBase {
         upperIntakeTalon.configOpenloopRamp(0.25);
         upperIntakeTalon.configPeakOutputForward(1);
         upperIntakeTalon.configPeakOutputReverse(-1);
+        upperIntakeTalon.configPeakCurrentLimit(15);
+        upperIntakeTalon.configPeakCurrentDuration(10);
+        upperIntakeTalon.configContinuousCurrentLimit(10);
+        upperIntakeTalon.enableCurrentLimit(true);
         upperIntakeTalon.setNeutralMode(NeutralMode.Brake);
         upperIntakeTalon.setStatusFramePeriod(StatusFrame.Status_1_General, 253, 10);
     }
@@ -58,8 +66,13 @@ public class Intake extends SubsystemBase {
     }
 
     public void scoreCube(){
-        lowerIntakeTalon.set(ControlMode.PercentOutput, 0.4);
-        upperIntakeTalon.set(ControlMode.PercentOutput, -0.4);
+        lowerIntakeTalon.set(ControlMode.PercentOutput, 0.6);
+        upperIntakeTalon.set(ControlMode.PercentOutput, -0.6);
+    }
+
+    public void spitCube(){
+        lowerIntakeTalon.set(ControlMode.PercentOutput, 1);
+        upperIntakeTalon.set(ControlMode.PercentOutput, -1);
     }
 
     // Stop Intake
