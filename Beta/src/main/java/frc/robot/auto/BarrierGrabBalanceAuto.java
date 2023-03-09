@@ -13,7 +13,7 @@ public class BarrierGrabBalanceAuto extends SequentialCommandGroup {
 
     public BarrierGrabBalanceAuto(Swerve s_Swerve){
     
-        PathPlannerTrajectory path1 = PathPlanner.loadPath("BarrierGrab1", 3.0, 3.0);
+        PathPlannerTrajectory path1 = PathPlanner.loadPath("BarrierGrab1", 3.0, 2.5);
         PathPlannerTrajectory path2 = PathPlanner.loadPath("GrabBalance1", 4.0, 3.0);
         
         addCommands(

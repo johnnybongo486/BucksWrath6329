@@ -2,6 +2,7 @@ package frc.robot.auto;
 
 import frc.robot.commands.Intake.FloorIntakeCommandGroup;
 import frc.robot.commands.Intake.SpitCube;
+import frc.robot.commands.Intake.StoreObject;
 import frc.robot.commands.Intake.StoreObjectCommandGroup;
 import frc.robot.commands.LEDs.SetConeMode;
 import frc.robot.commands.LEDs.SetCubeMode;
@@ -21,12 +22,12 @@ public class BarrierSpitBalanceAuto extends SequentialCommandGroup {
 
         
         addCommands(
-            new AutoZero(s_Swerve).alongWith(new SetConeMode()).alongWith(new AutoElevatorOut()).withTimeout(0.4),
+            new AutoZero(s_Swerve).alongWith(new SetConeMode()).alongWith(new AutoElevatorOut()).alongWith(new StoreObject()).withTimeout(0.4),
             new AutoScoreHighConeCommandGroup(),
             new SetCubeMode().withTimeout(0.05),
-            s_Swerve.followTrajectoryCommand(path1, true).alongWith(new AutoHomeStateCommandGroup().andThen(new FloorIntakeCommandGroup().withTimeout(2.5))),
+            s_Swerve.followTrajectoryCommand(path1, true).alongWith(new AutoHomeStateCommandGroup().andThen(new FloorIntakeCommandGroup().withTimeout(2))),
             s_Swerve.followTrajectoryCommand(path2, false).alongWith(new StoreObjectCommandGroup().withTimeout(1).andThen(new SpitCube().withTimeout(0.5))),
-            s_Swerve.followTrajectoryCommand(path3, false).alongWith(new FloorIntakeCommandGroup().withTimeout(1.75)),
+            s_Swerve.followTrajectoryCommand(path3, false).alongWith(new FloorIntakeCommandGroup().withTimeout(2)),
             s_Swerve.followTrajectoryCommand(path5, false).alongWith(new StoreObjectCommandGroup().withTimeout(1)),
             new AutoBackBalance(s_Swerve).withTimeout(4)
         );

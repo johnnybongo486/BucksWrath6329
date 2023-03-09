@@ -2,6 +2,7 @@ package frc.robot.auto;
 
 import frc.robot.commands.Elevator.ReadyStateCommandGroup;
 import frc.robot.commands.Intake.FloorIntakeCommandGroup;
+import frc.robot.commands.Intake.StoreObject;
 import frc.robot.commands.Intake.StoreObjectCommandGroup;
 import frc.robot.commands.LEDs.SetConeMode;
 import frc.robot.commands.LEDs.SetCubeMode;
@@ -19,10 +20,10 @@ public class ConeCubeBalanceAuto extends SequentialCommandGroup {
         PathPlannerTrajectory path3 = PathPlanner.loadPath("CubeBalance", 4.0, 3.0);
 
         addCommands(
-            new AutoZero(s_Swerve).alongWith(new SetConeMode()).alongWith(new AutoElevatorOut()).withTimeout(0.4),
+            new AutoZero(s_Swerve).alongWith(new SetConeMode()).alongWith(new AutoElevatorOut()).alongWith(new StoreObject()).withTimeout(0.4),
             new AutoScoreHighConeCommandGroup(),
             new SetCubeMode().withTimeout(0.05),
-            s_Swerve.followTrajectoryCommand(path1, true).alongWith(new AutoHomeStateCommandGroup().andThen(new FloorIntakeCommandGroup().withTimeout(2))),
+            s_Swerve.followTrajectoryCommand(path1, true).alongWith(new AutoHomeStateCommandGroup().andThen(new FloorIntakeCommandGroup().withTimeout(1.8))),
             s_Swerve.followTrajectoryCommand(path2, false).alongWith(new StoreObjectCommandGroup().withTimeout(1).andThen(new ReadyStateCommandGroup())),
             new AutoScoreHighCubeCommandGroup(),
             s_Swerve.followTrajectoryCommand(path3, false).alongWith(new AutoHomeStateCommandGroup()),

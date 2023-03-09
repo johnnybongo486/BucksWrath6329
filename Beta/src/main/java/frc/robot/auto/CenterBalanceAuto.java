@@ -1,5 +1,6 @@
 package frc.robot.auto;
 
+import frc.robot.commands.Intake.StoreObject;
 import frc.robot.commands.LEDs.SetConeMode;
 import frc.robot.subsystems.Swerve;
 import com.pathplanner.lib.PathPlanner;
@@ -14,12 +15,12 @@ public class CenterBalanceAuto extends SequentialCommandGroup {
         PathPlannerTrajectory path2 = PathPlanner.loadPath("CenterBalance2", 1.0, 1.0);
 
         addCommands(
-            new AutoZero(s_Swerve).alongWith(new SetConeMode()).alongWith(new AutoElevatorOut()).withTimeout(0.4),
+            new AutoZero(s_Swerve).alongWith(new SetConeMode()).alongWith(new AutoElevatorOut()).alongWith(new StoreObject()).withTimeout(0.4),
             new AutoScoreHighConeCommandGroup(),
             new AutoHomeStateCommandGroup(),
             s_Swerve.followTrajectoryCommand(path1, true),
             s_Swerve.followTrajectoryCommand(path2, false),
-            new AutoBalance(s_Swerve).withTimeout(4)
+            new AutoBalance(s_Swerve).withTimeout(5)
         );
     }
 

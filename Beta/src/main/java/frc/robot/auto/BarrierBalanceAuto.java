@@ -10,7 +10,7 @@ public class BarrierBalanceAuto extends SequentialCommandGroup {
 
     public BarrierBalanceAuto(Swerve s_Swerve){
     
-        PathPlannerTrajectory path1 = PathPlanner.loadPath("BarrierBalance", 4.0, 3.0);
+        PathPlannerTrajectory path1 = PathPlanner.loadPath("BarrierBalance", 3, 2.5);
         
         addCommands(
             new AutoZero(s_Swerve).alongWith(new SetConeMode()).alongWith(new AutoElevatorOut()).withTimeout(0.5),

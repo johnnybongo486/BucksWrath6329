@@ -56,8 +56,8 @@ public class Intake extends SubsystemBase {
 
     // Cube Commands
     public void intakeCube() {
-        lowerIntakeTalon.set(ControlMode.PercentOutput, -0.7);
-        upperIntakeTalon.set(ControlMode.PercentOutput, 0.7);
+        lowerIntakeTalon.set(ControlMode.PercentOutput, -0.8);
+        upperIntakeTalon.set(ControlMode.PercentOutput, 0.8);
     }
 
     public void holdCube() {
@@ -66,8 +66,8 @@ public class Intake extends SubsystemBase {
     }
 
     public void scoreCube(){
-        lowerIntakeTalon.set(ControlMode.PercentOutput, 0.6);
-        upperIntakeTalon.set(ControlMode.PercentOutput, -0.6);
+        lowerIntakeTalon.set(ControlMode.PercentOutput, 0.5);
+        upperIntakeTalon.set(ControlMode.PercentOutput, -0.5);
     }
 
     public void spitCube(){
