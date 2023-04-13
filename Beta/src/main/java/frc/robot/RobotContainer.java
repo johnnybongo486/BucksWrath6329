@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DoubleHPCommandGroup;
 import frc.robot.commands.HomeStateCommandGroup;
+import frc.robot.commands.ScoreHighCommandGroup;
+import frc.robot.commands.ScoreMidCommandGroup;
 import frc.robot.commands.SingleHPCommandGroup;
 import frc.robot.commands.CompressorCommand;
 import frc.robot.commands.Drivetrain.PIDTurnToAngle;
@@ -150,8 +152,8 @@ public class RobotContainer {
         coneModeButton.onTrue(new SetConeMode());
         cubeModeButton.onTrue(new SetCubeMode());
 
-        midLevelButton.onTrue(new GoToMidPosition());
-        highLevelButton.onTrue(new GoToHighPosition().andThen(new GoToHighScoreWristPosition()));
+        midLevelButton.onTrue(new ScoreMidCommandGroup());
+        highLevelButton.onTrue(new ScoreHighCommandGroup());
 
         readyStateButton.onTrue(new ReadyStateCommandGroup());
 

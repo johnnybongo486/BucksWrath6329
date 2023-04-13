@@ -14,15 +14,16 @@ public class AutonomousSelector {
         ShuffleboardTab autoTab = Shuffleboard.getTab("Auto settings");
 
         autonomousModeChooser = new SendableChooser<>();
-        //autonomousModeChooser.addOption("2 Cone Auto", AutonomousMode.Two_Cone_Auto);
-        //autonomousModeChooser.addOption("2 Cone Balance Auto", AutonomousMode.Two_Cone_Balance_Auto);
+        autonomousModeChooser.addOption("1 Cone Auto", AutonomousMode.One_Cone_Auto);
         autonomousModeChooser.addOption("Center Balance Auto", AutonomousMode.Center_Balance_Auto);
-        autonomousModeChooser.addOption("Cone Cube Auto", AutonomousMode.Cone_Cube_Auto);
+        autonomousModeChooser.addOption("Cone Cube Cube Auto", AutonomousMode.Cone_Cube_Cube_Auto);
+        autonomousModeChooser.addOption("Cone Cube Cone Auto", AutonomousMode.Cone_Cube_Cone_Auto);
         autonomousModeChooser.addOption("Cone Cube Balance Auto", AutonomousMode.Cone_Cube_Balance_Auto);
-        //autonomousModeChooser.addOption("Barrier Balance Auto", AutonomousMode.Barrier_Balance_Auto);
-        //autonomousModeChooser.addOption("Barrier Grab Balance Auto", AutonomousMode.Barrier_Grab_Balance_Auto);
+        autonomousModeChooser.addOption("Three Piece Auto", AutonomousMode.Three_Piece_Auto);
+        autonomousModeChooser.addOption("Barrier Spit Cone Auto", AutonomousMode.Barrier_Spit_Cone_Auto);
         autonomousModeChooser.addOption("Barrier Spit Auto", AutonomousMode.Barrier_Spit_Auto);
         autonomousModeChooser.addOption("Barrier Spit Balance Auto", AutonomousMode.Barrier_Spit_Balance_Auto);
+        autonomousModeChooser.addOption("Barrier Cone Cube Auto", AutonomousMode.Barrier_Cone_Cube_Auto);
         autonomousModeChooser.addOption("Balance Test", AutonomousMode.Balance_Test);
 
         autoTab.add("Mode", autonomousModeChooser);
@@ -33,32 +34,31 @@ public class AutonomousSelector {
         AutonomousMode mode = autonomousModeChooser.getSelected();
 
         switch (mode) {
-            //case Two_Cone_Auto:
-            //    return new TwoConeAuto(s_Swerve);
-            //case Two_Cone_Balance_Auto:
-            //    return new TwoConeBalanceAuto(s_Swerve);
+            case One_Cone_Auto:
+                return new DefaultAuto(s_Swerve);
             case Center_Balance_Auto:
                 return new CenterBalanceAuto(s_Swerve);
-            case Cone_Cube_Auto:
-                return new ConeCubeAuto(s_Swerve);
+            case Cone_Cube_Cube_Auto:
+                return new ConeCubeCubeAuto(s_Swerve);
+            case Cone_Cube_Cone_Auto:
+                return new ConeCubeConeAuto(s_Swerve);
             case Cone_Cube_Balance_Auto:
                 return new ConeCubeBalanceAuto(s_Swerve);
-            //case Barrier_Balance_Auto:
-            //    return new BarrierBalanceAuto(s_Swerve);
-            //case Barrier_Grab_Balance_Auto:
-            //    return new BarrierGrabBalanceAuto(s_Swerve);
+            case Three_Piece_Auto:
+                return new ThreePieceHHMAuto(s_Swerve);
+            case Barrier_Spit_Cone_Auto:
+                return new BarrierSpitConeAuto(s_Swerve);
             case Barrier_Spit_Auto:
                 return new BarrierSpitAuto(s_Swerve);
             case Barrier_Spit_Balance_Auto:
                 return new BarrierSpitBalanceAuto(s_Swerve);
+            case Barrier_Cone_Cube_Auto:
+                return new BarrierConeCubeAuto(s_Swerve);
             case Balance_Test:
                 return new BalanceTest(s_Swerve);
             default:
                 return new DefaultAuto(s_Swerve);
-                //break; 
         }
-
-        //return null;
     }
 
     public AutonomousSelector() {
@@ -66,16 +66,17 @@ public class AutonomousSelector {
     }
 
     private enum AutonomousMode {
-        //Two_Cone_Auto,
-        //Two_Cone_Balance_Auto,
+        One_Cone_Auto,
         Center_Balance_Auto,
-        Cone_Cube_Auto,
+        Cone_Cube_Cube_Auto,
+        Cone_Cube_Cone_Auto,
         Cone_Cube_Balance_Auto,
-        //Barrier_Balance_Auto,
-        //Barrier_Grab_Balance_Auto,
         Barrier_Spit_Auto,
         Barrier_Spit_Balance_Auto,
+        Barrier_Spit_Cone_Auto,
+        Barrier_Cone_Cube_Auto,
         Balance_Test,
+        Three_Piece_Auto
     }
 
 }

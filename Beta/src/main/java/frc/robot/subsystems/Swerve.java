@@ -31,7 +31,7 @@ public class Swerve extends SubsystemBase {
     public Pigeon2 gyro;
 
     private PIDController m_balancePID = new PIDController(0.08, 0.0, 0.0); // was 0.15
-    public static final double BALANCE_TOLERANCE = 10;
+    public static final double BALANCE_TOLERANCE = 12;
 
 
     public Swerve() {
@@ -127,14 +127,14 @@ public class Swerve extends SubsystemBase {
 
     public void AutoBalance(){
         m_balancePID.setTolerance(BALANCE_TOLERANCE);
-        double pidOutput = MathUtil.clamp(m_balancePID.calculate(getRoll(), 0), -0.7, 0.7);  // was 0.7
+        double pidOutput = MathUtil.clamp(m_balancePID.calculate(getRoll(), 0), -0.57, 0.57);  // was 0.55
         SmartDashboard.putNumber("Balance PID", pidOutput);
         drive(new Translation2d(pidOutput, 0), 0.0, true, true);
     }
 
     public void AutoBackBalance(){
         m_balancePID.setTolerance(BALANCE_TOLERANCE);
-        double pidOutput = MathUtil.clamp(m_balancePID.calculate(getRoll(), 0), -0.7, 0.7);  // was 0.7
+        double pidOutput = MathUtil.clamp(m_balancePID.calculate(getRoll(), 0), -0.57, 0.57);  // was 0.55
         SmartDashboard.putNumber("Balance PID", pidOutput);
         drive(new Translation2d(-pidOutput, 0), 0.0, true, true);
     }
@@ -142,10 +142,19 @@ public class Swerve extends SubsystemBase {
     public boolean isRobotBalanced(){
         return m_balancePID.atSetpoint();
     }
-
+/* 
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
+        }
+    }
+*/
+    public void resetModulesToAbsolute(){   // 3467 fix issue?
+        for(SwerveModule mod : mSwerveMods){
+            for (int i = 0; i < 10; i++) { 
+                
+            mod.resetToAbsolute();
+            }
         }
     }
 

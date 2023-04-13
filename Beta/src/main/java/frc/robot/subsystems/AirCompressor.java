@@ -8,7 +8,7 @@ public class AirCompressor extends SubsystemBase {
     Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
     public AirCompressor(){
-
+        
     }
     
     public boolean pressureCheck() {

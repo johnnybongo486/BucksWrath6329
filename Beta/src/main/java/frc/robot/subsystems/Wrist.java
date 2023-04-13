@@ -23,9 +23,9 @@ public class Wrist extends SubsystemBase implements IPositionControlledSubsystem
 	private int maxUpTravelPosition = 0;
 
 	private int floorCubePosition = -62000;
-	private int floorConePosition = -55000;
+	private int floorConePosition = -54000; // was 55k
 
-	private int singleHPPosition = -23000;  // was -20000
+	private int singleHPPosition = -23000;
 	private int doubleHPPosition = -33000;
 
 	private int highScorePosition = -15000;

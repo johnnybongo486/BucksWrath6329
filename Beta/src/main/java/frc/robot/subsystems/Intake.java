@@ -18,9 +18,9 @@ public class Intake extends SubsystemBase {
         lowerIntakeTalon.configOpenloopRamp(0.25);
         lowerIntakeTalon.configPeakOutputForward(1);
         lowerIntakeTalon.configPeakOutputReverse(-1);
-        lowerIntakeTalon.configPeakCurrentLimit(15);
+        lowerIntakeTalon.configPeakCurrentLimit(20);
         lowerIntakeTalon.configPeakCurrentDuration(10);
-        lowerIntakeTalon.configContinuousCurrentLimit(10);
+        lowerIntakeTalon.configContinuousCurrentLimit(15);
         lowerIntakeTalon.enableCurrentLimit(true);
         lowerIntakeTalon.setNeutralMode(NeutralMode.Brake);
         lowerIntakeTalon.setStatusFramePeriod(StatusFrame.Status_1_General, 251, 10);
@@ -30,9 +30,9 @@ public class Intake extends SubsystemBase {
         upperIntakeTalon.configOpenloopRamp(0.25);
         upperIntakeTalon.configPeakOutputForward(1);
         upperIntakeTalon.configPeakOutputReverse(-1);
-        upperIntakeTalon.configPeakCurrentLimit(15);
+        upperIntakeTalon.configPeakCurrentLimit(20);
         upperIntakeTalon.configPeakCurrentDuration(10);
-        upperIntakeTalon.configContinuousCurrentLimit(10);
+        upperIntakeTalon.configContinuousCurrentLimit(15);
         upperIntakeTalon.enableCurrentLimit(true);
         upperIntakeTalon.setNeutralMode(NeutralMode.Brake);
         upperIntakeTalon.setStatusFramePeriod(StatusFrame.Status_1_General, 253, 10);
@@ -56,8 +56,8 @@ public class Intake extends SubsystemBase {
 
     // Cube Commands
     public void intakeCube() {
-        lowerIntakeTalon.set(ControlMode.PercentOutput, -0.8);
-        upperIntakeTalon.set(ControlMode.PercentOutput, 0.8);
+        lowerIntakeTalon.set(ControlMode.PercentOutput, -0.9);
+        upperIntakeTalon.set(ControlMode.PercentOutput, 0.9);
     }
 
     public void holdCube() {

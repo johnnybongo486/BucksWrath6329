@@ -9,7 +9,7 @@ public class CANdleSubsystem extends SubsystemBase {
 
     private final CANdle m_candle = new CANdle(20);
     private final int LedCount = 400;
-    public boolean isCone;
+    public boolean isCone = true; // change!
     public String color;
 
 
