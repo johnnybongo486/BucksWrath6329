@@ -1,6 +1,5 @@
 package frc.robot;
 
-import frc.robot.commands.Autos;
 import frc.robot.commands.JoystickDrive;
 import frc.robot.commands.JoystickShooter;
 import frc.robot.commands.StopSerializer;
@@ -109,6 +108,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(drivetrain);
+    return null;//Autos.exampleAuto(drivetrain);
   }
 }

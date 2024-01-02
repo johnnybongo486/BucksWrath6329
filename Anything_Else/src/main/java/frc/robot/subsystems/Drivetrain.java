@@ -24,16 +24,16 @@ public class Drivetrain extends SubsystemBase {
     private Pigeon2 pigeon = new Pigeon2(5);
   
     // The robot's drive
-    private final DifferentialDrive drive = new DifferentialDrive(leftLead, rightLead);
+    //private final DifferentialDrive drive = new DifferentialDrive(leftLead, rightLead);
 
     public Drivetrain() {
         // Setup Followers
         leftFollower.follow(leftLead);
         rightFollower.follow(rightLead);
 
-        leftLead.setInverted(false);
+        leftLead.setInverted(true);
         rightLead.setInverted(false);
-        leftFollower.setInverted(false);
+        leftFollower.setInverted(true);
         rightFollower.setInverted(false);
         
         // Zero Sensors
@@ -75,10 +75,18 @@ public class Drivetrain extends SubsystemBase {
         double moveValue = 0;
         double rotateValue = 0;
 
+        double left = 0;
+        double right = 0;
+
         moveValue = Robot.robotContainer.getDriverLeftStickY();
         rotateValue = -Robot.robotContainer.getDriverRightStickX();
 
-        drive.arcadeDrive(moveValue, rotateValue);
+        left = moveValue + rotateValue;
+        right = moveValue - rotateValue;
+
+        leftLead.set(left);
+        rightLead.set(right);
+        //drive.arcadeDrive(moveValue, rotateValue);
     }
     
     public double getAngle() {
